@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AdminLogin;
+use App\Http\Controllers\admin\AdminDashboard;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,4 +16,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+Route::group(['middleware'=>'web'],function(){
+    Route::get('admin',[AdminLogin::class,'index'])->name('admin');
+    Route::post('admin/login',[AdminLogin::class,'Login'])->name('admin.login');
+});
+
+Route::group(['middleware'=>'admin'],function(){
+    Route::get('admin/dashboard',[AdminDashboard::class,'index'])->name('admin.dashboard');
+    Route::get('admin/logout',[AdminDashboard::class,'logout'])->name('admin.logout');
 });
