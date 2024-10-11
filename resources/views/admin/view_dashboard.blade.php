@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 @extends('admin.layout.admin_header')
+=======
+@extends('admin.layout.admin_header');
+>>>>>>> 2868dad15fc6950afbea87bdd869734bc80aba19
 @section('content')
 <main>
     <div class="container-fluid site-width">

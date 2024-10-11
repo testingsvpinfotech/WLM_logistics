@@ -62,7 +62,19 @@
                     </div>
 
                     <form class="float-left d-none d-lg-block search-form">
+<<<<<<< HEAD
                         <span class="h6 font-weight-bold align-self-center mb-0 ml-3">Branch : @php $branch = DB::table('tbl_branches')->where(['id' => session('user.branch_id')])->get(); echo $branch[0]->branch_id.' -- '.$branch[0]->branch_name; @endphp</span>   
+=======
+                        <div class="form-group mb-0 position-relative">
+                            <input type="text" class="form-control border-0 rounded bg-search pl-5" placeholder="Search anything...">
+                            <div class="btn-search position-absolute top-0">
+                                <a href="#"><i class="h6 icon-magnifier"></i></a>
+                            </div>
+                            <a href="#" class="position-absolute close-button mobilesearch d-lg-none" data-toggle="dropdown" aria-expanded="false"><i class="icon-close h5"></i>                               
+                            </a>
+
+                        </div>
+>>>>>>> 2868dad15fc6950afbea87bdd869734bc80aba19
                     </form>
                     <div class="navbar-right ml-auto h-100">
                         <ul class="ml-auto p-0 m-0 list-unstyled d-flex top-icon h-100">
@@ -165,7 +177,10 @@
                                     <div class="media">                                   
                                         <img src="{{ asset('admin-assets/dist/images/author.jpg')}}" alt="" class="d-flex img-fluid rounded-circle" width="29">
                                     </div>
+<<<<<<< HEAD
                                     <b>{{session('user.username')}}</b>
+=======
+>>>>>>> 2868dad15fc6950afbea87bdd869734bc80aba19
                                 </a>
 
                                 <div class="dropdown-menu border dropdown-menu-right p-0">
