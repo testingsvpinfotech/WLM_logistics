@@ -46,8 +46,32 @@
 <script src="{{ asset('admin-assets/dist/vendors/apexcharts/apexcharts.min.js')}}"></script>
 <!-- END: Page Vendor JS-->
 
+<!-- START: Page Vendor JS-->
+<script src="{{ asset('admin-assets/dist/vendors/datatable/js/jquery.dataTables.min.js') }}"></script> 
+<script src="{{ asset('admin-assets/dist/vendors/datatable/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('admin-assets/dist/vendors/datatable/jszip/jszip.min.js') }}"></script>
+<script src="{{ asset('admin-assets/dist/vendors/datatable/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ asset('admin-assets/dist/vendors/datatable/pdfmake/vfs_fonts.js') }}"></script>
+<script src="{{ asset('admin-assets/dist/vendors/datatable/buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('admin-assets/dist/vendors/datatable/buttons/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('admin-assets/dist/vendors/datatable/buttons/js/buttons.colVis.min.js') }}"></script>
+<script src="{{ asset('admin-assets/dist/vendors/datatable/buttons/js/buttons.flash.min.js') }}"></script>
+<script src="{{ asset('admin-assets/dist/vendors/datatable/buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('admin-assets/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
+<!-- END: Page Vendor JS-->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.3/dist/sweetalert2.all.min.js"></script>
+<!-- START: Page Script JS-->        
+<script src="{{ asset('admin-assets/dist/js/datatable.script.js')}}"></script>
+
 <!-- START: Page JS-->
 <script src="{{ asset('admin-assets/dist/js/home.script.js')}}"></script>
+<script>
+  $.ajaxSetup({
+    headers : {
+       'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+    }
+  });
+</script>
 <!-- END: Page JS-->
 </body>
 <!-- END: Body-->

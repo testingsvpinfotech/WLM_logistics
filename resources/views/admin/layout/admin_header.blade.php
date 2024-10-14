@@ -6,7 +6,7 @@
         <title>{{ $title }}</title>
         <link rel="shortcut icon" href="{{ asset('admin-assets/dist/images/favicon.ico')}}" />
         <meta name="viewport" content="width=device-width,initial-scale=1"> 
-
+        <meta name="csrf-token" content="{{ csrf_token()}}">
         <!-- START: Template CSS-->
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/bootstrap/css/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/jquery-ui/jquery-ui.min.css')}}">
@@ -17,8 +17,10 @@
 
         <!-- START: Page CSS-->
         <link rel="stylesheet"  href="{{ asset('admin-assets/dist/vendors/chartjs/Chart.min.css')}}">
+         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.3/dist/sweetalert2.min.css">
         <!-- END: Page CSS-->
-
+        <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/datatable/css/dataTables.bootstrap4.min.css')}}" />
+        <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}"/>
         <!-- START: Page CSS-->   
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/morris/morris.css')}}"> 
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/weather-icons/css/pe-icon-set-weather.min.css')}}"> 
