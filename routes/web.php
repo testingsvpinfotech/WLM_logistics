@@ -8,6 +8,7 @@ use App\Http\Controllers\admin\AdminUserMaster;
 use App\Http\Controllers\admin\BranchMaster;
 use App\Http\Controllers\admin\CityMangment;
 use App\Http\Controllers\admin\StateManagment;
+use App\Http\Controllers\admin\PincodeService;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -53,4 +54,7 @@ Route::group(['middleware'=>'admin'],function(){
     // State Managment 
     Route::get('admin/view-state-managment',[StateManagment::class,'index'])->name('admin.view-state-managment');
     Route::get('admin/add-state',[StateManagment::class,'add_state'])->name('admin.add-state');
+    // Pincode Service
+    Route::get('admin/view-pincode-service',[PincodeService::class,'index'])->name('admin.view-pincode-service');
+    Route::get('admin/add-pincode',[PincodeService::class,'add_pincode'])->name('admin.add-pincode');
 });
