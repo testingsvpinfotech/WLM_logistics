@@ -30,7 +30,8 @@
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/ionicons/css/ionicons.min.css')}}"> 
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.css')}}">
         <!-- END: Page CSS-->
-
+        <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/select2/css/select2.min.css')}}"/>
+        <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/select2/css/select2-bootstrap.min.css')}}"/>
         <!-- START: Custom CSS-->
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/css/main.css')}}">
         <!-- END: Custom CSS-->
