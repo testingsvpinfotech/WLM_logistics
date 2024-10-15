@@ -22,30 +22,32 @@
                                @php $menuUrl = route($val->menu_url); @endphp
                            @endif
                            @if ($val->id == $cnt && $val->id != '1' && $val->master_menu_identity == '1')
-                               @php $subMenu = getSubMenu($val->id); @endphp
-
+                               @php $subMenu = getSubMenu($val->master_menu_id);  @endphp
                                <li class="dropdown"><a href="{{ $menuUrl }}"><i class="icon-menu"></i>
                                        {{ $val->master_menu_name }}</a>
-                                       <ul class="sub-menu">
-                                   @if (!empty($subMenu))
-                                       @foreach ($subMenu as $sub)
-                                           @if ($sub->menu_url == '#')
-                                               @php $menuUrl1 = '#'; @endphp
-                                           @else
-                                               @php $menuUrl1 = route($sub->menu_url); @endphp
-                                           @endif
-                                           @if ($sub->master_menu_identity != '1')
-                                                   <li>
-                                                       <a href="{{ $menuUrl1 }}">
-                                                           <i class="icon-energy"></i>
-                                                           {{ $sub->master_menu_name }}
-                                                       </a>
-                                                   </li>
-                                           @endif
-                                       @endforeach
-                                   @endif
-                                </ul>
-                               </li>
+                                    <ul class="sub-menu">
+                                        @if (!empty($subMenu))
+                                            @foreach ($subMenu as $sub)
+                                                @if ($sub->menu_url == '#')
+                                                    @php $menuUrl1 = '#'; @endphp
+                                                @else
+                                                    @php $menuUrl1 = route($sub->menu_url); @endphp
+                                                @endif
+                                                @if ($sub->master_menu_identity != '1')
+                                                        <li>
+                                                            <a href="{{ $menuUrl1 }}">
+                                                                <i class="icon-energy"></i>
+                                                                {{ $sub->master_menu_name }}
+                                                            </a>
+                                                        </li>
+                                                        
+                                                @endif
+                                               
+                                            @endforeach
+                                             
+                                        @endif
+                                    </ul>
+                               </li> 
                            @endif
                            @php
                                $cnt++;

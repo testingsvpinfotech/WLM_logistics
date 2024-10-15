@@ -6,6 +6,7 @@ use App\Http\Controllers\admin\AdminDashboard;
 use App\Http\Controllers\admin\Adminusertypes;
 use App\Http\Controllers\admin\AdminUserMaster;
 use App\Http\Controllers\admin\BranchMaster;
+use App\Http\Controllers\admin\CityMangment;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -45,4 +46,7 @@ Route::group(['middleware'=>'admin'],function(){
     // Branch Master
     Route::get('admin/view-branch-master',[BranchMaster::class,'index'])->name('admin.view-branch-master');
     Route::get('admin/add-branch',[BranchMaster::class,'add_branch'])->name('admin.add-branch');
+    // City Managment 
+    Route::get('admin/view-city-managment',[CityMangment::class,'index'])->name('admin.view-city-managment');
+    Route::get('admin/add-city',[CityMangment::class,'add_city'])->name('admin.add-city');
 });
