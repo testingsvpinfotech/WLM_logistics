@@ -7,6 +7,7 @@ use App\Http\Controllers\admin\Adminusertypes;
 use App\Http\Controllers\admin\AdminUserMaster;
 use App\Http\Controllers\admin\BranchMaster;
 use App\Http\Controllers\admin\CityMangment;
+use App\Http\Controllers\admin\StateManagment;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,4 +50,7 @@ Route::group(['middleware'=>'admin'],function(){
     // City Managment 
     Route::get('admin/view-city-managment',[CityMangment::class,'index'])->name('admin.view-city-managment');
     Route::get('admin/add-city',[CityMangment::class,'add_city'])->name('admin.add-city');
+    // State Managment 
+    Route::get('admin/view-state-managment',[StateManagment::class,'index'])->name('admin.view-state-managment');
+    Route::get('admin/add-state',[StateManagment::class,'add_state'])->name('admin.add-state');
 });
