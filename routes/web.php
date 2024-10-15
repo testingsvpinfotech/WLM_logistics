@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminLogin;
 use App\Http\Controllers\admin\AdminDashboard;
 use App\Http\Controllers\admin\Adminusertypes;
 use App\Http\Controllers\admin\AdminUserMaster;
+use App\Http\Controllers\admin\BranchMaster;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,4 +42,7 @@ Route::group(['middleware'=>'admin'],function(){
     Route::get('admin/edit-user/{id}',[AdminUserMaster::class,'edit_user'])->name('admin.edit-user');
     Route::put('admin/update-user',[AdminUserMaster::class,'update_user'])->name('admin.update-user');
     Route::put('admin/delete-user',[AdminUserMaster::class,'destroyUser'])->name('admin.delete-user');
+    // Branch Master
+    Route::get('admin/view-branch-master',[BranchMaster::class,'index'])->name('admin.view-branch-master');
+    Route::get('admin/add-branch',[BranchMaster::class,'add_branch'])->name('admin.add-branch');
 });
