@@ -9,6 +9,7 @@ use App\Http\Controllers\admin\BranchMaster;
 use App\Http\Controllers\admin\CityMangment;
 use App\Http\Controllers\admin\StateManagment;
 use App\Http\Controllers\admin\PincodeService;
+use App\Http\Controllers\admin\RateGroupMaster;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,4 +58,11 @@ Route::group(['middleware'=>'admin'],function(){
     // Pincode Service
     Route::get('admin/view-pincode-service',[PincodeService::class,'index'])->name('admin.view-pincode-service');
     Route::get('admin/add-pincode',[PincodeService::class,'add_pincode'])->name('admin.add-pincode');
+    // Rate Group Master 
+    Route::get('admin/view-rate-group',[RateGroupMaster::class,'index'])->name('admin.view-rate-group');
+    Route::get('admin/add-rate-group',[RateGroupMaster::class,'add_group'])->name('admin.add-rate-group');
+    Route::post('admin/store-rate-group',[RateGroupMaster::class,'store_rate'])->name('admin.store-rate-group');
+    Route::get('admin/edit-rate-group/{id}',[RateGroupMaster::class,'edit_rate'])->name('admin.edit-rate-group');
+    Route::put('admin/update-rate-group',[RateGroupMaster::class,'update_rate_group'])->name('admin.update-rate-group');
+    Route::put('admin/delete-rate-group',[RateGroupMaster::class,'destroyRategroup'])->name('admin.delete-rate-group');
 });
