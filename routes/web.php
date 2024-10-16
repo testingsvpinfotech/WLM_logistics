@@ -10,6 +10,7 @@ use App\Http\Controllers\admin\CityMangment;
 use App\Http\Controllers\admin\StateManagment;
 use App\Http\Controllers\admin\PincodeService;
 use App\Http\Controllers\admin\RateGroupMaster;
+use App\Http\Controllers\admin\FuelGroupMaster;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -65,4 +66,11 @@ Route::group(['middleware'=>'admin'],function(){
     Route::get('admin/edit-rate-group/{id}',[RateGroupMaster::class,'edit_rate'])->name('admin.edit-rate-group');
     Route::put('admin/update-rate-group',[RateGroupMaster::class,'update_rate_group'])->name('admin.update-rate-group');
     Route::put('admin/delete-rate-group',[RateGroupMaster::class,'destroyRategroup'])->name('admin.delete-rate-group');
+    // Fuel Group Master 
+    Route::get('admin/view-fuel-group',[FuelGroupMaster::class,'index'])->name('admin.view-fuel-group');
+    Route::get('admin/add-fuel-group',[FuelGroupMaster::class,'add_group'])->name('admin.add-fuel-group');
+    Route::post('admin/store-fuel-group',[FuelGroupMaster::class,'store_fuel'])->name('admin.store-fuel-group');
+    Route::get('admin/edit-fuel-group/{id}',[FuelGroupMaster::class,'edit_fuel'])->name('admin.edit-fuel-group');
+    Route::put('admin/update-fuel-group',[FuelGroupMaster::class,'update_fuel_group'])->name('admin.update-fuel-group');
+    Route::put('admin/delete-fuel-group',[FuelGroupMaster::class,'destroyFuelgroup'])->name('admin.delete-fuel-group');
 });
