@@ -59,6 +59,7 @@
 <script src="{{ asset('admin-assets/dist/vendors/datatable/buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('admin-assets/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
 <!-- END: Page Vendor JS-->
+<script src="{{ asset('admin-assets/dist/vendors/bootstrap4-toggle/js/bootstrap4-toggle.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.3/dist/sweetalert2.all.min.js"></script>
 <!-- START: Page Script JS-->        
 <script src="{{ asset('admin-assets/dist/js/datatable.script.js')}}"></script>

@@ -11,6 +11,7 @@ use App\Http\Controllers\admin\StateManagment;
 use App\Http\Controllers\admin\PincodeService;
 use App\Http\Controllers\admin\RateGroupMaster;
 use App\Http\Controllers\admin\FuelGroupMaster;
+use App\Http\Controllers\admin\CustomerBusinessCategory;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,12 +35,12 @@ Route::group(['middleware'=>'admin'],function(){
     Route::get('admin/dashboard',[AdminDashboard::class,'index'])->name('admin.dashboard');
     Route::get('admin/logout',[AdminDashboard::class,'logout'])->name('admin.logout');
    // User Types Master
-   Route::get('admin/view-usertypes',[Adminusertypes::class,'index'])->name('admin.view-usertypes');
-   Route::get('admin/add-usertypes',[Adminusertypes::class,'add_usertype'])->name('admin.add-usertypes');
-   Route::post('admin/store-usertype',[Adminusertypes::class,'store_usertype'])->name('admin.store-usertype');
-   Route::get('admin/edit-usertype/{id}',[Adminusertypes::class,'editusertype'])->name('admin.edit-usertype');
-   Route::put('admin/update-usertypes',[Adminusertypes::class,'updateUsertype'])->name('admin.update-usertypes');
-   Route::put('admin/destroy-usertypes',[Adminusertypes::class,'destroyUsertype'])->name('admin.destroy-usertypes');
+    Route::get('admin/view-usertypes',[Adminusertypes::class,'index'])->name('admin.view-usertypes');
+    Route::get('admin/add-usertypes',[Adminusertypes::class,'add_usertype'])->name('admin.add-usertypes');
+    Route::post('admin/store-usertype',[Adminusertypes::class,'store_usertype'])->name('admin.store-usertype');
+    Route::get('admin/edit-usertype/{id}',[Adminusertypes::class,'editusertype'])->name('admin.edit-usertype');
+    Route::put('admin/update-usertypes',[Adminusertypes::class,'updateUsertype'])->name('admin.update-usertypes');
+    Route::put('admin/destroy-usertypes',[Adminusertypes::class,'destroyUsertype'])->name('admin.destroy-usertypes');
    // user master 
     Route::get('admin/view-user-master',[AdminUserMaster::class,'index'])->name('admin.view-user-master');
     Route::get('admin/add-user',[AdminUserMaster::class,'add_user'])->name('admin.add-user');
@@ -73,4 +74,13 @@ Route::group(['middleware'=>'admin'],function(){
     Route::get('admin/edit-fuel-group/{id}',[FuelGroupMaster::class,'edit_fuel'])->name('admin.edit-fuel-group');
     Route::put('admin/update-fuel-group',[FuelGroupMaster::class,'update_fuel_group'])->name('admin.update-fuel-group');
     Route::put('admin/delete-fuel-group',[FuelGroupMaster::class,'destroyFuelgroup'])->name('admin.delete-fuel-group');
+    // Customer Business Category
+    Route::get('admin/view-business-category',[CustomerBusinessCategory::class,'index'])->name('admin.view-business-category');
+    Route::get('admin/add-business-category',[CustomerBusinessCategory::class,'add_category'])->name('admin.add-business-category');
+    Route::post('admin/store-business-category',[CustomerBusinessCategory::class,'store_category'])->name('admin.store-business-category');
+    Route::get('admin/download-category/{id}',[CustomerBusinessCategory::class,'downloadImage'])->name('admin.download-category');
+    Route::get('admin/edit-business-category/{id}',[CustomerBusinessCategory::class,'editCategory'])->name('admin.edit-business-category');
+    Route::post('admin/update-business-category',[CustomerBusinessCategory::class,'update_category'])->name('admin.update-business-category');
+    Route::put('admin/delete-business-category',[CustomerBusinessCategory::class,'destroyBusiness_cate'])->name('admin.delete-business-category');
+    Route::put('admin/status-business-category',[CustomerBusinessCategory::class,'statusBusiness'])->name('admin.status-business-category');
 });

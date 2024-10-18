@@ -34,6 +34,7 @@
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/select2/css/select2-bootstrap.min.css')}}"/>
         <!-- START: Custom CSS-->
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/css/main.css')}}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/bootstrap4-toggle/css/bootstrap4-toggle.min.css')}}" />
         <!-- END: Custom CSS-->
     </head>
     <!-- END Head-->
@@ -42,9 +43,9 @@
     <body id="main-container" class="default">
 
         <!-- START: Pre Loader-->
-        <div class="se-pre-con">
+        {{-- <div class="se-pre-con">
             <div class="loader"></div>
-        </div>
+        </div> --}}
         <!-- END: Pre Loader-->
 
         <!-- START: Header-->
