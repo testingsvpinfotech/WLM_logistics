@@ -1,0 +1,25 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy to AWS
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: '3.6.227.203'
+        username: 'ubuntu'
+        key: 'AAAAB3NzaC1yc2EAAAADAQABAAACAQCpv/LqGC1M0T5wao8AjYtghH23HMOnTdub7XC2QULrDefqjHdvgoUVrRX6qNzdwIutsCggIA+X8mCiNh7+wi1RnHGdsDBoj/VwwtlXJ3EMikaSwKHSyWCebxreaQK6ZT4BY3kU3/77qh+7+si50Ti0sjeh2wnwtSlRCGbYPYWB+e+1WzkKjJ5J0p8Mhln9VNdYjDzbjpmaDgHHC/GICdQ+z1+fiOnnSO6oNpaM36Qcu2PJQI6PEeT1NnpJLZCDWubvpEdFB36J4I4vBl/xEjoZOjmZc16PfMrOX8+XHiw2vCVZ69Nci0vBsryBiCsAIoBx/2dhCjruvM7aeW3G3RwzqnNchfouoJwuWvMZcAtru+mP+rsvcDGA2x0rPXpQYdi5uhDv+Uwg4WoGxYxrJC7FX3f4LSdCpOe5AbFnBhUTpVcsdVNgYFoC/w0hZGhyX2SrEX48ul6ajFxNiay5CjYVNGlLxJEWlFYGRveOWoK1u+QcjJrgvWKoYugKqmhdawWqhmJQKyXdkTUN4ryJdh3y63cHmHjpR521kfZBUZmw0AZ7Kpa5re4Mgyd6nwOngL+Qp6fUF7SncFNVmK+nvR3LOFEDmSN0lJS2pzjQ1twf9iYjmEPQWLzBpWYHnNVUkQgpDfwDXaciGSKx1hVcr/PNsGUsaU7ICOmFJVStxosAVQ== wlmcourier@svpinfotech.in'
+        script: |
+          cd /path/to/your/project || exit
+          git pull origin main
+          # Add any other commands here, such as restarting services
