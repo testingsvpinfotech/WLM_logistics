@@ -15,6 +15,7 @@ use App\Http\Controllers\admin\FuelGroupMaster;
 use App\Http\Controllers\admin\CustomerBusinessCategory;
 use App\Http\Controllers\admin\CourierCompany;
 use App\Http\Controllers\admin\ReginalZone;
+use App\Http\Controllers\admin\AdminDomesticRate;
 // international 
 use App\Http\Controllers\admin\International\RateGroup;
 
@@ -151,6 +152,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/update-zone',[ReginalZone::class,'update_zone'])->name('admin.update-zone');
     Route::put('admin/status-zone', [ReginalZone::class, 'status'])->name('admin.status-zone');
     Route::put('admin/delete-zone',[ReginalZone::class,'destroyzone'])->name('admin.delete-zone');
+
+    //  Domestic Rate Master
+    Route::get('admin/add-rate',[AdminDomesticRate::class,'add_rate'])->name('admin.add-rate');
 
     // International 
     // Rate Group
