@@ -23,6 +23,16 @@ use App\Models\InternationalBooking;
 class InternationalOrders extends Controller
 {
 
+    public function index()
+    {
+        $currentPage = request()->input('page', 1);
+        $domesticBooking = new DomesticBooking();
+        $internationalBooking = new InternationalBooking();
+        $data = [];
+        $data['title'] = "View Orders";
+        $data['interorders'] = $internationalBooking->get_international_orders('', 50, $currentPage); // Page 1
+        return view('customer.orders.view_international', $data);
+    }
     public function add_orders()
     {
         $data = [];

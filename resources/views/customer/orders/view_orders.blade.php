@@ -14,6 +14,47 @@
             border-radius: 0;
             /* To remove any default border radius */
         }
+        .order_type {
+            padding-left: 0px !important;
+            font-size: 14px !important;
+            list-style-type: none;
+            display: flex; /* Enable flexbox */
+            justify-content:flex-start; /* Distribute space between items */
+            list-style-type: none; /* Remove bullet points */
+        }
+        .order_type li {
+            padding: 10px; /* Add padding to each item */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+        .order_type .active {
+            color: #745be7;
+            font-size: 14px;
+            border-bottom: 5px solid #745be7;
+        }
+        .order_type li:hover {
+            background-color: #f0f0f0; /* Change background color on hover */
+        }
+
+        .order_menu {
+            padding-left: 0px !important;
+            font-size: 13px !important;
+            list-style-type: none;
+            display: flex; /* Enable flexbox */
+            justify-content:flex-start; /* Distribute space between items */
+            list-style-type: none; /* Remove bullet points */
+        }
+        .order_menu li {
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #191919;
+            padding: 4px 12px;
+            border: 1px solid lightgrey;
+        }
+        .order_menu .active {
+            color: #745be7;
+        }
     </style>
     <main>
         <div class="container-fluid site-width">
@@ -25,6 +66,10 @@
                             <h4 class="card-title">{{ $title }}</h4>
                             <span style="float:right;"><a href="{{ route('app.add-orders') }}"
                                     class="btn btn-outline-primary">Add Order</a></span>
+                                    <ul class="order_type mb-0">
+                                        <li class="active domestic">View Domestic Order</li>
+                                        <li class="international"><a href="{{route('app.view-international-orders')}}">View International Order</a></li>
+                                    </ul>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -41,7 +86,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (isset($orders))
                                             @php
                                                 $count = 1;
                                             @endphp
@@ -109,57 +153,6 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                            @foreach ($interorders as $key => $val)
-                                                <tr>
-                                                    <td>
-                                                        <a href="#" class="order-link">{{ $val->order_id }}</a><br>
-                                                        <span
-                                                            class="order-time">{{ date('d M Y | h:i A', strtotime($val->order_date)) }}</span><br>
-                                                        <span class="order-cart-icon"><i class="icon-cart"></i>
-                                                            {{ $val->order_channel }}</span><br>
-                                                        <a tabindex="0" class="btn btn-link" role="button"
-                                                            data-toggle="popover" data-trigger="focus"
-                                                            title="Package Details" data-html="true"
-                                                            data-content="<div>
-                                                                <b>Package 1</b><br>
-                                                                {{ $val->length . 'X' . $val->breath . 'X' . $val->height }} (cm)<br><br>
-                                                                <b>Dead wt.:</b> {{ $val->dead_weight }} Kg<br>
-                                                                <b>Vol. wt.:</b> {{ $val->volumetric_weight }} Kg
-                                                            </div>">Package
-                                                            Details
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        <strong>{{ $val->buy_full_name }}</strong><br>
-                                                        {{ $val->buy_email }}<br>
-                                                        {{ $val->buy_mobile }}
-                                                    </td>
-                                                    <td>
-                                                        <span class="order-amount">₹ {{ $val->order_total }}</span><br>
-                                                        <span class="payment-label">{{ $val->payment_mode }}</span>
-                                                    </td>
-                                                    <td>
-                                                        <a href="#" class="text-decoration-none">Primary</a>
-                                                    </td>
-                                                    <td>
-                                                        <strong>AWB #</strong><br>
-                                                        Not Assigned
-                                                    </td>
-                                                    <td>
-                                                        <span class="status-label">NEW</span>
-                                                    </td>
-                                                    <td>
-                                                        {{-- <button class="btn btn-action">Ship Now</button> --}}
-                                                        <button type="button" class="btn btn-action" data-bs-toggle="modal"
-                                                            data-bs-target="#staticBackdrop">
-                                                            Ship Now
-                                                        </button>
-                                                        <button class="btn btn-outline-secondary"><i
-                                                                class="fas fa-ellipsis-h"></i></button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @endif
                                     </tbody>
                                 </table>
                                 <div class="pagination-wrapper">

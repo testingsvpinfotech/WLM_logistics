@@ -14,6 +14,48 @@
             border-radius: 0;
             /* To remove any default border radius */
         }
+        .order_type {
+            padding-left: 0px !important;
+            font-size: 14px !important;
+            list-style-type: none;
+            display: flex; /* Enable flexbox */
+            justify-content:flex-start; /* Distribute space between items */
+            list-style-type: none; /* Remove bullet points */
+        }
+        .order_type li {
+            padding: 10px; /* Add padding to each item */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+        .order_type .active {
+            color: #745be7;
+            font-size: 14px;
+            border-bottom: 5px solid #745be7;
+        }
+        .order_type li:hover {
+            background-color: #f0f0f0; /* Change background color on hover */
+        }
+
+        .order_menu {
+            padding-left: 0px !important;
+            font-size: 13px !important;
+            list-style-type: none;
+            display: flex; /* Enable flexbox */
+            justify-content:flex-start; /* Distribute space between items */
+            list-style-type: none; /* Remove bullet points */
+        }
+        .order_menu li {
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #191919;
+            padding: 4px 12px;
+            border: 1px solid lightgrey;
+        }
+        .order_menu .active {
+            color: #745be7;
+        }
+
     </style>
     <main>
         <div class="container-fluid site-width">
@@ -25,6 +67,10 @@
                             <h4 class="card-title">{{ $title }}</h4>
                             <span style="float:right;"><a href="{{ route('app.add-orders') }}"
                                     class="btn btn-outline-primary">Add Order</a></span>
+                                    <ul class="order_type mb-0">
+                            <li class="domestic"><a href="{{route('app.view-orders')}}">View Domestic Order</a></li>
+                            <li class="active international">View International Order</li>
+                        </ul>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -51,8 +97,8 @@
                                                         <a href="#" class="order-link">{{ $val->order_id }}</a><br>
                                                         <span
                                                             class="order-time">{{ date('d M Y | h:i A', strtotime($val->order_date)) }}</span><br>
-                                                        <span class="order-cart-icon"><i class="icon-cart"></i>
-                                                            {{ $val->order_channel }}</span><br>
+                                                        <!-- <span class="order-cart-icon"><i class="icon-cart"></i>
+                                                            {{ $val->order_channel }}</span><br> -->
                                                         <a tabindex="0" class="btn btn-link" role="button"
                                                             data-toggle="popover" data-trigger="focus"
                                                             title="Package Details" data-html="true"
@@ -72,10 +118,21 @@
                                                     </td>
                                                     <td>
                                                         <span class="order-amount">₹ {{ $val->order_total }}</span><br>
-                                                        <span class="payment-label">{{ $val->payment_mode }}</span>
+                                                        <span class="payment-label">{{ ucfirst($val->payment_mode) }}</span>
                                                     </td>
                                                     <td>
-                                                        <a href="#" class="text-decoration-none">Primary</a>
+                                                    @if ($val->pickup_address == 'primary')
+                                                            <a href="#" class="text-decoration-none">
+                                                                Primary
+                                                            </a>
+                                                        @else
+                                                        @php
+                                                           $addres = DB::table('tbl_pickup_address')->where(['id'=>$val->pickup_address])->first();
+                                                        @endphp 
+                                                             {{ $addres->contact_person}} <br>
+                                                             {{ $addres->contact_no}} <br>
+                                                             {{ $addres->address.','.$addres->landmark.' '.$addres->pincode}}
+                                                        @endif
                                                     </td>
                                                     <td>
                                                         <strong>AWB #</strong><br>
@@ -86,8 +143,8 @@
                                                     </td>
                                                     <td>
                                                         {{-- <button class="btn btn-action">Ship Now</button> --}}
-                                                        <button type="button" class="btn btn-action" data-bs-toggle="modal"
-                                                            data-bs-target="#staticBackdrop">
+                                                        <button type="button" class="btn btn-action" onclick="return internationalModel('{{$val->id}}');"  data-bs-toggle="modal"
+                                                        data-bs-target="#staticBackdrop">
                                                             Ship Now
                                                         </button>
                                                         <button class="btn btn-outline-secondary"><i
@@ -98,7 +155,7 @@
                                     </tbody>
                                 </table>
                                 <div class="pagination-wrapper">
-                                    {{ $orders->links() }}
+                                    {{ $interorders->links() }}
                                 </div>
                             </div>
                         </div>
@@ -111,7 +168,6 @@
     </main>
     {{-- ship now button model pop  --}}
 
-    <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-fullscreen-custom">
@@ -189,28 +245,8 @@
                     <div class="container-fluid">
                         <div class="row">
                             <!-- Sidebar for Order and Buyer Insights -->
-                            <div class="col-md-3 sidebar">
-                                <h5>Order Details</h5>
-                                <p><strong>Pickup From:</strong> 400070, Maharashtra</p>
-                                <p><strong>Deliver To:</strong> 400078, Maharashtra</p>
-                                <p><strong>Order Value:</strong> ₹5000.00</p>
-                                <p><strong>Payment Mode:</strong> COD</p>
-                                <p><strong>Applicable Weight (in Kg):</strong> 26 Kg</p>
-
-                                <h6>Buyer Insights</h6>
-                                <p><strong>Last Successful Delivery To Buyer:</strong></p>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="icon">
-                                        <img src="icon-store.png" alt="Store" width="20">
-                                    </div>
-                                    <p class="mb-0">No orders yet</p>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="icon">
-                                        <img src="icon-shiprocket.png" alt="Shiprocket" width="20">
-                                    </div>
-                                    <p class="mb-0">No orders yet</p>
-                                </div>
+                            <div class="col-md-3 sidebar" id="orders-display">
+                               
                             </div>
 
                             <!-- Main Content -->
@@ -235,88 +271,12 @@
                                     <li class="nav-item">
                                         <a class="nav-link" href="#">Surface</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">Local</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">Self-Fulfilled</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">Non-Serviceable</a>
-                                    </li>
                                 </ul>
 
-                                <!-- Courier Option -->
-                                <div class="highlight mb-3">
-                                    <span class="preferred-badge">Seller's Preferred Choice</span>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div class="d-flex align-items-center">
-                                            <div class="icon-circle me-3">
-                                                <img src="courier-logo.png" alt="Delhivery" width="30">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0">Delhivery Surface 20kg</h6>
-                                                <small>Surface | Min-weight: 20 Kg | RTO Charges: ₹721.76</small>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <div class="rating-circle me-3">4.6</div>
-                                            <div class="me-3 text-center">
-                                                <p class="mb-0">Today</p>
-                                                <small>Expected Pickup</small>
-                                            </div>
-                                            <div class="me-3 text-center">
-                                                <p class="mb-0">Oct 29, 2024</p>
-                                                <small>Estimated Delivery</small>
-                                            </div>
-                                            <div class="me-3 text-center">
-                                                <p class="mb-0">26 Kg</p>
-                                                <small>Chargeable Weight</small>
-                                            </div>
-                                            <div class="me-3 text-center">
-                                                <p class="mb-0">₹977.16</p>
-                                                <small>Charges</small>
-                                            </div>
-                                            <button class="btn btn-primary">Ship Now</button>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="curiers">
 
-                                <!-- Second Option -->
-                                <div class="highlight mb-3">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div class="d-flex align-items-center">
-                                            <div class="icon-circle me-3">
-                                                <img src="courier-logo.png" alt="Xpressbees" width="30">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0">Xpressbees Surface 10kg</h6>
-                                                <small>Surface | Min-weight: 10 Kg | RTO Charges: ₹449.80</small>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <div class="rating-circle me-3">3.9</div>
-                                            <div class="me-3 text-center">
-                                                <p class="mb-0">Today</p>
-                                                <small>Expected Pickup</small>
-                                            </div>
-                                            <div class="me-3 text-center">
-                                                <p class="mb-0">Oct 28, 2024</p>
-                                                <small>Estimated Delivery</small>
-                                            </div>
-                                            <div class="me-3 text-center">
-                                                <p class="mb-0">26 Kg</p>
-                                                <small>Chargeable Weight</small>
-                                            </div>
-                                            <div class="me-3 text-center">
-                                                <p class="mb-0">₹751.24</p>
-                                                <small>Charges</small>
-                                            </div>
-                                            <button class="btn btn-primary">Ship Now</button>
-                                        </div>
-                                    </div>
                                 </div>
-
+                               
                             </div>
                         </div>
                     </div>
@@ -334,10 +294,12 @@
 @section('script')
     <script>
         var callurl = "{{ route('admin.destroy-usertypes') }}";
-        var view = "{{ route('admin.view-usertypes') }}";
+        var view = "{{ route('admin.view-usertypes') }}";        
+        var modelURL = "{{ route('app.get-international-order') }}";
         $(function() {
             $('[data-toggle="popover"]').popover();
         });
     </script>
+      <script src="{{asset('customer-assets/js/international_orders.js')}}"></script>
     <script src="{{ asset('admin-assets/admin_custome_js/comancustomjs.js') }}"></script>
 @endsection

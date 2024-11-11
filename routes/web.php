@@ -71,7 +71,9 @@ Route::group(['middleware' => 'customer'], function () {
     Route::post('app/pickup-address-store',[DomesticsOrders::class,'pickup_address_store'])->name('app.pickup-address-store');
     Route::post('app/store-orders',[DomesticsOrders::class,'store_orders'])->name('app.store-orders');
     // international orders
+    Route::get('app/view-international-orders', [InternationalOrders::class, 'index'])->name('app.view-international-orders');
     Route::get('app/international-order',[InternationalOrders::class,'add_orders'])->name('app.international-order');
+    Route::post('app/get-international-order',[InternationalOrders::class,'getModel'])->name('app.get-international-order');
     Route::post('app/store-international',[InternationalOrders::class,'store_orders'])->name('app.store-international');
 });
 

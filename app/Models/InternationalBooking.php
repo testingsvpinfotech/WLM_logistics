@@ -32,7 +32,8 @@ class InternationalBooking extends Model
         $query = DB::table('tbl_international_booking as b')
             ->join('tbl_international_product as p', 'p.booking_id', '=', 'b.id')
             ->select('b.*')
-            ->where('b.mfd', '=', 0);
+            ->where('b.mfd', '=', 0)
+            ->orderBy('b.id', 'desc');
     
         // You might want to use the page directly for pagination
         $result = $query->paginate($limit, ['*'], 'page', $page);
