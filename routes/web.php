@@ -154,7 +154,10 @@ Route::group(['middleware' => 'admin'], function () {
     Route::put('admin/delete-zone',[ReginalZone::class,'destroyzone'])->name('admin.delete-zone');
 
     //  Domestic Rate Master
+    Route::get('admin/view-domestic-rate',[AdminDomesticRate::class,'index'])->name('admin.view-domestic-rate');
+    Route::get('admin/view-domestic-details-rate/{id}',[AdminDomesticRate::class,'view_details_rate'])->name('admin.view-domestic-details-rate');
     Route::get('admin/add-rate',[AdminDomesticRate::class,'add_rate'])->name('admin.add-rate');
+    Route::post('admin/store-rate',[AdminDomesticRate::class,'store_rate'])->name('admin.stor-rate');
 
     // International 
     // Rate Group

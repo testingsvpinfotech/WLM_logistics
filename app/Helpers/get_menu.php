@@ -48,4 +48,17 @@ if(!function_exists('ordersMenus'))
         ];
     }
 }
+if(!function_exists('rateType'))
+{
+    function rateType()
+    {
+       return   $data = [
+                    '0'=>'Fixed',
+                    '1'=>'Addtion 250GM',
+                    '2'=> 'Addtion 500GM',
+                    '3'=> 'Addtion 1000GM',
+                    '4'=> 'Per Kg'
+        ];
+    }
+}
 ?>
