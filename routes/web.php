@@ -67,13 +67,13 @@ Route::group(['middleware' => 'customer'], function () {
     Route::get('app/view-orders',[DomesticsOrders::class,'index'])->name('app.view-orders');
     Route::get('app/add-orders',[DomesticsOrders::class,'add_orders'])->name('app.add-orders');
     Route::post('app/get-pincode',[DomesticsOrders::class,'get_pincode'])->name('app.get-pincode');
+    Route::post('app/get-domestic-order',[DomesticsOrders::class,'getModel'])->name('app.get-domestic-order');
     Route::post('app/pickup-address-store',[DomesticsOrders::class,'pickup_address_store'])->name('app.pickup-address-store');
     Route::post('app/store-orders',[DomesticsOrders::class,'store_orders'])->name('app.store-orders');
     // international orders
     Route::get('app/international-order',[InternationalOrders::class,'add_orders'])->name('app.international-order');
     Route::post('app/store-international',[InternationalOrders::class,'store_orders'])->name('app.store-international');
 });
-
 
 
 Route::group(['middleware' => 'web'], function () {

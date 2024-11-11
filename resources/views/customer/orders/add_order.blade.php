@@ -421,8 +421,9 @@
                                             <input type="date" class="form-control" name="orderDate" id="orderDate"
                                                 value="{{ date('Y-m-d') }}">
                                             <p style="color:red;"></p>
+                                            <input type="hidden" name="order_channel" value ="Custom">
                                         </div>
-                                        <div class="form-group mb-0 col-md-4">
+                                        <div class="form-group mb-0 col-md-4" style="display:none;'">
                                             <label for="orderDate">Order Channel</label>
                                             <select name="order_channel" class="form-control" id="order_channel">
                                                 <option value="Custom">CUSTOM</option>
@@ -667,37 +668,37 @@
                                     </div>
                                     <label for="">Volumetric Weight</label>
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" placeholder="0.00"
                                                     aria-label="Email" aria-describedby="basic-email" id="length" name="length">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text bg-transparent border-left-0"
-                                                        id="basic-email">CM</span>
+                                                        id="basic-email">CM (L)</span>
                                                 </div>
                                                 <p style="color: red;"></p>
                                             </div>
                                         </div>
                                         <div class="col-md-1"></div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" placeholder="0.00"
                                                     aria-label="Email" aria-describedby="basic-email" id="breath" name="breath">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text bg-transparent border-left-0"
-                                                        id="basic-email">CM</span>
+                                                        id="basic-email">CM (B)</span>
                                                 </div>
                                                 <p style="color: red;"></p>
                                             </div>
                                         </div>
                                         <div class="col-md-1"></div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" placeholder="0.00"
                                                     aria-label="Email" aria-describedby="basic-email" id="height" name="height">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text bg-transparent border-left-0"
-                                                        id="basic-email">CM</span>
+                                                        id="basic-email">CM (H)</span>
                                                 </div>
                                                 <p style="color: red;"></p>
                                             </div>

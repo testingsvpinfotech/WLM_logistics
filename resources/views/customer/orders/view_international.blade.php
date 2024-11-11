@@ -41,74 +41,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (isset($orders))
                                             @php
                                                 $count = 1;
                                             @endphp
-                                            @foreach ($orders as $key => $val)
-                                                <tr>
-                                                    <td>
-                                                        <a href="#" class="order-link">{{ $val->order_id }}</a><br>
-                                                        <span
-                                                            class="order-time">{{ date('d M Y | h:i A', strtotime($val->orderDate)) }}</span><br>
-                                                        <!-- <span class="order-cart-icon"><i class="icon-cart"></i>
-                                                            {{ $val->order_channel }}</span><br> -->
-                                                        <a tabindex="0" class="btn btn-link" role="button"
-                                                            data-toggle="popover" data-trigger="focus"
-                                                            title="Package Details" data-html="true"
-                                                            data-content="<div>
-                                                                <b>Package 1</b><br>
-                                                                {{ $val->length . 'X' . $val->breath . 'X' . $val->height }} (cm)<br><br>
-                                                                <b>Dead wt.:</b> {{ $val->dead_weight }} Kg<br>
-                                                                <b>Vol. wt.:</b> {{ $val->voluematrix_weight }} Kg
-                                                            </div>">Package
-                                                            Details
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        <strong>{{ $val->buy_full_name }}</strong><br>
-                                                        {{ $val->buy_email }}<br>
-                                                        {{ $val->buy_mobile }}
-                                                    </td>
-                                                    <td>
-                                                        <span class="order-amount">₹ {{ $val->order_total }}</span><br>
-                                                        <span class="payment-label">{{ ucfirst($val->paymentMode) }}</span>
-                                                    </td>
-                                                    <td>
-                                                        @if ($val->pickup_address == 'primary')
-                                                            <a href="#" class="text-decoration-none">
-                                                                Primary
-                                                            </a>
-                                                        @else
-                                                        @php
-                                                           $addres = DB::table('tbl_pickup_address')->where(['id'=>$val->pickup_address])->first();
-                                                        @endphp 
-                                                             {{ $addres->contact_person}} <br>
-                                                             {{ $addres->contact_no}} <br>
-                                                             {{ $addres->address.','.$addres->landmark.' '.$addres->pincode}}
-                                                        @endif
-                                                       
-                                                    </td>
-
-
-                                                    <td>
-                                                        <strong>AWB #</strong><br>
-                                                        Not Assigned
-                                                    </td>
-                                                    <td>
-                                                        <span class="status-label">NEW</span>
-                                                    </td>
-                                                    <td>
-                                                        {{-- <button class="btn btn-action">Ship Now</button> --}}
-                                                        <button type="button" class="btn btn-action" onclick="return domesticModel('{{$val->id}}');">
-                                                        Ship Now
-                                                    </button>
-                                                       
-                                                        <button class="btn btn-outline-secondary"><i
-                                                                class="fas fa-ellipsis-h"></i></button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                           
                                             @foreach ($interorders as $key => $val)
                                                 <tr>
                                                     <td>
@@ -159,7 +95,6 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                        @endif
                                     </tbody>
                                 </table>
                                 <div class="pagination-wrapper">
@@ -254,8 +189,28 @@
                     <div class="container-fluid">
                         <div class="row">
                             <!-- Sidebar for Order and Buyer Insights -->
-                            <div class="col-md-3 sidebar" id="orders-display">
-                               
+                            <div class="col-md-3 sidebar">
+                                <h5>Order Details</h5>
+                                <p><strong>Pickup From:</strong> 400070, Maharashtra</p>
+                                <p><strong>Deliver To:</strong> 400078, Maharashtra</p>
+                                <p><strong>Order Value:</strong> ₹5000.00</p>
+                                <p><strong>Payment Mode:</strong> COD</p>
+                                <p><strong>Applicable Weight (in Kg):</strong> 26 Kg</p>
+
+                                <h6>Buyer Insights</h6>
+                                <p><strong>Last Successful Delivery To Buyer:</strong></p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon">
+                                        <img src="icon-store.png" alt="Store" width="20">
+                                    </div>
+                                    <p class="mb-0">No orders yet</p>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="icon">
+                                        <img src="icon-shiprocket.png" alt="Shiprocket" width="20">
+                                    </div>
+                                    <p class="mb-0">No orders yet</p>
+                                </div>
                             </div>
 
                             <!-- Main Content -->
@@ -280,12 +235,88 @@
                                     <li class="nav-item">
                                         <a class="nav-link" href="#">Surface</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Local</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Self-Fulfilled</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Non-Serviceable</a>
+                                    </li>
                                 </ul>
 
-                                <div class="curiers">
-
+                                <!-- Courier Option -->
+                                <div class="highlight mb-3">
+                                    <span class="preferred-badge">Seller's Preferred Choice</span>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <div class="icon-circle me-3">
+                                                <img src="courier-logo.png" alt="Delhivery" width="30">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Delhivery Surface 20kg</h6>
+                                                <small>Surface | Min-weight: 20 Kg | RTO Charges: ₹721.76</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rating-circle me-3">4.6</div>
+                                            <div class="me-3 text-center">
+                                                <p class="mb-0">Today</p>
+                                                <small>Expected Pickup</small>
+                                            </div>
+                                            <div class="me-3 text-center">
+                                                <p class="mb-0">Oct 29, 2024</p>
+                                                <small>Estimated Delivery</small>
+                                            </div>
+                                            <div class="me-3 text-center">
+                                                <p class="mb-0">26 Kg</p>
+                                                <small>Chargeable Weight</small>
+                                            </div>
+                                            <div class="me-3 text-center">
+                                                <p class="mb-0">₹977.16</p>
+                                                <small>Charges</small>
+                                            </div>
+                                            <button class="btn btn-primary">Ship Now</button>
+                                        </div>
+                                    </div>
                                 </div>
-                               
+
+                                <!-- Second Option -->
+                                <div class="highlight mb-3">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <div class="icon-circle me-3">
+                                                <img src="courier-logo.png" alt="Xpressbees" width="30">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Xpressbees Surface 10kg</h6>
+                                                <small>Surface | Min-weight: 10 Kg | RTO Charges: ₹449.80</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rating-circle me-3">3.9</div>
+                                            <div class="me-3 text-center">
+                                                <p class="mb-0">Today</p>
+                                                <small>Expected Pickup</small>
+                                            </div>
+                                            <div class="me-3 text-center">
+                                                <p class="mb-0">Oct 28, 2024</p>
+                                                <small>Estimated Delivery</small>
+                                            </div>
+                                            <div class="me-3 text-center">
+                                                <p class="mb-0">26 Kg</p>
+                                                <small>Chargeable Weight</small>
+                                            </div>
+                                            <div class="me-3 text-center">
+                                                <p class="mb-0">₹751.24</p>
+                                                <small>Charges</small>
+                                            </div>
+                                            <button class="btn btn-primary">Ship Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -304,11 +335,9 @@
     <script>
         var callurl = "{{ route('admin.destroy-usertypes') }}";
         var view = "{{ route('admin.view-usertypes') }}";
-        var modelURL = "{{ route('app.get-domestic-order') }}";
         $(function() {
             $('[data-toggle="popover"]').popover();
         });
     </script>
-    <script src="{{asset('customer-assets/js/domestic_orders.js')}}"></script>
     <script src="{{ asset('admin-assets/admin_custome_js/comancustomjs.js') }}"></script>
 @endsection

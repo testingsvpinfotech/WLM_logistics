@@ -21,6 +21,12 @@ use App\Models\DomesticOrdersProducts;
 use App\Models\InternationalBooking;
 class DomesticsOrders extends Controller
 {
+    protected $pincode;
+
+   function __construct()
+   {
+      $this->pincode = new PincodeMaster;
+   }
     public function index()
     {
         $currentPage = request()->input('page', 1);
@@ -288,5 +294,44 @@ class DomesticsOrders extends Controller
         }
 
 
+    }
+    
+
+    public function getModel(Request $request)
+    {
+        $id = $request->id;
+        $data['booking_data'] = DB::table('tbl_domestic_booking')->where(['id'=>$id])->first();
+        $data['courier_company'] = DB::table('tbl_courier_company')->where(['status'=>0,'mfd'=>0])->get();
+        if(!empty($data['booking_data'])){
+        // from address
+        if($data['booking_data']->pickup_address== 'primary')
+        {
+            $customer = DB::table('tbl_customers')->where(['id'=>session('customer.id')])->first();
+            $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
+            $frompin =  $this->pincode->pincodedata($pincodewhere);
+            $data['from_address'] = $customer->address_line1.','.$customer->address_line2.','.$frompin->city.','.$frompin->state.' '.$frompin->pincode;
+        }else{
+            $customer = DB::table('tbl_pickup_address')->where(['id'=>$data['booking_id']->pickup_address])->first();
+            $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
+            $frompin =  $this->pincode->pincodedata($pincodewhere);
+            $data['from_address'] = $customer->address.','.$customer->landmark.','.$frompin->city.','.$frompin->state.' '.$frompin->pincode;
+        }
+        // To Address
+         if($data['booking_data']->billing_status == "on")
+         {
+            $pincodewhere = ['tbl_pincode.pincode' => $data['booking_data']->buy_delivery_pincode];
+            $frompin =  $this->pincode->pincodedata($pincodewhere);
+            $data['to_address'] = $data['booking_data']->buy_delivery_address.','.$data['booking_data']->buy_delivery_landmark.','.$frompin->city.','.$frompin->state.' '.$frompin->pincode;
+         }else{
+            $pincodewhere = ['tbl_pincode.pincode' => $data['booking_data']->buy_delivery_pincode];
+            $frompin =  $this->pincode->pincodedata($pincodewhere);
+            $data['to_address'] = $data['booking_data']->buy_delivery_billing_address.','.$data['booking_data']->buy_delivery_billing_landmark.','.$frompin->city.','.$frompin->state.' '.$frompin->pincode;
+         }
+         $responce = [
+            'status' => 'success',
+            'data'=> $data
+         ];
+         echo json_encode($responce);
+        }
     }
 }
