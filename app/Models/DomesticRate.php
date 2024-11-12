@@ -40,4 +40,39 @@ class DomesticRate extends Model
         ->get();
     
     }
+
+    public function RateCalulate($mode,$courier,$group_id,$fromZone,$toZone,$applicableWeight,$booking_date)
+    {
+
+        return DB::table('tbl_domestic_rate')
+        ->where(['group_id'=>$group_id,'mode_id'=>$mode,'from_zone'=>$fromZone,'to_zone'=>$toZone,'courier'=>$courier,'mfd'=>0])
+        ->where('applicable_from', '<=', $booking_date)    
+        ->where('applicable_to', '>=', $booking_date)     
+        ->where('from_weight', '<=', $applicableWeight)  
+        ->where('to_weight', '>=', $applicableWeight)
+        ->orderBy('tbl_domestic_rate.id', 'desc')  
+        ->first();
+    }
+    public function CustomerRate($group_id,$fromZone,$toZone,$applicableWeight,$booking_date)
+    {
+
+        return DB::table('tbl_domestic_rate')
+        ->where(['group_id'=>$group_id,'from_zone'=>$fromZone,'to_zone'=>$toZone,'mfd'=>0])
+        ->where('applicable_from', '<=', $booking_date)    
+        ->where('applicable_to', '>=', $booking_date)     
+        // ->where('from_weight', '<=', $applicableWeight)  
+        // ->where('to_weight', '>=', $applicableWeight)
+        // ->groupBy('mode_id')
+        ->orderBy('id', 'desc')  
+        ->get();
+    }
+    public function RateCalulateFixed($courier,$group_id,$fromZone,$toZone,$applicableWeight,$booking_date)
+    {
+        return DB::table('tbl_domestic_rate')
+        ->where(['group_id'=>$group_id,'from_zone'=>$fromZone,'to_zone'=>$toZone,'courier'=>$courier,'mfd'=>0])
+        ->where('applicable_from', '<=', $booking_date)    
+        ->where('applicable_to', '>=', $booking_date)     
+        ->orderBy('tbl_domestic_rate.id', 'asc')  
+        ->first();
+    }
 }

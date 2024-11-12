@@ -17,15 +17,18 @@ use App\Models\CityMaster;
 use App\Models\StateMaster;
 use App\Models\PickupAddress;
 use App\Models\DomesticBooking;
+use App\Models\DomesticRate;
 use App\Models\DomesticOrdersProducts;
 use App\Models\InternationalBooking;
 class DomesticsOrders extends Controller
 {
     protected $pincode;
+    protected $rate;
 
    function __construct()
    {
       $this->pincode = new PincodeMaster;
+      $this->rate = new DomesticRate;
    }
     public function index()
     {
@@ -295,13 +298,51 @@ class DomesticsOrders extends Controller
 
 
     }
-    
 
+    // Rate Calculation function 
+    public function RateCalculate($mode,$courier,$fuel_id,$group_id,$fromPincode,$toPincode,$applicableWeight,$booking_date)
+    {
+        $from_z = $this->pincode->pincodeZone($fromPincode->pincode);
+        $to_z = $this->pincode->pincodeZone($toPincode->pincode);
+        $fromZone = !empty($from_z)?$from_z->id : 0;
+        $toZone =  !empty($to_z)?$to_z->id : 0;
+        $rate = $this->rate->RateCalulate($mode,$courier,$group_id,$fromZone,$toZone,$applicableWeight,$booking_date);
+        $fuelCh = DB::table('tbl_fuel_master')->where('group_id',$fuel_id)->first();
+        if(!empty($rate) && !empty($fuelCh))
+        {
+            $fuelPrice =  $rate->rate / 100 * $fuelCh->fuel_price;
+            $fovPrice =  $rate->rate / 100 * $fuelCh->fov;
+            if($rate->fixed_perkg == 4)
+            {
+                $fixedRate = $this->rate->RateCalulateFixed($courier,$group_id,$fromZone,$toZone,$applicableWeight,$booking_date);
+                $weight = $applicableWeight - $fixedRate->to_weight; 
+                $rateAmount = $fixedRate->rate;
+                $Calculatedrate = $weight * $rate->rate;
+                $calculatedFright =  $rateAmount + $Calculatedrate + $fuelCh->docket_charges + $fuelPrice +  $fovPrice;       
+                if($rate->minimum_rate >= $calculatedFright)
+                {
+                   $fright = $rate->minimum_rate;
+                }else{
+                    $fright = $calculatedFright;
+                }
+            }else{
+                $calculatedFright =  $rate->rate + $fuelCh->docket_charges + $fuelPrice +  $fovPrice;       
+                if($rate->minimum_rate >= $calculatedFright)
+                {
+                   $fright = $rate->minimum_rate;
+                }else{
+                    $fright = $calculatedFright;
+                }
+            }
+        }
+        return $data = [$fright,$rate->tat,$rate->mode_id];
+    }
+    
+    // Model to get booking list 
     public function getModel(Request $request)
     {
         $id = $request->id;
         $data['booking_data'] = DB::table('tbl_domestic_booking')->where(['id'=>$id])->first();
-        $data['courier_company'] = DB::table('tbl_courier_company')->where(['status'=>0,'mfd'=>0])->get();
         if(!empty($data['booking_data'])){
         // from address
         if($data['booking_data']->pickup_address== 'primary')
@@ -311,7 +352,7 @@ class DomesticsOrders extends Controller
             $frompin =  $this->pincode->pincodedata($pincodewhere);
             $data['from_address'] = $customer->address_line1.','.$customer->address_line2.','.$frompin->city.','.$frompin->state.' '.$frompin->pincode;
         }else{
-            $customer = DB::table('tbl_pickup_address')->where(['id'=>$data['booking_id']->pickup_address])->first();
+            $customer = DB::table('tbl_pickup_address')->where(['id'=>$data['booking_data']->pickup_address])->first();
             $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
             $frompin =  $this->pincode->pincodedata($pincodewhere);
             $data['from_address'] = $customer->address.','.$customer->landmark.','.$frompin->city.','.$frompin->state.' '.$frompin->pincode;
@@ -320,13 +361,51 @@ class DomesticsOrders extends Controller
          if($data['booking_data']->billing_status == "on")
          {
             $pincodewhere = ['tbl_pincode.pincode' => $data['booking_data']->buy_delivery_pincode];
-            $frompin =  $this->pincode->pincodedata($pincodewhere);
+            $topin =  $this->pincode->pincodedata($pincodewhere);
             $data['to_address'] = $data['booking_data']->buy_delivery_address.','.$data['booking_data']->buy_delivery_landmark.','.$frompin->city.','.$frompin->state.' '.$frompin->pincode;
          }else{
             $pincodewhere = ['tbl_pincode.pincode' => $data['booking_data']->buy_delivery_pincode];
-            $frompin =  $this->pincode->pincodedata($pincodewhere);
+            $topin =  $this->pincode->pincodedata($pincodewhere);
             $data['to_address'] = $data['booking_data']->buy_delivery_billing_address.','.$data['booking_data']->buy_delivery_billing_landmark.','.$frompin->city.','.$frompin->state.' '.$frompin->pincode;
          }
+         $rate_id = DB::table('tbl_customers')->where(['id'=>session('customer.id')])->first();
+         $courier_company = DB::table('tbl_courier_company')->where(['status'=>0,'mfd'=>0])->get();
+         $delDate = date('Y-m-d',strtotime($data['booking_data']->orderDate));
+         $data['courier_company'] = [];
+         $from_z = $this->pincode->pincodeZone($frompin->pincode);
+         $to_z = $this->pincode->pincodeZone($topin->pincode);
+         $fromZone = !empty($from_z)?$from_z->id : 0;
+         $toZone =  !empty($to_z)?$to_z->id : 0;
+        $modewiseRate = $this->rate->CustomerRate($rate_id->fuel_group_id,$fromZone,$toZone,$data['booking_data']->applicable_weight,date('Y-m-d',strtotime($data['booking_data']->orderDate)));
+        // dd($modewiseRate);
+        foreach($modewiseRate as $key=>$val)
+        {
+            $rate = $this->RateCalculate($val->mode_id,$val->courier,$rate_id->fuel_group_id,$rate_id->rate_group_id,$frompin, $topin, $data['booking_data']->applicable_weight, $data['booking_data']->orderDate);
+            $daysToAdd = $rate[1];
+            $mode = DB::table('tbl_transfer_mode')->where(['id'=>$val->mode_id])->first();
+            $courier = DB::table('tbl_courier_company')->where(['id'=>$val->courier,'mfd'=>0,'status'=>0])->first();
+            if(!empty($rate)){
+                $exists = false;
+                foreach ($data['courier_company'] as $existing) {
+                    if ($existing['mode_id'] == $mode->id && $existing['company_id'] == $val->courier) {
+                        $exists = true;
+                        break;
+                    }
+                }
+                // Only add if not already exists
+                if (!$exists) {
+                    $data['courier_company'][] = [
+                        'company_name' => $courier->company_name,
+                        'amount' => $rate[0],
+                        'company_id' => $val->courier,
+                        'mode' => $mode->mode_name,
+                        'mode_id' => $mode->id,
+                        'deliverydate' => date('M d Y', strtotime("$delDate + $daysToAdd days")),
+                        'pickupdate' => date('M d Y', strtotime($delDate))
+                    ];
+                }
+            }
+        }
          $responce = [
             'status' => 'success',
             'data'=> $data
