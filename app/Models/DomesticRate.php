@@ -60,9 +60,6 @@ class DomesticRate extends Model
         ->where(['group_id'=>$group_id,'from_zone'=>$fromZone,'to_zone'=>$toZone,'mfd'=>0])
         ->where('applicable_from', '<=', $booking_date)    
         ->where('applicable_to', '>=', $booking_date)     
-        // ->where('from_weight', '<=', $applicableWeight)  
-        // ->where('to_weight', '>=', $applicableWeight)
-        // ->groupBy('mode_id')
         ->orderBy('id', 'desc')  
         ->get();
     }

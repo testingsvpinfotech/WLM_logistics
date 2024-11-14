@@ -51,7 +51,7 @@
 
 <!-- START: Body-->
 
-<body id="main-container" class="default">
+<body id="main-container" style="font-family: Arial, Helvetica, sans-serif !important;" class="default">
 
     <!-- START: Pre Loader-->
     {{-- <div class="se-pre-con">

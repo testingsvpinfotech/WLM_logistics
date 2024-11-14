@@ -296,6 +296,7 @@
         var callurl = "{{ route('admin.destroy-usertypes') }}";
         var view = "{{ route('admin.view-usertypes') }}";
         var modelURL = "{{ route('app.get-domestic-order') }}";
+        var bookingURL = "{{ route('app.api-booking') }}";
         $(function() {
             $('[data-toggle="popover"]').popover();
         });

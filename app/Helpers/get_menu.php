@@ -61,4 +61,83 @@ if(!function_exists('rateType'))
         ];
     }
 }
+
+if(!function_exists('delhiveryAuth'))
+{
+     function delhiveryAuth()
+     {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://btob.api.delhivery.com/ums/login',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => '{
+                                    "username": "ERCARGODCB2BR",
+                                    "password": "Deepak@2024"
+                                    }',
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+            ),
+            CURLOPT_SSL_VERIFYPEER => false,  // Disable SSL verification
+            CURLOPT_SSL_VERIFYHOST => false,  // Disable SSL hostname verification
+        ));
+        $response_kk = curl_exec($curl);
+        curl_close($curl);
+       return $jwt = json_decode($response_kk);
+     }
+}
+
+if(!function_exists('Bookingdelhivery'))
+{
+    function Bookingdelhivery($data , $key)
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://btob.api.delhivery.com/v3/manifest',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer ' . json_encode($key),
+            ),
+          
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $response1 = json_decode($response);
+        sleep(10);
+        if ($response1->job_id) {
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://btob.api.delhivery.com/v3/manifest?job_id=' . $response1->job_id,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . $key,
+                ),
+             
+            ));
+            $response_job_id = curl_exec($curl);
+            curl_close($curl);
+            $response11 = json_decode($response_job_id);
+          return  $forwording_no = $response11->status->value->lrnum;
+        }
+    }
+}
+ 
 ?>
