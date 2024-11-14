@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('tbl_customers', function (Blueprint $table) {
-            $table->integer('rate_group_id')->after('gstno');
-            $table->integer('fuel_group_id')->after('gstno');
+            $table->integer('rate_group_id')->nullable()->after('gstno');
+            $table->integer('fuel_group_id')->nullable()->after('gstno');
         });
     }
 

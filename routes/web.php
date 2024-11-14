@@ -57,6 +57,7 @@ Route::group(['middleware' => 'customer'], function () {
     Route::get('/address-details', [CustomerRegistrationLogin::class, 'address_details'])->name('address-details');
     Route::get('/getpincode', [CustomerRegistrationLogin::class, 'getpincode'])->name('getpincode');
     Route::post('/addressupdate', [CustomerRegistrationLogin::class, 'addressupdate'])->name('addressupdate');
+    Route::post('/resend-otp', [CustomerRegistrationLogin::class, 'resendOTP'])->name('resend-otp');
     // login
     Route::get('/sign-in', [CustomerRegistrationLogin::class, 'customer_login'])->name('sign-in');
     // dashboard

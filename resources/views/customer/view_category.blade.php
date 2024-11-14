@@ -80,7 +80,7 @@
 
 <!-- START: Body-->
 
-<body id="main-container" class="default">
+<body id="main-container" style="font-family: Arial, Helvetica, sans-serif !important;" class="default">
     <div class="container">
 
         @foreach (business_category() as $key => $val)

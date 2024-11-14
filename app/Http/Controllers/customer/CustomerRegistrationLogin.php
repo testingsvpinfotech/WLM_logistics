@@ -60,12 +60,16 @@ class CustomerRegistrationLogin extends Controller
                 Session::put('customer', $sessionData);
 
                 $otpCode = rand(100000, 999999);
-                OTP::create([
-                    'customer_id' => $lastInsertedId,
-                    'otp' => $otpCode,
-                    'expires_at' => Carbon::now()->addMinutes(10),
-                    'created_at' => now(),
-                ]);
+                $otpStatus = SendOtp($request->mobile_number,$otpCode);
+                if($otpStatus == 'true'){
+                    OTP::create([
+                        'customer_id' => $lastInsertedId,
+                        'otp' => $otpCode,
+                        'expires_at' => Carbon::now()->addMinutes(2),
+                        'created_at' => now(),
+                    ]);
+                }
+              
 
                 if ($customer) {
                     DB::commit();
@@ -88,6 +92,26 @@ class CustomerRegistrationLogin extends Controller
             return response()->json([
                 'status' => 'fail',
                 'errors' => $validation->errors(),
+            ]);
+        }
+    }
+
+    public function resendOTP(Request $request)
+    {
+        $mobile_number = session('customer.mobile_number');
+        $customerId = session('customer.id');
+        $otpCode = rand(100000, 999999);
+        $otpStatus = SendOtp($mobile_number,$otpCode);
+        if($otpStatus == 'true'){
+            OTP::create([
+                'customer_id' => $customerId,
+                'otp' => $otpCode,
+                'expires_at' => Carbon::now()->addMinutes(2),
+                'created_at' => now(),
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'OTP Send successfully',
             ]);
         }
     }

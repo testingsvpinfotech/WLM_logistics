@@ -28,7 +28,7 @@
     <!-- END Head-->
 
     <!-- START: Body-->
-    <body id="main-container" class="default">
+    <body id="main-container" style="font-family: Arial, Helvetica, sans-serif !important;" class="default">
         <!-- START: Main Content-->
         <div class="container">
             <div class="row vh-100 justify-content-between align-items-center">

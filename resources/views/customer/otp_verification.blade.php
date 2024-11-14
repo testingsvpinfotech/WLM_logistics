@@ -98,25 +98,25 @@
                 <form action="" method="put" id="otpsubmission">
                 <div class="card mt-5 p-4">
                     <h3 class="text-center">OTP Verification</h3>
-                    <p class="text-center">OTP sent to +91-{{$editData->mobile_number}} OTP IS : {{$otpCode->otp}}</p>
-
+                    <p style="color: red;" class="text-center" id="errormsg"></p>
                     <!-- OTP Input -->
                     <input type="hidden" name="id" id="id" value="{{$editData->id}}">
+                    <input type="hidden"  id="mobile_number" value="{{$editData->mobile_number}}">
+                    <input type="hidden"  id="customer_id" value="{{$otpCode->customer_id}}">
                     <div class="otp-box">
-                        <input type="text" maxlength="1" class="otp-input" id="otp-1">
-                        <input type="text" maxlength="1" class="otp-input" id="otp-2">
-                        <input type="text" maxlength="1" class="otp-input" id="otp-3">
-                        <input type="text" maxlength="1" class="otp-input" id="otp-4">
-                        <input type="text" maxlength="1" class="otp-input" id="otp-5">
-                        <input type="text" maxlength="1" class="otp-input" id="otp-6">
+                        <input type="text" maxlength="1" minlength="1" class="otp-input" id="otp-1">
+                        <input type="text" maxlength="1" minlength="1" class="otp-input" id="otp-2">
+                        <input type="text" maxlength="1" minlength="1" class="otp-input" id="otp-3">
+                        <input type="text" maxlength="1" minlength="1" class="otp-input" id="otp-4">
+                        <input type="text" maxlength="1" minlength="1" class="otp-input" id="otp-5">
+                        <input type="text" maxlength="1" minlength="1" class="otp-input" id="otp-6">
                     </div>
-                    <p style="color: red" id="errormsg"></p>
                     <!-- Timer and Resend -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <a href="#" class="change-number">Resend</a>
+                        <button type="button" class="change-number btn btn-btn-link" id="ResndOTP" disabled >Resend</button>
                         <div class="timer">
                             <i class="far fa-clock"></i>
-                            <span id="countdown">10:00</span>
+                            <span id="countdown">2:00</span>
                         </div>
                     </div>
 
@@ -191,6 +191,20 @@
         });
         var callurl = "{{ route('verify-otp') }}";
         var view = "{{ route('checkout-category') }}";
+        var ResndOTPurl = "{{ route('resend-otp')}}";
+        $(document).ready(function() {
+            $('.otp-input').on('input', function() {
+                if ($(this).val().length === 1) {
+                    $(this).next('.otp-input').focus();
+                }
+            });
+
+            $('.otp-input').on('keydown', function(e) {
+                if (e.key === "Backspace" && $(this).val().length === 0) {
+                    $(this).prev('.otp-input').focus();
+                }
+            });
+        });
     </script>
     <!-- END: Page JS-->
     <script src="{{ asset('customer-assets/js/register.js') }}"></script>

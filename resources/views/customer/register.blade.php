@@ -47,7 +47,7 @@
 
 <!-- START: Body-->
 
-<body id="main-container" class="default">
+<body id="main-container" style="font-family: Arial, Helvetica, sans-serif !important;" class="default">
     <div class="container">
         <div class="row vh-100 justify-content-between ">
             <div class="col-12">
