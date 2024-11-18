@@ -459,47 +459,47 @@ class DomesticsOrders extends Controller
                 $pincodewhere = ['tbl_pincode.pincode' => $booking_data->buy_delivery_pincode];
                 $topin = $this->pincode->pincodedata($pincodewhere);
 
-                // booking data in formated
-                $BookingData = '{
-                    "pickup_location": "ERCARGODCB2BR",
-                    "return_address":{
-                        "name":"' . $sender_name . '",
-                        "phone":"' . $mobile_no . '",
-                        "address":"' . $sender_address . '",
-                        "zip":"' . $frompin->pincode . '",
-                        "city":"' . $frompin->city . '",
-                        "region":"' . $frompin->state . '"
-                    },
-                    "dropoff_location":{
-                        "consignee":"' . $booking_data->buy_full_name . '",
-                        "phone":"' . $booking_data->buy_mobile . '",
-                        "address":"' . $booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark  . '",
-                        "zip":"' .  $topin->pincode . '",
-                        "city":"' .  $topin->city . '",
-                        "region":"' . $topin->state . '"
-                    },
-                    "d_mode": "' . strtoupper($booking_data->paymentMode) . '",
-                    "amount": ' . $booking_data->order_total . ',
-                     "rov_insurance": true,
-                    "weight": ' . $booking_data->applicable_weight . ',
-                    "invoices": [
-                        {
-                            "n_value": ' . $booking_data->order_total . ',
-                            "ident":"MSF20600004731" 
-                        }
+                $BookingData = [
+                   'pickup_location' => "ERCARGODCB2BR",
+                   'return_address' => [
+                       'name' => $sender_name,
+                       'phone' => $mobile_no,
+                       'address' => $sender_address,
+                       'zip' => $frompin->pincode,
+                       'city' => $frompin->city,
+                       'region' => $frompin->state
+                   ],
+                   'dropoff_location' => [
+                       'consignee' => $booking_data->buy_full_name,
+                       'phone' => $booking_data->buy_mobile,
+                       'address' =>  $booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark,
+                       'zip' => $topin->pincode,
+                       'city' =>  $topin->city,
+                       'region' => $topin->state
+                   ],
+                    'd_mode' => $booking_data->paymentMode,
+                    'amount' => 0,
+                    'rov_insurance' => true,
+                    'weight' => 15,
+                    'invoices' => [
+                        ['n_value'=> $booking_data->order_total,
+                          'ident' => "MSF20600004731" 
+                        ]
                     ],
-                    "suborders": ' . count($product) . ',
-                    "dimensions": [
-                        {
-                            "length": ' . $booking_data->length . ',
-                            "width": ' . $booking_data->breath . ',
-                            "height": ' . $booking_data->height . ',
-                            "count": ' . count($product) . '
-                        }
+                    'suborders' => count($product),
+                    'dimensions' => 
+                    [
+                        [
+                            "length" => $booking_data->length ,
+                            "width" => $booking_data->breath ,
+                            "height" => $booking_data->height,
+                            "count" => count($product)
+                        ]
                     ]
-                }';  
-                       
-                 $booking = Bookingdelhivery($BookingData,$jwtKey->jwt);
+
+                ];          
+                // dd(json_encode($BookingData));             
+                 $booking = Bookingdelhivery(json_encode($BookingData),$jwtKey->jwt);
                  if(!empty($booking)){
                     $post = DomesticBooking::find($booking_data->id);
                     $post->update(['forwording_no' =>  $booking,'courier'=>$courier]);
