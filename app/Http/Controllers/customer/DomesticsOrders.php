@@ -409,6 +409,7 @@ class DomesticsOrders extends Controller
                     // Only add if not already exists
                     if (!$exists) {
                         $data['courier_company'][] = [
+                            'img_logo' => asset('admin-assets/courier_company_logo/'.$courier->img_logo),
                             'company_name' => $courier->company_name,
                             'amount' => $rate[0],
                             'company_id' => $val->courier,
