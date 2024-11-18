@@ -96,6 +96,7 @@ if(!function_exists('Bookingdelhivery'))
 {
     function Bookingdelhivery($data , $key)
     {
+        // dd($key);
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://btob.api.delhivery.com/v3/manifest',
@@ -108,13 +109,21 @@ if(!function_exists('Bookingdelhivery'))
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => $data,
             CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer ' . json_encode($key),
+                'Authorization: Bearer ' . $key,
             ),
           
         ));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_VERBOSE, true);
         $response = curl_exec($curl);
         curl_close($curl);
+        if (curl_errno($curl)) {
+            // Display the cURL error
+            echo 'cURL Error: ' . curl_error($curl);
+        }
         $response1 = json_decode($response);
+        dd($response1);
         sleep(10);
         if ($response1->job_id) {
             $curl = curl_init();
@@ -132,11 +141,56 @@ if(!function_exists('Bookingdelhivery'))
                 ),
              
             ));
+             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_VERBOSE, true);
             $response_job_id = curl_exec($curl);
+            if (curl_errno($curl)) {
+                // Display the cURL error
+                echo 'cURL Error: ' . curl_error($curl);
+            }
+           
             curl_close($curl);
             $response11 = json_decode($response_job_id);
           return  $forwording_no = $response11->status->value->lrnum;
         }
+    }
+}
+
+// Wearhouse 
+
+if(!function_exists('Wearhouse_creation'))
+{
+    function Wearhouse_creation($data,$key)
+    {
+        $curl = curl_init();
+
+		curl_setopt_array($curl, array(
+		CURLOPT_URL => 'https://track.delhivery.com/api/backend/clientwarehouse/create/',
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_ENCODING => '',
+		CURLOPT_MAXREDIRS => 10,
+		CURLOPT_TIMEOUT => 0,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		CURLOPT_CUSTOMREQUEST => 'POST',
+		CURLOPT_POSTFIELDS =>json_encode($data),
+		CURLOPT_HTTPHEADER => array(
+			'Authorization: Bearer '.$key,
+            'Content-Type: application/json'
+		),
+		));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_VERBOSE, true);
+		$respooooonse = curl_exec($curl);
+        if (curl_errno($curl)) {
+            // Display the cURL error
+            echo 'cURL Error: ' . curl_error($curl);
+        }
+		curl_close($curl); 
+         
+		 return $respooooonse;
     }
 }
 

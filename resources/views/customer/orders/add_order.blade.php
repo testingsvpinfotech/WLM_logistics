@@ -311,9 +311,9 @@
                                     <div class="row pikup_status" style="display: none;">
                                         <h6><b>Add New Pick Up Address</b></h6>
                                         <div class="form-group mb-0 col-md-3">
-                                            <label for="fullName">Contact Person</label>
+                                            <label for="fullName">Warehouse Name</label>
                                             <input type="text" class="form-control" name="pickup_contact_person"
-                                                id="pickup_contact_person" placeholder="Contact Person">
+                                                id="pickup_contact_person" placeholder="Warehouse Name">
                                             <p style="color:red;"></p>
                                         </div>
                                         <div class="form-group mb-0 col-md-3">
@@ -393,6 +393,24 @@
                                             <label for="email">Country</label>
                                             <input type="text" class="form-control" id="pikup_country"
                                                 name="pickup_country" placeholder="Country">
+                                            <p style="color:red;"></p>
+                                        </div>
+                                        <div class="form-group mb-0 col-md-3">
+                                            <label for="email">Warehouse Registerd Name</label>
+                                            <input type="text" class="form-control" id="warehouse_r_name"
+                                                name="warehouse_r_name" placeholder="Warehouse Registerd Name">
+                                            <p style="color:red;"></p>
+                                        </div>
+                                        <div class="form-group mb-0 col-md-6">
+                                            <label for="email">Return Address</label>
+                                            <input type="text" class="form-control" id="return_address"
+                                                name="return_address" placeholder="Return Address">
+                                            <p style="color:red;"></p>
+                                        </div>
+                                        <div class="form-group mb-0 col-md-3">
+                                            <label for="email">Return Pincode</label>
+                                            <input type="text" class="form-control" id="return_pincode"
+                                                name="return_pincode" placeholder="Return Pincode">
                                             <p style="color:red;"></p>
                                         </div>
                                         <div class="form-group mb-0 col-md-12">

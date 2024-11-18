@@ -56,7 +56,7 @@ class DomesticsOrders extends Controller
             $data = DB::table('tbl_pincode')->where(['pincode' => $pincode, 'mfd' => 0])->first();
 
             if (!empty($data)) {
-                $city = DB::table('tbl_city')->where(['id' => $data->id, 'mfd' => 0])->first();
+                $city = DB::table('tbl_city')->where(['id' => $data->city_id, 'mfd' => 0])->first();
                 $json = [
                     'status' => 'True',
                     'data' => ['state' => $data->state_id, 'city' => $city->name, 'country' => 'india'],
@@ -81,12 +81,15 @@ class DomesticsOrders extends Controller
         $validation = Validator::make($request->all(), [
             'add_pickup_address' => 'required|unique:tbl_pickup_address,address',
             'pickup_contact_person' => 'required|string',
+            'warehouse_r_name' => 'required|string',
             'pickup_contact_no' => 'required|numeric|digits:10',
             'pickup_landmark' => 'required|string',
+            'return_address' => 'required|string',
             'pickup_pincode' => 'required|numeric|digits:6',
+            'return_pincode' => 'required|numeric|digits:6',
         ]);
         if ($validation->passes()) {
-            try {
+            // try {
 
                 $AddressBook = [
                     'customer_id' => session('customer.id'),
@@ -97,7 +100,34 @@ class DomesticsOrders extends Controller
                     'address' => $request->add_pickup_address,
                     'landmark' => $request->pickup_landmark,
                     'pincode' => $request->pickup_pincode,
+                    'warehouse_r_name' => $request->warehouse_r_name,
+                    'return_address' => $request->return_address,
+                    'return_pincode' => $request->return_pincode,
                 ];
+                $pincodewhere = ['tbl_pincode.pincode' => $request->pickup_pincode];
+                $frompin = $this->pincode->pincodedata($pincodewhere);
+                $pincodewhereto = ['tbl_pincode.pincode' => $request->return_pincode];
+                $topin = $this->pincode->pincodedata($pincodewhereto);
+                        $APIDATA = [
+                            'name'=>$request->pickup_contact_person,
+                            'phone'=>$request->pickup_contact_no,
+                            'address'=>$request->add_pickup_address.' '.$request->pickup_landmark,
+                            'pin'=>$request->pickup_pincode,
+                            'email'=>$request->pikcup_email,
+                            'city'=>$frompin->city,
+                            "country"=> "India",
+                            'registered_name'=>$request->warehouse_r_name,
+                            'return_address'=>$request->return_address,
+                            'return_pin'=>$request->return_pincode,
+                            'return_state'=>$topin->state,
+                            'return_city'=>$topin->city,
+                            "return_country"=> "India"
+                        ];
+                        $jwtKey = delhiveryAuth();
+                        if (!empty($jwtKey->jwt)) 
+                        {  
+                           $status =  Wearhouse_creation($APIDATA,$jwtKey->jwt);
+                        }
 
                 DB::beginTransaction();
                 $pickupaddress = PickupAddress::create($AddressBook);
@@ -117,15 +147,15 @@ class DomesticsOrders extends Controller
                     // If creation was not successful, throw an exception
                     throw new \Exception('Data not inserted');
                 }
-            } catch (\Exception $e) {
-                DB::rollBack();
-                $msg = session()->flash('faild', 'An error occurred: ' . $e->getMessage());
-                $responce = [
-                    'status' => 'faild',
-                    'error' => 'An error occurred: ' . $e->getMessage(),
-                ];
-                echo json_encode($responce);exit;
-            }
+            // } catch (\Exception $e) {
+            //     DB::rollBack();
+            //     $msg = session()->flash('faild', 'An error occurred: ' . $e->getMessage());
+            //     $responce = [
+            //         'status' => 'faild',
+            //         'error' => 'An error occurred: ' . $e->getMessage(),
+            //     ];
+            //     echo json_encode($responce);exit;
+            // }
         } else {
             $json = [
                 'status' => 'false',
@@ -430,7 +460,7 @@ class DomesticsOrders extends Controller
 
                 // booking data in formated
                 $BookingData = '{
-                    "pickup_location": "KRCCONSTRUCTION B2B",
+                    "pickup_location": "ERCARGODCB2BR",
                     "return_address":{
                         "name":"' . $sender_name . '",
                         "phone":"' . $mobile_no . '",
@@ -447,14 +477,14 @@ class DomesticsOrders extends Controller
                         "city":"' .  $topin->city . '",
                         "region":"' . $topin->state . '"
                     },
-                    "d_mode": "' . $booking_data->paymentMode . '",
+                    "d_mode": "' . strtoupper($booking_data->paymentMode) . '",
                     "amount": ' . $booking_data->order_total . ',
-                    "rov_insurance": true,
+                     "rov_insurance": true,
                     "weight": ' . $booking_data->applicable_weight . ',
                     "invoices": [
                         {
                             "n_value": ' . $booking_data->order_total . ',
-                            "ident":"MSF20600004731"
+                            "ident":"MSF20600004731" 
                         }
                     ],
                     "suborders": ' . count($product) . ',
@@ -468,7 +498,7 @@ class DomesticsOrders extends Controller
                     ]
                 }';  
                        
-                 $booking = Bookingdelhivery($BookingData,$jwtKey);
+                 $booking = Bookingdelhivery($BookingData,$jwtKey->jwt);
                  if(!empty($booking)){
                     $post = DomesticBooking::find($booking_data->id);
                     $post->update(['forwording_no' =>  $booking,'courier'=>$courier]);
