@@ -47,6 +47,18 @@
                                                 <label for="inputPassword4">Description <span style="color:grey;">(optional)</span></label>
                                                 <textarea name="description" id="description" class="form-control rounded" placeholder="Description">{{ $editData->description}}</textarea>
                                             </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="inputPassword4">Company Logo </label>
+                                                <input type="file" class="form-control rounded" id="img_logo"  name="img_logo" >
+                                                <p style="color:red;"></p>
+                                                @if (isset($editData->img_logo))
+                                                        @php
+                                                            $panIMg1 = 'admin-assets/courier_company_logo/' . $editData->img_logo;
+                                                        @endphp
+                                                        <a onclick="return ViewImage('{{ $panIMg1 }}');"
+                                                            style="color:blue; cursor:pointer;">View Logo</a> 
+                                                @endif
+                                            </div>
                                         </div>
                                         <button type="submit" class="btn btn-outline-success" style="float:right;">Update</button>
                                     </form>
@@ -57,14 +69,24 @@
                 </div>
             </div>
         </div>
-        <!-- END: Card DATA-->
+    </div>
+    
+    <div id="myModal" class="modal">
+        <!-- The Close Button -->
+        <span class="close">&times;</span>
+        <!-- Modal Content (The Image) -->
+        <img class="modal-content" id="img01">
+        <!-- Modal Caption (Image Text) -->
+        <div id="caption"></div>
     </div>
 </main>
 @endsection
 @section('script')
  <script>
+    var Route = "{{ url('/') }}";
     var view = "{{ route('admin.view-courier-company') }}";
     var callurl = "{{ route('admin.update-courier-company') }}";
  </script>
  <script src="{{ asset('admin-assets/admin_custome_js/courier_company/edit_courier_company.js')}}"></script>
+ <script src="{{ asset('admin-assets/admin_custome_js/comancustomjs.js')}}"></script>
 @endsection

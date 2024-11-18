@@ -142,6 +142,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/add-courier-company',[CourierCompany::class,'add_courier'])->name('admin.add-courier-company');
     Route::get('admin/edit-courier-company/{id}',[CourierCompany::class,'edit_courier'])->name('admin.edit-courier-company');
     Route::post('admin/store-courier-company',[CourierCompany::class,'store_courier'])->name('admin.store-courier-company');
+    Route::get('admin/download-courier/{id}', [CourierCompany::class, 'downloadImage'])->name('admin.download-courier');
     Route::post('admin/update-courier-company',[CourierCompany::class,'update_courier'])->name('admin.update-courier-company');
     Route::put('admin/status-courier-company', [CourierCompany::class, 'status'])->name('admin.status-courier-company');
     Route::put('admin/delete-courier-company',[CourierCompany::class,'destroycorier'])->name('admin.delete-courier-company');

@@ -40,17 +40,25 @@ class CourierCompany extends Controller
         // dd($request->all());
         $validation = validator::make($request->all(),
         [
-              'company_name'=>'required|regex:/^[a-zA-Z\s]*$/',
+              'company_name'=>'required',
+              'company_type'=>'required',
+              'img_logo'=>'required',
         ]);
         if($validation->passes())
         {
             try{
+                if ($request->hasFile('img_logo')) {
+                    $file = $request->file('img_logo');
+                    $img_logo = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('admin-assets/courier_company_logo'), $img_logo);
+                }
                 $Data = [
                      'company_name'=>$request->company_name,
                      'company_type'=>$request->company_type,
                      'description'=>$request->description,
                      'domestic_url'=>$request->domestic_url,
                      'international_url'=>$request->international_url,
+                     'img_logo'=>$img_logo,
                 ];
                 DB::beginTransaction();
                 $branch =  CourierCompnayModel::create($Data);
@@ -89,19 +97,26 @@ class CourierCompany extends Controller
         // dd($request->all());
         $validation = validator::make($request->all(),
         [
-            'company_name'=>'required|regex:/^[a-zA-Z\s]*$/',
+            'company_name'=>'required',
+            'company_type'=>'required',
+            'img_logo'=>'required',
         ]);
       
         if($validation->passes())
         {
             try{
-               
+                if ($request->hasFile('img_logo')) {
+                    $file = $request->file('img_logo');
+                    $img_logo = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('admin-assets/courier_company_logo'), $img_logo);
+                }
                 $Data = [
                     'company_name'=>$request->company_name,
                     'company_type'=>$request->company_type,
                     'description'=>$request->description,
                     'domestic_url'=>$request->domestic_url,
                     'international_url'=>$request->international_url,
+                    'img_logo'=>$img_logo,
                ];
                 DB::beginTransaction();
                 $branch =  CourierCompnayModel::find($request->id);
@@ -159,6 +174,15 @@ class CourierCompany extends Controller
             ];
             echo json_encode($responce);exit;
         }  
+    }
+
+    public function downloadImage($path)
+    {
+        // Define the path to the image in the public folder
+        $filePath = public_path('admin-assets/courier_company_logo/'.$path);
+        
+        // Return a response that triggers the download
+        return response()->download($filePath);
     }
     public function destroycorier(Request $request)
     {

@@ -1,5 +1,6 @@
 @extends('admin.layout.admin_header')
 @section('content')
+
     <main>
         <div class="container-fluid site-width">
             <!-- START: Card Data-->
@@ -17,6 +18,7 @@
                                     <thead>
                                         <tr>
                                             <th>Sr No</th>
+                                            <th>Courier Logo</th>
                                             <th>Courier Name</th>
                                             <th>Company Type</th>
                                             <th>Domestic Url</th>
@@ -33,6 +35,19 @@
                                             @foreach ($Courier as $val)
                                                 <tr>
                                                     <td>{{ $count }}</td>
+                                                    <td>
+                                                        @if (isset($val->img_logo))
+                                                        @php
+                                                            $panIMg1 = 'admin-assets/courier_company_logo/' . $val->img_logo;
+                                                        @endphp
+                                                        <a onclick="return ViewImage('{{ $panIMg1 }}');"
+                                                            style="color:blue; cursor:pointer;">View Logo</a> |
+                                                        <a style="color:blue"
+                                                            href="{{ route('admin.download-courier', ['id' => $val->img_logo]) }}">
+                                                            <i class="fas fa-download"></i>
+                                                        </a>
+                                                    @endif
+                                                    </td>
                                                     <td>{{ $val->company_name }}</td>
                                                     <td>{{ company_type()[$val->company_type] }}</td>
                                                     <td>{{ $val->domestic_url }}</td>
@@ -79,12 +94,21 @@
 
                 </div>
             </div>
-            <!-- END: Card DATA-->
-        </div>
+         </div>
     </main>
+    <img id="myImg" src="img_snow.jpg" alt="Snow" style="width:100%;max-width:300px">
+    <div id="myModal" class="modal">
+        <!-- The Close Button -->
+        <span class="close">&times;</span>
+        <!-- Modal Content (The Image) -->
+        <img class="modal-content" id="img01">
+        <!-- Modal Caption (Image Text) -->
+        <div id="caption"></div>
+    </div>
 @endsection
 @section('script')
 <script>
+    var Route = "{{ url('/') }}";
     var callurl = "{{ route('admin.delete-courier-company')}}";
     var view = "{{ route('admin.view-courier-company') }}";
     var statusurl = "{{route('admin.status-courier-company')}}";

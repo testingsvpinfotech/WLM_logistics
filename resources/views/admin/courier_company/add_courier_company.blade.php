@@ -44,6 +44,11 @@
                                                 <label for="inputPassword4">Description <span style="color:grey;">(optional)</span></label>
                                                 <textarea name="description" id="description" class="form-control rounded" placeholder="Description">{{ old('description')}}</textarea>
                                             </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="inputPassword4">Company Logo </label>
+                                                <input type="file" class="form-control rounded" id="img_logo"  name="img_logo" >
+                                                <p style="color:red;"></p>
+                                            </div>
                                         </div>
                                         <button type="submit" class="btn btn-outline-primary" style="float:right;">Submit</button>
                                     </form>
