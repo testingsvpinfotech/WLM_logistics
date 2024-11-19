@@ -100,10 +100,9 @@
                             </a>
                         </li>
                         <li class="dropdown align-self-center">
-                            <a href="#"  data-toggle="dropdown" aria-expanded="false" class="h6">
-                                Recharge Wallet 
-                              
-                            </a>
+                            <button type="button" class="btn btn-primary" id="reacharge" >
+                                Recharge Wallet
+                              </button>
                         </li>
                         <li class="dropdown align-self-center d-inline-block">
                             <a href="#" class="nav-link" data-toggle="dropdown" aria-expanded="false"><i
@@ -188,6 +187,82 @@
                     </ul>
                 </div>
             </nav>
+        </div>
+    </div>
+
+    <style>
+        .modal-header {
+            border-bottom: none;
+        }
+        .modal-title {
+            font-weight: bold;
+        }
+        .amount-buttons button {
+            margin: 5px 5px 0 0;
+        }
+        .summary {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .summary p {
+            margin: 0;
+        }
+        .summary .amount {
+            font-weight: bold;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+    </style>
+    <div class="modal fade" id="rechargeModal" tabindex="-1" aria-labelledby="rechargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rechargeModalLabel">Recharge Your Wallet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">Current Wallet Amount: <span class="text-success">₹0.00</span></p>
+    
+                    <!-- Amount Input -->
+                    <label for="rechargeAmount" class="form-label">Enter Amount in Multiples of 100 Below</label>
+                    <input type="number" class="form-control mb-2" id="rechargeAmount" value="500" placeholder="₹500" min="500" max="5000000">
+    
+                    <p class="text-muted small mb-1">Min value: ₹500 & Max value: ₹50,00,000</p>
+    
+                    <!-- Predefined Amount Buttons -->
+                    <div class="amount-buttons d-flex flex-wrap">
+                        <button class="btn btn-outline-primary">₹500</button>
+                        <button class="btn btn-outline-primary">₹1000</button>
+                        <button class="btn btn-outline-primary">₹2500</button>
+                        <button class="btn btn-outline-primary">₹5000</button>
+                        <button class="btn btn-outline-primary">₹10000</button>
+                    </div>
+    
+                    <!-- Coupon Section -->
+                    <label for="couponCode" class="form-label mt-3">Have a Coupon</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="couponCode" placeholder="Enter Coupon Code here">
+                        <button class="btn btn-outline-secondary">Apply</button>
+                    </div>
+    
+                    <a href="#" class="text-primary small">View Available Coupons</a>
+    
+                    <!-- Summary -->
+                    <div class="summary p-1">
+                        <p>Recharge Amount: <span class="amount">₹500</span></p>
+                        <p>Coupon Code Amount: <span class="amount">₹0</span></p>
+                        <p>Total Amount to be Credited: <span class="amount">₹500</span></p>
+                        <hr>
+                        <p>Payable Amount: <span class="amount">₹500</span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Continue to Payment</button>
+                </div>
+            </div>
         </div>
     </div>
     <!-- END: Header-->

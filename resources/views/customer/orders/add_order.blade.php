@@ -514,6 +514,36 @@
                                                         style="margin-top: 25px;" disabled><i
                                                             class="fa fa-trash"></i></button>
                                                 </div>
+                                                <div class="col-md-2">
+                                                    <label for="productCategory">Inv No</label>
+                                                    <input type="text" class="form-control" name="inv_no[]"
+                                                        placeholder="Inv No">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="productCategory">Inv Value</label>
+                                                    <input type="text" class="form-control" name="inv_value[]"
+                                                        placeholder="Inv Value">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="productCategory">Weight</label>
+                                                    <input type="text" class="form-control" name="weight[]"
+                                                        placeholder="Weight">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="productCategory">Length</label>
+                                                    <input type="text" class="form-control" name="length[]"
+                                                        placeholder="Length">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="productCategory">Height</label>
+                                                    <input type="text" class="form-control" name="height[]"
+                                                        placeholder="Height">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="productCategory">Width</label>
+                                                    <input type="text" class="form-control" name="width[]"
+                                                        placeholder="Width">
+                                                </div>
                                                 <div class="col-md-12">
                                                     <a class="btn btn-link btn-show-details"
                                                         style="color: blue !important;  text-decoration: none;">+ Add HSN
@@ -562,13 +592,13 @@
                                             <label>Payment Mode</label><br>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="paymentMode"
-                                                    id="prepaid" value="prepaid" checked>
-                                                <label class="form-check-label" for="prepaid">Prepaid</label>
+                                                    id="Prepaid" value="Prepaid" checked>
+                                                <label class="form-check-label" for="Prepaid">Prepaid</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="paymentMode"
-                                                    id="cod" value="cod">
-                                                <label class="form-check-label" for="cod">Cash on Delivery</label>
+                                                    id="CoD" value="CoD">
+                                                <label class="form-check-label" for="CoD">Cash on Delivery</label>
                                                 <p style="color:red;"></p>
                                             </div>
                                             

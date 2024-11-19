@@ -68,6 +68,15 @@
 <!-- START: Page JS-->
 <script src="{{ asset('admin-assets/dist/js/home.script.js')}}"></script>
 <script>
+  
+   $('#reacharge').click(function(){
+    // $('#rechargeModal').modal('show');
+    $('#rechargeModal').modal({
+        backdrop: 'static',
+        keyboard: false
+    }).modal('show'); // Ensure the modal is shown
+   });
+   
   $.ajaxSetup({
     headers : {
        'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
