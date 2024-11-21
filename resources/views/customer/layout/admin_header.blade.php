@@ -43,6 +43,8 @@
     <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/select2/css/select2-bootstrap.min.css') }}" />
     <!-- START: Custom CSS-->
     <link rel="stylesheet" href="{{ asset('admin-assets/dist/css/main.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin-assets/dist/css/slick.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin-assets/dist/css/style.css') }}">
     <link rel="stylesheet"
         href="{{ asset('admin-assets/dist/vendors/bootstrap4-toggle/css/bootstrap4-toggle.min.css') }}" />
     <!-- END: Custom CSS-->
@@ -51,7 +53,7 @@
 
 <!-- START: Body-->
 
-<body id="main-container" style="font-family: Arial, Helvetica, sans-serif !important;" class="default">
+<body id="main-container" style="font-family: Arial, Helvetica, sans-serif !important;"  class="default compact-menu">
 
     <!-- START: Pre Loader-->
     {{-- <div class="se-pre-con">
