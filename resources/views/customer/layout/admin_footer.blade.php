@@ -62,6 +62,7 @@
 <script src="{{ asset('admin-assets/dist/vendors/bootstrap4-toggle/js/bootstrap4-toggle.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.3/dist/sweetalert2.all.min.js"></script>
 <!-- START: Page Script JS-->        
+<script src="{{ asset('admin-assets/dist/js/script.js')}}"></script>
 <script src="{{ asset('admin-assets/dist/js/datatable.script.js')}}"></script>
 <script src="{{ asset('admin-assets/dist/vendors/select2/js/select2.full.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
