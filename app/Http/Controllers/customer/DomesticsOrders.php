@@ -613,7 +613,7 @@ class DomesticsOrders extends Controller
     public function BlueDartAPICall($booking_id,$courier,$mode,$amount)
     {
         $authkey = BlueDartAuth();
-        $key = $authkey->JWTToken;
+        $key1 = $authkey->JWTToken;
         $booking_data = DB::table('tbl_domestic_booking')->where(['id' => $booking_id])->first();
         if (!empty($booking_data)) {
             $product = DB::table('tbl_domestic_products')->where(['booking_id' => $booking_id])->get();
@@ -794,7 +794,8 @@ class DomesticsOrders extends Controller
                     "Api_type" => "S"
                 ]
             ];
-
+            $responce = BluedartBooking(json_encode($postdata),$key1);
+           
             
         }
     }

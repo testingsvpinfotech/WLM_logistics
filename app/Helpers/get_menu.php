@@ -148,6 +148,36 @@ if(!function_exists('BlueDartAuth'))
     }
 }
 
+if(!function_exists('BluedartBooking')){
+    function BluedartBooking($data,$auth)
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://apigateway.bluedart.com/in/transportation/waybill/v1/GenerateWayBill',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS =>$data,
+            CURLOPT_HTTPHEADER => array(
+                'accept: application/json',
+                'JWTToken: '.$auth,
+                'Content-Type: application/json'
+            ),
+        ));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_VERBOSE, true);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $response = json_decode($response);
+        dd($response);
+    }
+}
+
 if(!function_exists('Bookingdelhivery'))
 {
     function Bookingdelhivery($data , $key)
