@@ -537,7 +537,7 @@ class DomesticsOrders extends Controller
 
     public function XpressbeesAPICall($booking_id,$courier,$mode,$amount)
     {
-        $key = XpressbeesAuth();
+        $key1 = XpressbeesAuth()->data;
         $booking_data = DB::table('tbl_domestic_booking')->where(['id' => $booking_id])->first();
         if (!empty($booking_data)) {
             $product = DB::table('tbl_domestic_products')->where(['booking_id' => $booking_id])->get();
@@ -605,15 +605,33 @@ class DomesticsOrders extends Controller
                 'consignee_gst_number' => '',
                 'products' => $pieces_detail,
                 'invoice' => $invoice,
-
+                'weight' => round($booking_data->dead_weight),
+                'length' => round($booking_data->length),
+                'height' => round($booking_data->height),
+                'breadth' => round($booking_data->breath),
+                'courier_id' => '7672552672',
+                'pickup_location' => 'customer',
+                'shipping_charges' => round($booking_data->order_shipping_charges),
+                'cod_charges' => round($booking_data->order_shipping_charges),
+                'discount' => round($booking_data->order_discounts),
+                'order_amount' => round($booking_data->order_total),
+                'collectable_amount' => round(0),
             ];
+           
+            $callbooking = XpressbessBooking(json_encode($bookingData),$key1);
+            if(!empty($callbooking)){
+                $post = DomesticBooking::find($booking_data->id);
+                $post->update(['forwording_no' =>  $callbooking->awb_number,'courier'=>$courier]);
+                $post->save();
+             }
+            dd($callbooking);
         }
     }
 
     public function BlueDartAPICall($booking_id,$courier,$mode,$amount)
     {
         $authkey = BlueDartAuth();
-        $key1 = $authkey->JWTToken;
+        $key = $authkey->JWTToken;
         $booking_data = DB::table('tbl_domestic_booking')->where(['id' => $booking_id])->first();
         if (!empty($booking_data)) {
             $product = DB::table('tbl_domestic_products')->where(['booking_id' => $booking_id])->get();
@@ -715,7 +733,7 @@ class DomesticsOrders extends Controller
                         "ReturnMobile" => $mobile_no,
                         "ReturnPincode" => $frompin->pincode,
                         "ReturnTelephone" => ""
-                    ],
+                    ], 
                     "Services" => [
                         "AWBNo" => "",
                         "ActualWeight" => $booking_data->dead_weight,
@@ -748,21 +766,21 @@ class DomesticsOrders extends Controller
                         "Officecutofftime" => "",
                         "PDFOutputNotRequired" => false,
                         "PrinterLableSize" => "3",
-                        "PackType" => "L",
+                        "PackType" => "",
                         "ParcelShopCode" => "",
                         "PayableAt" => "",
                         "PickupDate" => "",
                         "PickupMode" => "",
-                        "PickupTime" => "0800",
+                        "PickupTime" => "1600",
                         "PickupType" => "",
                         "PieceCount" => "1",
                         "PreferredPickupTimeSlot" => "",
-                        "ProductCode" => 'Surface',
+                        "ProductCode" => 'E', // E = sufrace , A = Air
                         "ProductFeature" => "",
                         "ProductType" => '',
                         "RegisterPickup" => '', // check
                         "SpecialInstruction" => "",
-                        "SubProductCode" => "P",
+                        "SubProductCode" => "",
                         "TotalCashPaytoCustomer" => 0,
                         "itemdtl" => $itemdtl,
                         "noOfDCGiven" => 0
@@ -772,7 +790,7 @@ class DomesticsOrders extends Controller
                         "CustomerAddress2" => "",
                         "CustomerAddress3" => "",
                         "CustomerAddressinfo" => "",
-                        "CustomerCode" => "513273",
+                        "CustomerCode" => "514813",
                         "CustomerEmailID" => "",
                         "CustomerGSTNumber" => "",
                         "CustomerLatitude" => "",
@@ -783,19 +801,17 @@ class DomesticsOrders extends Controller
                         "CustomerPincode" => $frompin->pincode,
                         "CustomerTelephone" => "",
                         "IsToPayCustomer" => false,
-                        "OriginArea" => "NBM",
+                        "OriginArea" => "BOM",
                         "Sender" => $sender_name,
                         "VendorCode" => ""
                     ]
                 ],
                 "Profile" => [
-                    "LoginID" => "PALLAVIENTP",
-                    "LicenceKey" => "lerstmgofmrskogqelln8nmnwtrlkem",
-                    "Api_type" => "S"
+                   "LoginID" => "BOM85331",
+                   "LicenceKey" => "lerstmgofmrskogqelln8nmnwtrlkem"
                 ]
             ];
-            $responce = BluedartBooking(json_encode($postdata),$key1);
-           
+
             
         }
     }

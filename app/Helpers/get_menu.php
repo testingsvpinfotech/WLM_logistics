@@ -98,7 +98,7 @@ if(!function_exists('XpressbeesAuth'))
     {
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://ship.xpressbees.com/api/users/login',
+            CURLOPT_URL => 'https://ship.xpressbees.com/api/users/franchise_login',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -107,8 +107,8 @@ if(!function_exists('XpressbeesAuth'))
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => '{
-                                    "email": "abc@mail.com",
-                                    "password": "123456789"
+                                    "email": "gst.ercargo@gmail.com",
+                                    "password": "Deepak@12345"
                                     }',
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
@@ -119,6 +119,38 @@ if(!function_exists('XpressbeesAuth'))
         $response_kk = curl_exec($curl);
         curl_close($curl);
        return $jwt = json_decode($response_kk);
+    }
+}
+
+if(!function_exists('XpressbessBooking')){
+    function XpressbessBooking($data,$key)
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://ship.xpressbees.com/api/franchise/shipments',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => array(
+                'accept: application/json',
+                'Authorization: Bearer ' . $key
+            ),
+            CURLOPT_SSL_VERIFYPEER => false,  // Disable SSL verification
+            CURLOPT_SSL_VERIFYHOST => false,  // Disable SSL hostname verification
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        if (curl_errno($curl)) {
+            // Display the cURL error
+            echo 'cURL Error: ' . curl_error($curl);
+        }
+       $response = json_decode($response);
+       dd($response);
     }
 }
 // BlueDartAuth
@@ -136,9 +168,9 @@ if(!function_exists('BlueDartAuth'))
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
-            // CURLOPT_HTTPHEADER => array(
-            //     'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWJqZWN0LXN1YmplY3QiLCJhdWQiOlsiYXVkaWVuY2UxIiwiYXVkaWVuY2UyIl0sImlzcyI6InVybjpcL1wvYXBpZ2VlLWVkZ2UtSldULXBvbGljeS10ZXN0IiwiZXhwIjoxNzExODY1Mjg4LCJpYXQiOjE3MTE3Nzg4ODgsImp0aSI6ImVkMDIzNzE0LWZkNWEtNDZjNC1hODAxLTU4ZGFjNjE2OTM1ZSJ9.oQAAFHN5g4pMF_lyAJQZooR1Kg1yFD8T4jrb-b6iWc4',
-            // ),
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWJqZWN0LXN1YmplY3QiLCJhdWQiOlsiYXVkaWVuY2UxIiwiYXVkaWVuY2UyIl0sImlzcyI6InVybjpcL1wvYXBpZ2VlLWVkZ2UtSldULXBvbGljeS10ZXN0IiwiZXhwIjoxNzExODY1Mjg4LCJpYXQiOjE3MTE3Nzg4ODgsImp0aSI6ImVkMDIzNzE0LWZkNWEtNDZjNC1hODAxLTU4ZGFjNjE2OTM1ZSJ9.oQAAFHN5g4pMF_lyAJQZooR1Kg1yFD8T4jrb-b6iWc4',
+            ),
             CURLOPT_SSL_VERIFYPEER => false,  // Disable SSL verification
             CURLOPT_SSL_VERIFYHOST => false,  // Disable SSL hostname verification
         ));
@@ -148,9 +180,17 @@ if(!function_exists('BlueDartAuth'))
     }
 }
 
+<<<<<<< HEAD
 if(!function_exists('BluedartBooking')){
     function BluedartBooking($data,$auth)
     {
+=======
+if(!function_exists('BookingblueDart'))
+{
+    function BookingblueDart($data , $key)
+    {
+        // dd($data);
+>>>>>>> 11cbee9613155c4a107ff0590ca2327a70c7f28e
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://apigateway.bluedart.com/in/transportation/waybill/v1/GenerateWayBill',
@@ -161,6 +201,7 @@ if(!function_exists('BluedartBooking')){
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
+<<<<<<< HEAD
             CURLOPT_POSTFIELDS =>$data,
             CURLOPT_HTTPHEADER => array(
                 'accept: application/json',
@@ -171,6 +212,17 @@ if(!function_exists('BluedartBooking')){
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_VERBOSE, true);
+=======
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => array(
+                'accept: application/json',
+                'JWTToken: ' . $key,
+                'Content-Type: application/json',
+            ),
+            CURLOPT_SSL_VERIFYPEER => false,  // Disable SSL verification
+            CURLOPT_SSL_VERIFYHOST => false,  // Disable SSL hostname verification
+        ));
+>>>>>>> 11cbee9613155c4a107ff0590ca2327a70c7f28e
         $response = curl_exec($curl);
         curl_close($curl);
         $response = json_decode($response);
