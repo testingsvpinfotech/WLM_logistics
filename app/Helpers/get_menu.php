@@ -180,17 +180,11 @@ if(!function_exists('BlueDartAuth'))
     }
 }
 
-<<<<<<< HEAD
-if(!function_exists('BluedartBooking')){
-    function BluedartBooking($data,$auth)
-    {
-=======
-if(!function_exists('BookingblueDart'))
-{
+
+if(!function_exists('BookingblueDart')){
     function BookingblueDart($data , $key)
     {
         // dd($data);
->>>>>>> 11cbee9613155c4a107ff0590ca2327a70c7f28e
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://apigateway.bluedart.com/in/transportation/waybill/v1/GenerateWayBill',
@@ -201,28 +195,16 @@ if(!function_exists('BookingblueDart'))
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-<<<<<<< HEAD
             CURLOPT_POSTFIELDS =>$data,
             CURLOPT_HTTPHEADER => array(
                 'accept: application/json',
-                'JWTToken: '.$auth,
+                'JWTToken: '.$key,
                 'Content-Type: application/json'
             ),
         ));
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_VERBOSE, true);
-=======
-            CURLOPT_POSTFIELDS => $data,
-            CURLOPT_HTTPHEADER => array(
-                'accept: application/json',
-                'JWTToken: ' . $key,
-                'Content-Type: application/json',
-            ),
-            CURLOPT_SSL_VERIFYPEER => false,  // Disable SSL verification
-            CURLOPT_SSL_VERIFYHOST => false,  // Disable SSL hostname verification
-        ));
->>>>>>> 11cbee9613155c4a107ff0590ca2327a70c7f28e
         $response = curl_exec($curl);
         curl_close($curl);
         $response = json_decode($response);

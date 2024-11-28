@@ -1,12 +1,7 @@
 @extends('customer.layout.admin_header')
 @section('content')
     <main>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-        </script>
-        <link rel="stylesheet" href="{{asset('customer-assets/css/customer_dashboard.css')}}">
+    
         <div class="container-fulid bg-secondary-subtle p-3">
             <div class="d-flex">
                 <p class="ms-4 me-4 p-2">DashBoard</p>
