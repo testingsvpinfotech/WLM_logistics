@@ -631,7 +631,8 @@ class DomesticsOrders extends Controller
     public function BlueDartAPICall($booking_id,$courier,$mode,$amount)
     {
         $authkey = BlueDartAuth();
-        $key = $authkey->JWTToken;
+        $key1 = $authkey->JWTToken;
+        dd($key1);
         $booking_data = DB::table('tbl_domestic_booking')->where(['id' => $booking_id])->first();
         if (!empty($booking_data)) {
             $product = DB::table('tbl_domestic_products')->where(['booking_id' => $booking_id])->get();
@@ -708,7 +709,7 @@ class DomesticsOrders extends Controller
                         "ConsigneeAddressType" => "",
                         "ConsigneeAddressinfo" => "",
                         "ConsigneeAttention" => "",
-                        "ConsigneeEmailID" => 'demo@gmail.com',
+                        "ConsigneeEmailID" => "demo@gmail.com",
                         "ConsigneeFullAddress" => "",
                         "ConsigneeGSTNumber" => '',
                         "ConsigneeLatitude" => "",
@@ -726,7 +727,7 @@ class DomesticsOrders extends Controller
                         "ReturnAddress3" => "",
                         "ReturnAddressinfo" => "",
                         "ReturnContact" => $sender_name,
-                        "ReturnEmailID" => 'demo@gmail.com',
+                        "ReturnEmailID" => "demo@gmail.com",
                         "ReturnLatitude" => "",
                         "ReturnLongitude" => "",
                         "ReturnMaskedContactNumber" => "",
@@ -811,8 +812,7 @@ class DomesticsOrders extends Controller
                    "LicenceKey" => "lerstmgofmrskogqelln8nmnwtrlkem"
                 ]
             ];
-
-            $response = BookingblueDart(json_encode($postdata),$key);
+            $response = BookingblueDart(json_encode($postdata),$key1);
 
             
         }

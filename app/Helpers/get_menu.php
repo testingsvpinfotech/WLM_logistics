@@ -167,10 +167,14 @@ if(!function_exists('BlueDartAuth'))
             CURLOPT_TIMEOUT => 0,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWJqZWN0LXN1YmplY3QiLCJhdWQiOlsiYXVkaWVuY2UxIiwiYXVkaWVuY2UyIl0sImlzcyI6InVybjpcL1wvYXBpZ2VlLWVkZ2UtSldULXBvbGljeS10ZXN0IiwiZXhwIjoxNzExODY1Mjg4LCJpYXQiOjE3MTE3Nzg4ODgsImp0aSI6ImVkMDIzNzE0LWZkNWEtNDZjNC1hODAxLTU4ZGFjNjE2OTM1ZSJ9.oQAAFHN5g4pMF_lyAJQZooR1Kg1yFD8T4jrb-b6iWc4',
+                'ClientID: 	Ey2gEYkyOrlhdlk6ro7TvEggBjXGNjsl',
+                'clientSecret: FUnkU7WacsB3AIPa'
             ),
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            // CURLOPT_HTTPHEADER => array(
+            //     'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWJqZWN0LXN1YmplY3QiLCJhdWQiOlsiYXVkaWVuY2UxIiwiYXVkaWVuY2UyIl0sImlzcyI6InVybjpcL1wvYXBpZ2VlLWVkZ2UtSldULXBvbGljeS10ZXN0IiwiZXhwIjoxNzExODY1Mjg4LCJpYXQiOjE3MTE3Nzg4ODgsImp0aSI6ImVkMDIzNzE0LWZkNWEtNDZjNC1hODAxLTU4ZGFjNjE2OTM1ZSJ9.oQAAFHN5g4pMF_lyAJQZooR1Kg1yFD8T4jrb-b6iWc4',
+            // ),
             CURLOPT_SSL_VERIFYPEER => false,  // Disable SSL verification
             CURLOPT_SSL_VERIFYHOST => false,  // Disable SSL hostname verification
         ));
@@ -184,7 +188,7 @@ if(!function_exists('BlueDartAuth'))
 if(!function_exists('BookingblueDart')){
     function BookingblueDart($data , $key)
     {
-        // dd($data);
+        // dd($key);
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://apigateway.bluedart.com/in/transportation/waybill/v1/GenerateWayBill',
