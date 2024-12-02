@@ -241,7 +241,7 @@
                            </a>
                        </li>
                        <li>
-                           <a href="#">
+                           <a href="{{route('app.ratecalculator')}}">
                                Rate Calculator
                            </a>
                        </li>

@@ -76,6 +76,9 @@ Route::group(['middleware' => 'customer'], function () {
     Route::post('app/pickup-address-store',[DomesticsOrders::class,'pickup_address_store'])->name('app.pickup-address-store');
     Route::post('app/store-orders',[DomesticsOrders::class,'store_orders'])->name('app.store-orders');
     Route::post('app/api-booking',[DomesticsOrders::class,'booking_API'])->name('app.api-booking');
+    // Domestic rate calculator
+    Route::get('app/rate-calculator',action: [DomesticsOrders::class,'rate_calculator'])->name('app.ratecalculator');
+    Route::post('app/get-calculator',action: [DomesticsOrders::class,'getRateCalculate'])->name('app.getcalculator');
     // international orders
     Route::get('app/view-international-orders', [InternationalOrders::class, 'index'])->name('app.view-international-orders');
     Route::get('app/international-order',[InternationalOrders::class,'add_orders'])->name('app.international-order');

@@ -91,62 +91,62 @@ class DomesticsOrders extends Controller
         if ($validation->passes()) {
             // try {
 
-                $AddressBook = [
-                    'customer_id' => session('customer.id'),
-                    'contact_person' => $request->pickup_contact_person,
-                    'contact_no' => $request->pickup_contact_no,
-                    'alter_contact_no' => $request->pickup_alter_contact,
-                    'email' => $request->pickup_email,
-                    'address' => $request->add_pickup_address,
-                    'landmark' => $request->pickup_landmark,
-                    'pincode' => $request->pickup_pincode,
-                    'warehouse_r_name' => $request->warehouse_r_name,
-                    'return_address' => $request->return_address,
-                    'return_pincode' => $request->return_pincode,
-                ];
-                $pincodewhere = ['tbl_pincode.pincode' => $request->pickup_pincode];
-                $frompin = $this->pincode->pincodedata($pincodewhere);
-                $pincodewhereto = ['tbl_pincode.pincode' => $request->return_pincode];
-                $topin = $this->pincode->pincodedata($pincodewhereto);
-                        $APIDATA = [
-                            'name'=>$request->pickup_contact_person,
-                            'phone'=>$request->pickup_contact_no,
-                            'address'=>$request->add_pickup_address.' '.$request->pickup_landmark,
-                            'pin'=>$request->pickup_pincode,
-                            'email'=>$request->pikcup_email,
-                            'city'=>$frompin->city,
-                            "country"=> "India",
-                            'registered_name'=>$request->warehouse_r_name,
-                            'return_address'=>$request->return_address,
-                            'return_pin'=>$request->return_pincode,
-                            'return_state'=>$topin->state,
-                            'return_city'=>$topin->city,
-                            "return_country"=> "India"
-                        ];
-                        $jwtKey = delhiveryAuth();
-                        if (!empty($jwtKey->jwt)) 
-                        {  
-                           $status =  Wearhouse_creation($APIDATA,$jwtKey->jwt);
-                        }
+            $AddressBook = [
+                'customer_id' => session('customer.id'),
+                'contact_person' => $request->pickup_contact_person,
+                'contact_no' => $request->pickup_contact_no,
+                'alter_contact_no' => $request->pickup_alter_contact,
+                'email' => $request->pickup_email,
+                'address' => $request->add_pickup_address,
+                'landmark' => $request->pickup_landmark,
+                'pincode' => $request->pickup_pincode,
+                'warehouse_r_name' => $request->warehouse_r_name,
+                'return_address' => $request->return_address,
+                'return_pincode' => $request->return_pincode,
+            ];
+            $pincodewhere = ['tbl_pincode.pincode' => $request->pickup_pincode];
+            $frompin = $this->pincode->pincodedata($pincodewhere);
+            $pincodewhereto = ['tbl_pincode.pincode' => $request->return_pincode];
+            $topin = $this->pincode->pincodedata($pincodewhereto);
+            $APIDATA = [
+                'name' => $request->pickup_contact_person,
+                'phone' => $request->pickup_contact_no,
+                'address' => $request->add_pickup_address . ' ' . $request->pickup_landmark,
+                'pin' => $request->pickup_pincode,
+                'email' => $request->pikcup_email,
+                'city' => $frompin->city,
+                "country" => "India",
+                'registered_name' => $request->warehouse_r_name,
+                'return_address' => $request->return_address,
+                'return_pin' => $request->return_pincode,
+                'return_state' => $topin->state,
+                'return_city' => $topin->city,
+                "return_country" => "India"
+            ];
+            $jwtKey = delhiveryAuth();
+            if (!empty($jwtKey->jwt)) {
+                $status =  Wearhouse_creation($APIDATA, $jwtKey->jwt);
+            }
 
-                DB::beginTransaction();
-                $pickupaddress = PickupAddress::create($AddressBook);
-                $lastInsertedId = $pickupaddress->id;
-                $data = PickupAddress::find($lastInsertedId);
-                $option = "<option value='" . $lastInsertedId . "'>" . $data->address . "</option>";
-                if ($pickupaddress) {
-                    DB::commit();
-                    $msg = session()->flash('success', 'Address added successfully');
-                    $responce = [
-                        'status' => 'success',
-                        'error' => 'Address added successfully',
-                        'data' => $option,
-                    ];
-                    echo json_encode($responce);exit;
-                } else {
-                    // If creation was not successful, throw an exception
-                    throw new \Exception('Data not inserted');
-                }
+            DB::beginTransaction();
+            $pickupaddress = PickupAddress::create($AddressBook);
+            $lastInsertedId = $pickupaddress->id;
+            $data = PickupAddress::find($lastInsertedId);
+            $option = "<option value='" . $lastInsertedId . "'>" . $data->address . "</option>";
+            if ($pickupaddress) {
+                DB::commit();
+                $msg = session()->flash('success', 'Address added successfully');
+                $responce = [
+                    'status' => 'success',
+                    'error' => 'Address added successfully',
+                    'data' => $option,
+                ];
+                echo json_encode($responce);
+                exit;
+            } else {
+                // If creation was not successful, throw an exception
+                throw new \Exception('Data not inserted');
+            }
             // } catch (\Exception $e) {
             //     DB::rollBack();
             //     $msg = session()->flash('faild', 'An error occurred: ' . $e->getMessage());
@@ -161,7 +161,8 @@ class DomesticsOrders extends Controller
                 'status' => 'false',
                 'data' => $validation->errors(),
             ];
-            echo json_encode($json);exit;
+            echo json_encode($json);
+            exit;
         }
     }
 
@@ -285,12 +286,12 @@ class DomesticsOrders extends Controller
                         'order_sku' => $request->order_sku[$i],
                         'order_tax_rate' => $request->order_tax_rate[$i],
                         'order_product_discount' => $request->order_product_discount[$i],
-                        'height' => $request->height[$i] ,
-                        'length'=> $request->length[$i],
-                        'width'=> $request->width[$i],
-                        'weight'=> $request->weight[$i],
-                        'inv_value'=> $request->inv_value[$i],
-                        'inv_no'=> $request->inv_no[$i]
+                        'height' => $request->height[$i],
+                        'length' => $request->length[$i],
+                        'width' => $request->width[$i],
+                        'weight' => $request->weight[$i],
+                        'inv_value' => $request->inv_value[$i],
+                        'inv_no' => $request->inv_no[$i]
                     ];
                     $productBooking = DomesticOrdersProducts::create($productData);
                 }
@@ -302,7 +303,8 @@ class DomesticsOrders extends Controller
                         'status' => 'success',
                         'error' => 'Order added successfully',
                     ];
-                    echo json_encode($responce);exit;
+                    echo json_encode($responce);
+                    exit;
                 } else {
                     // If creation was not successful, throw an exception
                     throw new \Exception('Data not inserted');
@@ -314,16 +316,17 @@ class DomesticsOrders extends Controller
                     'status' => 'faild',
                     'error' => 'An error occurred: ' . $e->getMessage(),
                 ];
-                echo json_encode($responce);exit;
+                echo json_encode($responce);
+                exit;
             }
         } else {
             $json = [
                 'status' => 'false',
                 'data' => $validation->errors(),
             ];
-            echo json_encode($json);exit;
+            echo json_encode($json);
+            exit;
         }
-
     }
 
     // Rate Calculation function
@@ -357,6 +360,8 @@ class DomesticsOrders extends Controller
                     $fright = $calculatedFright;
                 }
             }
+        } else {
+            $fright = 0;
         }
         return $data = [$fright, $rate->tat, $rate->mode_id];
     }
@@ -415,7 +420,7 @@ class DomesticsOrders extends Controller
                     // Only add if not already exists
                     if (!$exists) {
                         $data['courier_company'][] = [
-                            'img_logo' => asset('admin-assets/courier_company_logo/'.$courier->img_logo),
+                            'img_logo' => asset('admin-assets/courier_company_logo/' . $courier->img_logo),
                             'company_name' => $courier->company_name,
                             'amount' => $rate[0],
                             'company_id' => $val->courier,
@@ -435,12 +440,11 @@ class DomesticsOrders extends Controller
         }
     }
 
-    public function DelhiveryAPICall($booking_id,$courier,$mode,$amount)
+    public function DelhiveryAPICall($booking_id, $courier, $mode, $amount)
     {
         // login account
         $jwtKey = delhiveryAuth();
-        if (!empty($jwtKey)) 
-        {  
+        if (!empty($jwtKey)) {
             $booking_data = DB::table('tbl_domestic_booking')->where(['id' => $booking_id])->first();
             if (!empty($booking_data)) {
                 $product = DB::table('tbl_domestic_products')->where(['booking_id' => $booking_id])->get();
@@ -449,9 +453,9 @@ class DomesticsOrders extends Controller
                     $customer = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
                     $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
                     $frompin = $this->pincode->pincodedata($pincodewhere);
-                    $sender_name = $customer->personal_name.' '.$customer->surname;
+                    $sender_name = $customer->personal_name . ' ' . $customer->surname;
                     $mobile_no = $customer->mobile_number;
-                    $sender_address = $customer->address_line1 .' '.$customer->address_line2;
+                    $sender_address = $customer->address_line1 . ' ' . $customer->address_line2;
                 } else {
                     $customer = DB::table('tbl_pickup_address')->where(['id' => $booking_data->pickup_address])->first();
                     $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
@@ -459,11 +463,11 @@ class DomesticsOrders extends Controller
                     $data['from_address'] = $customer->address . ',' . $customer->landmark . ',' . $frompin->city . ',' . $frompin->state . ' ' . $frompin->pincode;
                     $sender_name = $customer->contact_person;
                     $mobile_no = $customer->contact_no;
-                    $sender_address = $customer->address .' '.$customer->landmark;
+                    $sender_address = $customer->address . ' ' . $customer->landmark;
                 }
                 // pices
                 $pieces_detail = [];
-                foreach($product as $key => $val){
+                foreach ($product as $key => $val) {
                     $pieces_detail[] = [
                         "description" => 'box', // Use object syntax -> instead of []
                         // "declared_value" => round($val->inv_value),
@@ -476,66 +480,66 @@ class DomesticsOrders extends Controller
                 }
                 // invoice
                 $invoice = [];
-                foreach($product as $key => $val){
+                foreach ($product as $key => $val) {
                     $invoice[] = [
                         "n_value" => round($val->inv_value),
                         "ident" => $val->inv_no,
                     ];
                 }
                 // amount 
-                $amount = ($booking_data->paymentMode=='Prepaid')? 0 : $booking_data->order_total;
+                $amount = ($booking_data->paymentMode == 'Prepaid') ? 0 : $booking_data->order_total;
 
                 // To Address              
                 $pincodewhere = ['tbl_pincode.pincode' => $booking_data->buy_delivery_pincode];
                 $topin = $this->pincode->pincodedata($pincodewhere);
 
                 $BookingData = [
-                   'pickup_location' => "INNOVATIONMAKER123",
-                   'return_address' => [
-                       'name' => $sender_name,
-                       'phone' => $mobile_no,
-                       'address' => $sender_address,
-                       'zip' => $frompin->pincode,
-                       'city' => $frompin->city,
-                       'region' => $frompin->state
-                   ],
-                   'dropoff_location' => [
-                       'consignee' => $booking_data->buy_full_name,
-                       'phone' => $booking_data->buy_mobile,
-                       'address' =>  $booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark,
-                       'zip' => $topin->pincode,
-                       'city' =>  $topin->city,
-                       'region' => $topin->state
-                   ],
+                    'pickup_location' => "INNOVATIONMAKER123",
+                    'return_address' => [
+                        'name' => $sender_name,
+                        'phone' => $mobile_no,
+                        'address' => $sender_address,
+                        'zip' => $frompin->pincode,
+                        'city' => $frompin->city,
+                        'region' => $frompin->state
+                    ],
+                    'dropoff_location' => [
+                        'consignee' => $booking_data->buy_full_name,
+                        'phone' => $booking_data->buy_mobile,
+                        'address' =>  $booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark,
+                        'zip' => $topin->pincode,
+                        'city' =>  $topin->city,
+                        'region' => $topin->state
+                    ],
                     'd_mode' => $booking_data->paymentMode,
                     'amount' => round($amount),
                     'rov_insurance' => true,
                     'weight' => round($booking_data->dead_weight),
                     'invoices' => $invoice,
                     'suborders' => $pieces_detail,
-                    'dimensions' => 
+                    'dimensions' =>
                     [
                         [
-                            "length" => round($booking_data->length) ,
-                            "width" => round($booking_data->breath) ,
+                            "length" => round($booking_data->length),
+                            "width" => round($booking_data->breath),
                             "height" => round($booking_data->height),
                             "count" => count($product)
                         ]
                     ]
 
-                ];          
-            //    echo '<pre></pre>'; dd(json_encode($BookingData));             
-                 $booking = Bookingdelhivery(json_encode($BookingData),$jwtKey->jwt);
-                 if(!empty($booking)){
+                ];
+                //    echo '<pre></pre>'; dd(json_encode($BookingData));             
+                $booking = Bookingdelhivery(json_encode($BookingData), $jwtKey->jwt);
+                if (!empty($booking)) {
                     $post = DomesticBooking::find($booking_data->id);
-                    $post->update(['forwording_no' =>  $booking,'courier'=>$courier]);
+                    $post->update(['forwording_no' =>  $booking, 'courier' => $courier]);
                     $post->save();
-                 }
+                }
             }
         }
     }
 
-    public function XpressbeesAPICall($booking_id,$courier,$mode,$amount)
+    public function XpressbeesAPICall($booking_id, $courier, $mode, $amount)
     {
         $key1 = XpressbeesAuth()->data;
         $booking_data = DB::table('tbl_domestic_booking')->where(['id' => $booking_id])->first();
@@ -546,9 +550,9 @@ class DomesticsOrders extends Controller
                 $customer = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
                 $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
                 $frompin = $this->pincode->pincodedata($pincodewhere);
-                $sender_name = $customer->personal_name.' '.$customer->surname;
+                $sender_name = $customer->personal_name . ' ' . $customer->surname;
                 $mobile_no = $customer->mobile_number;
-                $sender_address = $customer->address_line1 .' '.$customer->address_line2;
+                $sender_address = $customer->address_line1 . ' ' . $customer->address_line2;
             } else {
                 $customer = DB::table('tbl_pickup_address')->where(['id' => $booking_data->pickup_address])->first();
                 $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
@@ -556,46 +560,46 @@ class DomesticsOrders extends Controller
                 $data['from_address'] = $customer->address . ',' . $customer->landmark . ',' . $frompin->city . ',' . $frompin->state . ' ' . $frompin->pincode;
                 $sender_name = $customer->contact_person;
                 $mobile_no = $customer->contact_no;
-                $sender_address = $customer->address .' '.$customer->landmark;
+                $sender_address = $customer->address . ' ' . $customer->landmark;
             }
             // To Address              
             $pincodewhere = ['tbl_pincode.pincode' => $booking_data->buy_delivery_pincode];
             $topin = $this->pincode->pincodedata($pincodewhere);
 
-              // pices
-              $pieces_detail = [];
-              foreach($product as $key => $val){
-                  $pieces_detail[] = [
-                      "product_name" => $val->productName,
-                      "product_price" => round($val->unitPrice),
-                      "product_tax_per" => $val->order_tax_rate,
-                      "product_sku" => $val->order_sku,
-                      "product_hsn" => $val->order_hsn_code,
-                      "product_qty" => count($product)
-                  ];
-              }
-              // invoice
-              $invoice = [];
-              foreach($product as $key => $val){
-                  $invoice[] = [
-                      "invoice_number" => $val->inv_no,
-                      "invoice_date" => '',
-                      "ebill_number" => '',
-                      "ebill_expiry_date" => ''
-                  ];
-              }
-              
+            // pices
+            $pieces_detail = [];
+            foreach ($product as $key => $val) {
+                $pieces_detail[] = [
+                    "product_name" => $val->productName,
+                    "product_price" => round($val->unitPrice),
+                    "product_tax_per" => $val->order_tax_rate,
+                    "product_sku" => $val->order_sku,
+                    "product_hsn" => $val->order_hsn_code,
+                    "product_qty" => count($product)
+                ];
+            }
+            // invoice
+            $invoice = [];
+            foreach ($product as $key => $val) {
+                $invoice[] = [
+                    "invoice_number" => $val->inv_no,
+                    "invoice_date" => '',
+                    "ebill_number" => '',
+                    "ebill_expiry_date" => ''
+                ];
+            }
+
             $bookingData = [
-                'id'=>$booking_data->order_id,
+                'id' => $booking_data->order_id,
                 'unique_order_number' => 'no',
                 'payment_method' => strtoupper($booking_data->paymentMode),
                 'consigner_name' => $sender_name,
                 'consigner_phone' => $mobile_no,
                 'consigner_pincode' => $frompin->pincode,
-                'consigner_city'=>$frompin->city,
-                'consigner_state'=>$frompin->state,
-                'consigner_address'=>$sender_address,
-                'consigner_gst_number'=>'',
+                'consigner_city' => $frompin->city,
+                'consigner_state' => $frompin->state,
+                'consigner_address' => $sender_address,
+                'consigner_gst_number' => '',
                 'consignee_name' => $booking_data->buy_full_name,
                 'consignee_phone' => $booking_data->buy_mobile,
                 'consignee_address' =>  $booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark,
@@ -617,18 +621,18 @@ class DomesticsOrders extends Controller
                 'order_amount' => round($booking_data->order_total),
                 'collectable_amount' => round(0),
             ];
-           
-            $callbooking = XpressbessBooking(json_encode($bookingData),$key1);
-            if(!empty($callbooking)){
+
+            $callbooking = XpressbessBooking(json_encode($bookingData), $key1);
+            if (!empty($callbooking)) {
                 $post = DomesticBooking::find($booking_data->id);
-                $post->update(['forwording_no' =>  $callbooking->awb_number,'courier'=>$courier]);
+                $post->update(['forwording_no' =>  $callbooking->awb_number, 'courier' => $courier]);
                 $post->save();
-             }
+            }
             dd($callbooking);
         }
     }
 
-    public function BlueDartAPICall($booking_id,$courier,$mode,$amount)
+    public function BlueDartAPICall($booking_id, $courier, $mode, $amount)
     {
         $authkey = BlueDartAuth();
         $key1 = $authkey->JWTToken;
@@ -641,9 +645,9 @@ class DomesticsOrders extends Controller
                 $customer = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
                 $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
                 $frompin = $this->pincode->pincodedata($pincodewhere);
-                $sender_name = $customer->personal_name.' '.$customer->surname;
+                $sender_name = $customer->personal_name . ' ' . $customer->surname;
                 $mobile_no = $customer->mobile_number;
-                $sender_address = $customer->address_line1 .' '.$customer->address_line2;
+                $sender_address = $customer->address_line1 . ' ' . $customer->address_line2;
             } else {
                 $customer = DB::table('tbl_pickup_address')->where(['id' => $booking_data->pickup_address])->first();
                 $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
@@ -651,14 +655,14 @@ class DomesticsOrders extends Controller
                 $data['from_address'] = $customer->address . ',' . $customer->landmark . ',' . $frompin->city . ',' . $frompin->state . ' ' . $frompin->pincode;
                 $sender_name = $customer->contact_person;
                 $mobile_no = $customer->contact_no;
-                $sender_address = $customer->address .' '.$customer->landmark;
+                $sender_address = $customer->address . ' ' . $customer->landmark;
             }
             // To Address              
             $pincodewhere = ['tbl_pincode.pincode' => $booking_data->buy_delivery_pincode];
             $topin = $this->pincode->pincodedata($pincodewhere);
 
             $itemdtl = [];
-            foreach($product as $key => $val){
+            foreach ($product as $key => $val) {
                 $itemdtl[] = [
                     "CGSTAmount" => 0,
                     "HSCode" => "",
@@ -690,7 +694,7 @@ class DomesticsOrders extends Controller
             }
             // invoice
             $Dimensions = [];
-            foreach($product as $key => $val){
+            foreach ($product as $key => $val) {
                 $Dimensions[] = [
                     "Count" => count($product),
                     "Breadth" => $val->width,
@@ -734,7 +738,7 @@ class DomesticsOrders extends Controller
                         "ReturnMobile" => $mobile_no,
                         "ReturnPincode" => $frompin->pincode,
                         "ReturnTelephone" => ""
-                    ], 
+                    ],
                     "Services" => [
                         "AWBNo" => "",
                         "ActualWeight" => $booking_data->dead_weight,
@@ -808,19 +812,17 @@ class DomesticsOrders extends Controller
                     ]
                 ],
                 "Profile" => [
-                   "LoginID" => "BOM85331",
-                   "LicenceKey" => "lerstmgofmrskogqelln8nmnwtrlkem"
+                    "LoginID" => "BOM85331",
+                    "LicenceKey" => "lerstmgofmrskogqelln8nmnwtrlkem"
                 ]
             ];
-            $response = BookingblueDart(json_encode($postdata),$key1);
-
-            
+            $response = BookingblueDart(json_encode($postdata), $key1);
         }
     }
 
     public function booking_API(Request $request)
     {
-       
+
         if (empty($request->all())) {
             $response = [
                 'status' => 'faild',
@@ -833,13 +835,89 @@ class DomesticsOrders extends Controller
             $ShipmentAmount = $request->amount;
             // Delhivery Api Docket Booking
             if ($request->courier == 2) {
-                $this->DelhiveryAPICall($request->booking_id,$request->courier,$request->mode_id,$request->amount);
-            }elseif($request->courier == 3){
-                $this->XpressbeesAPICall($request->booking_id,$request->courier,$request->mode_id,$request->amount);
-            }elseif($request->courier == 1){
-                $this->BlueDartAPICall($request->booking_id,$request->courier,$request->mode_id,$request->amount);
+                $this->DelhiveryAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
+            } elseif ($request->courier == 3) {
+                $this->XpressbeesAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
+            } elseif ($request->courier == 1) {
+                $this->BlueDartAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
             }
-
         }
+    }
+
+    public function rate_calculator()
+    {
+        $data = [];
+        $data['title'] = 'Rate calculator';
+        $data['mode'] = DB::table('tbl_transfer_mode')->where(['mfd' => 0, 'status' => 0])->get();
+        $data['curier'] = DB::table('tbl_courier_company')->where(['mfd' => 0, 'status' => 0])->get();
+        return view('customer.rate_calculator.rateCalculator', $data);
+    }
+
+    function getRateCalculate(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'courier_id' => 'required',
+            'mode_id' => 'required',
+            'applicable_weight' => 'required|numeric',
+            'from_pincode' => 'required|numeric',
+            'to_pincode' => 'required|numeric'
+        ]);
+        if ($validation->passes()) {
+            $rate_id = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
+            $courier_company = DB::table('tbl_courier_company')->where(['status' => 0, 'mfd' => 0])->get();
+            $delDate = date('Y-m-d', strtotime(date('Y-m-d')));
+            $data['courier_company'] = [];
+            $from_z = $this->pincode->pincodeZone($request->from_pincode);
+            $to_z = $this->pincode->pincodeZone($request->to_pincode);
+            $fromZone = !empty($from_z) ? $from_z->id : 0;
+            $toZone = !empty($to_z) ? $to_z->id : 0;
+            $modewiseRate = $this->rate->CustomerRate($rate_id->fuel_group_id, $fromZone, $toZone, $request->applicable_weight, $delDate);
+            // dd($modewiseRate);
+            foreach ($modewiseRate as $key => $val) {
+                $rate = $this->RateCalculate($val->mode_id, $val->courier, $rate_id->fuel_group_id, $rate_id->rate_group_id, (object)['pincode' => $request->from_pincode], (object)['pincode' => $request->to_pincode], $request->applicable_weight, $delDate);
+                $daysToAdd = $rate[1];
+                $mode = DB::table('tbl_transfer_mode')->where(['id' => $val->mode_id])->first();
+                $courier = DB::table('tbl_courier_company')->where(['id' => $val->courier, 'mfd' => 0, 'status' => 0])->first();
+                if (!empty($rate)) {
+                    $exists = false;
+                    foreach ($data['courier_company'] as $existing) {
+                        if ($existing['mode_id'] == $mode->id && $existing['company_id'] == $val->courier) {
+                            $exists = true;
+                            break;
+                        }
+                    }
+                    // Only add if not already exists
+                    if (!$exists) {
+                        $data['courier_company'][] = [
+                            'img_logo' => asset('admin-assets/courier_company_logo/' . $courier->img_logo),
+                            'company_name' => $courier->company_name,
+                            'amount' => $rate[0],
+                            'company_id' => $val->courier,
+                            'mode' => $mode->mode_name,
+                            'mode_id' => $mode->id,
+                            'deliverydate' => date('M d Y', strtotime("$delDate + $daysToAdd days")),
+                            'pickupdate' => date('M d Y', strtotime($delDate)),
+                        ];
+                    }
+                }
+            }
+            if(empty($data['courier_company'] )){
+                return json_encode([
+                                'status'=> 'rate',
+                                'data' => 'Rate Not Exist'
+                            ]);
+            }else{
+                return json_encode([
+                                'status' => 'true',
+                                'data'=>$data
+                            ]);
+            }
+        } else {
+            return json_encode([
+                'status' => 'failed',
+                'data' => $validation->errors()
+            ]);
+        }
+       
     }
 }
