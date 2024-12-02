@@ -46,6 +46,10 @@ Route::get('/', function () {
 
 Route::post('app/login', [CustomerRegistrationLogin::class, 'app_login'])->name('app.login');
 Route::post('/store-register', [CustomerRegistrationLogin::class, 'store_register'])->name('store-register');
+
+    // Forgotpassword
+    Route::get('/forgotpassword', [CustomerRegistrationLogin::class, 'forgotpassHomepage'])->name('forgotpassword');
+    Route::post('/forgotpassOTP', [CustomerRegistrationLogin::class, 'forgotpassOTP'])->name('forgotpassOTP');
 Route::group(['middleware' => 'customer'], function () {
     // registration 
     Route::get('/register', [CustomerRegistrationLogin::class, 'index'])->name('register');

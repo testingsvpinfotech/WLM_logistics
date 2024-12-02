@@ -33,25 +33,22 @@
         <div class="container">
             <div class="row vh-100 justify-content-between align-items-center">
                 <div class="col-12">
-                    <form action="{{ route('admin.login') }}" id="customerLogin" method="post" class="row row-eq-height lockscreenr  mt-5 mb-5">
-                        <div class="lock-image col-12 col-sm-5"></div>
-                        <div class="login-form col-12 col-sm-7">
+                    <form  id="forgotpassword" method="post" class="row row-eq-height lockscreen  mt-5 mb-5">
+                        
+                        <div class="login-form col-12 col-sm-12">
                             <span style="color:red" class="msg"></span>
+                            <h5><b>Forgot Your Password</b></h5>
+                            <p>Enter your phone number (without extension) to receive OTP for password reset.</p>
                             <div class="form-group mb-3">
-                                <label for="emailaddress">Email</label>
-                                <input class="form-control" type="email" name="email" id="email"  placeholder="Enter your Email">
+                                <label for="emailaddress">Phone No</label>
+                                <input class="form-control" type="text" name="phone" id="phone" maxlength="10" minlength="10"  placeholder="Enter your Phone No">
                                 <p style="color:red"></p>
                             </div>
-
-                            <div class="form-group mb-3">
-                                <label for="password">Password</label>
-                                <input class="form-control" type="password"  name="password" id="password" placeholder="Enter your password">
-                                <p style="color:red"></p>
-                            </div>
-                            <div class="form-group mb-0 text-right">
-                                <button class="btn btn-primary" type="submit"> Sign In </button>
+                            <div class="form-group mb-0">
+                                <br><br>
+                                <button class="btn btn-outline-success " style="width: 100%;" type="submit"> Send OTP </button>
                             </div> <br>
-                            <div class="mt-2"><a href="{{ route('forgotpassword')}}">Forgot Password</a></div>
+                            <div class="mt-2 text-center"><span style="color:grey;">Remember the password? </span><a href="{{route('sign-in')}}" style="color:blue;">Login</a></div>
                         </div>
                     </form>
                 </div>

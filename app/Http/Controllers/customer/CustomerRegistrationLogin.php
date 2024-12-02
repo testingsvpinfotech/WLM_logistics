@@ -336,5 +336,32 @@ class CustomerRegistrationLogin extends Controller
              return response()->json($json);
          }
      }
+     
+     public function forgotpassHomepage()
+     {
+         $data = [];
+         $data['title'] = 'WLM Logistics Forgotpass';
+         return view('customer.forgotpassword.forgothome',$data);
+     }
+
+     public function forgotpassOTP(Request $request)
+     {
+         $mobile_number = session('customer.mobile_number');
+         $customerId = session('customer.id');
+         $otpCode = rand(100000, 999999);
+         $otpStatus = SendOtp($mobile_number,$otpCode);
+         if($otpStatus == 'true'){
+             OTP::create([
+                 'customer_id' => $customerId,
+                 'otp' => $otpCode,
+                 'expires_at' => Carbon::now()->addMinutes(2),
+                 'created_at' => now(),
+             ]);
+             return response()->json([
+                 'status' => 'success',
+                 'message' => 'OTP Send successfully',
+             ]);
+         }
+     }
 
 }
