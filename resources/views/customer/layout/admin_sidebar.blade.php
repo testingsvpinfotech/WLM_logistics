@@ -236,7 +236,7 @@
                    </a>
                    <ul style="display: none;">
                        <li>
-                           <a href="#">
+                           <a href="{{route('app.rate-card')}}">
                                Rate Card
                            </a>
                        </li>

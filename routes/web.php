@@ -24,6 +24,7 @@ use App\Http\Controllers\customer\CustomerRegistrationLogin;
 use App\Http\Controllers\customer\CustomerDashboard;
 use App\Http\Controllers\customer\DomesticsOrders;
 use App\Http\Controllers\customer\InternationalOrders;
+use App\Http\Controllers\customer\RateMaster;
 
 
 /*
@@ -79,6 +80,8 @@ Route::group(['middleware' => 'customer'], function () {
     // Domestic rate calculator
     Route::get('app/rate-calculator',action: [DomesticsOrders::class,'rate_calculator'])->name('app.ratecalculator');
     Route::post('app/get-calculator',action: [DomesticsOrders::class,'getRateCalculate'])->name('app.getcalculator');
+    // Rate Card 
+    Route::get('app/rate-card',[RateMaster::class,'index'])->name('app.rate-card');
     // international orders
     Route::get('app/view-international-orders', [InternationalOrders::class, 'index'])->name('app.view-international-orders');
     Route::get('app/international-order',[InternationalOrders::class,'add_orders'])->name('app.international-order');
