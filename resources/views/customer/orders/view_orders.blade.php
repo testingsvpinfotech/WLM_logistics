@@ -130,52 +130,94 @@
                                     International Order</a></li>
                         </ul>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table align-middle">
-                                <thead class="bg-light">
+                    <div class="m-4">
+                        <!-- Filter Buttons -->
+                        <div class="d-flex justify-content-between mb-3 align-items-center">
+                            <div class="filter-buttons">
+                                <a href="{{route('app.view-orders')}}" class="badge bg-primary">All Orders</a>
+                                <span class="badge bg-warning text-dark">Processing (5)</span>
+                                <span class="badge bg-info text-white">Ready to Ship (8)</span>
+                                <span class="badge bg-success">Manifest (267)</span>
+                                <span class="badge bg-secondary">Returns (5)</span>
+                            </div>
+                        </div>
+                        <form action="{{route('app.view-orders')}}" method="get">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="">Search Data</label>
+                                    <input type="text" name="search" id="search" class="form-control buttonCall" placeholder="AWB No | Order Id | Customer Name">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="">From Date</label>
+                                    <input type="date" name="from_date" id="from_date" class="form-control buttonCall">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="">To Date</label>
+                                    <input type="date" name="to_date" id="to_date" class="form-control buttonCall">
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-outline-primary mt-4"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                    <a href="{{route('app.view-orders')}}" class="btn btn-outline-danger mt-4"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                        </form>
+                        <br>
+                        <!-- Table -->
+                        <div class="table-responsive table-scroll">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>Order Details</th>
+                                        <th><input type="checkbox"></th>
+                                        <th>Order Date</th>
+                                        <th>Order Source</th>
+                                        <th>Order ID</th>
+                                        <th>Amount</th>
+                                        <th>Product</th>
                                         <th>Customer Details</th>
-                                        <th>Payment</th>
-                                        <th>Pickup / RTO Addresses</th>
-                                        <th>Shipping Details</th>
-                                        <th>Status</th>
+                                        <th>Pickup Address</th>
+                                        <th>Delivery Address</th>
+                                        <th>Dimension (CM)</th>
+                                        <th>Courier Partner</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+
                                     @php
                                     $count = 1;
                                     @endphp
                                     @foreach ($orders as $key => $val)
                                     <tr>
+                                        <td><input type="checkbox"></td>
                                         <td>
-                                            <a href="#" class="order-link">{{ $val->order_id }}</a><br>
-                                            <span
-                                                class="order-time">{{ date('d M Y | h:i A', strtotime($val->orderDate)) }}</span><br>
-                                            <!-- <span class="order-cart-icon"><i class="icon-cart"></i>
-                                                                {{ $val->order_channel }}</span><br> -->
-                                            <a tabindex="0" class="btn btn-link" role="button"
-                                                data-toggle="popover" data-trigger="focus" title="Package Details"
-                                                data-html="true"
-                                                data-content="<div>
-                                                                <b>Package 1</b><br>
-                                                                {{ $val->length . 'X' . $val->breath . 'X' . $val->height }} (cm)<br><br>
-                                                                <b>Dead wt.:</b> {{ $val->dead_weight }} Kg<br>
-                                                                <b>Vol. wt.:</b> {{ $val->voluematrix_weight }} Kg
-                                                            </div>">Package
-                                                Details
-                                            </a>
+                                            Date: {{ date('d/m/Y', strtotime($val->orderDate)) }}<br>
+                                            Time: {{ date('h:i A', strtotime($val->orderDate)) }}
+                                        </td>
+                                        <td>custom</td>
+                                        <td>
+                                            <a href="#">{{ $val->order_id }}</a><br>
+                                            <!-- <span class="status-pill status-delivered">Delivered</span><br>
+                                            <span class="status-pill status-forwarded">forward</span> -->
                                         </td>
                                         <td>
-                                            <strong>{{ $val->buy_full_name }}</strong><br>
-                                            {{ $val->buy_email }}<br>
-                                            {{ $val->buy_mobile }}
+                                            Amount: ₹{{ $val->order_total }}<br>
+                                            <span class="status-pill status-cod">{{ ucfirst($val->paymentMode) }}</span>
                                         </td>
                                         <td>
-                                            <span class="order-amount">₹ {{ $val->order_total }}</span><br>
-                                            <span class="payment-label">{{ ucfirst($val->paymentMode) }}</span>
+                                        @php
+                                            $product = DB::table('tbl_domestic_products')
+                                            ->where(['booking_id' => $val->id])
+                                            ->first();
+                                            @endphp
+                                            Name : {{$product->productName}} <br>
+                                            SKU : {{$product->order_sku}} <br>
+                                            Qty : 1
+                                        </td>
+                                        <td>
+                                            Name: {{ $val->buy_full_name }}<br>
+                                            Contact: {{ $val->buy_mobile }}
                                         </td>
                                         <td>
                                             @if ($val->pickup_address == 'primary')
@@ -192,34 +234,40 @@
                                             {{ $addres->contact_no }} <br>
                                             {{ $addres->address . ',' . $addres->landmark . ' ' . $addres->pincode }}
                                             @endif
-
-                                        </td>
-
-
-                                        <td>
-                                            <strong>AWB #</strong><br>
-                                            Not Assigned
                                         </td>
                                         <td>
-                                            <span class="status-label">NEW</span>
+                                            {{$val->buy_delivery_address}}<br>
+                                            {{$val->buy_delivery_landmark}}<br>
+                                            {{$val->buy_delivery_pincode}}
                                         </td>
                                         <td>
-                                            {{-- <button class="btn btn-action">Ship Now</button> --}}
+                                            Wt: {{ $val->dead_weight }}<br>
+                                            (L * B * H): {{ $val->length . ' * ' . $val->breath . ' * ' . $val->height }}<br>
+                                            Vol. Wt: {{ $val->voluematrix_weight }}
+                                        </td>
+                                        <td>
+                                            Courier: <br>
+                                            AWB:
+                                        </td>
+                                        <td>
                                             <button type="button" class="btn btn-action"
                                                 onclick="return domesticModel('{{ $val->id }}');">
                                                 Ship Now
                                             </button>
-
-                                            <button class="btn btn-outline-secondary"><i
-                                                    class="fas fa-ellipsis-h"></i></button>
+                                            <!-- <button class="btn btn-primary btn-icon">🔍</button>
+                                            <button class="btn btn-success btn-icon">✏️</button>
+                                            <button class="btn btn-danger btn-icon">♻️</button> -->
                                         </td>
                                     </tr>
                                     @endforeach
+                                    <!-- Add additional rows as needed -->
                                 </tbody>
                             </table>
-                            <div class="pagination-wrapper">
-                                {{ $orders->links() }}
-                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="pagination-wrapper">
+                            {{ $orders->links() }}
                         </div>
                     </div>
                 </div>
@@ -228,108 +276,7 @@
         </div>
 
 
-        <div class="container my-4">
-            <h3 class="text-center mb-4">All Orders</h3>
 
-            <!-- Filter Buttons -->
-            <div class="d-flex justify-content-between mb-3 align-items-center">
-                <div class="filter-buttons">
-                    <span class="badge bg-primary">All Orders (24)</span>
-                    <span class="badge bg-danger">Unprocessable (9)</span>
-                    <span class="badge bg-warning text-dark">Processing (5)</span>
-                    <span class="badge bg-info text-white">Ready to Ship (8)</span>
-                    <span class="badge bg-success">Manifest (267)</span>
-                    <span class="badge bg-secondary">Returns (5)</span>
-                </div>
-                <div class="d-flex">
-                    <input
-                        type="text"
-                        class="form-control me-2"
-                        placeholder="Search Orders (Provide comma separated IDs/AWBs)" />
-                    <button class="btn btn-primary">Search</button>
-                    <button class="btn btn-secondary ms-2">Reset</button>
-                </div>
-            </div>
-
-            <!-- Table -->
-            <div class="table-responsive table-scroll">
-                <table class="table table-bordered align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th><input type="checkbox"></th>
-                            <th>Order Date</th>
-                            <th>Order Source</th>
-                            <th>Order ID</th>
-                            <th>Amount</th>
-                            <th>Product</th>
-                            <th>Customer Details</th>
-                            <th>Pickup Address</th>
-                            <th>Delivery Address</th>
-                            <th>Dimension (CM)</th>
-                            <th>Courier Partner</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td>
-                                Date: 05/09/2024<br>
-                                Time: 12:05 PM
-                            </td>
-                            <td>custom</td>
-                            <td>
-                                <a href="#">AADEXP-2576</a><br>
-                                <span class="status-pill status-delivered">Delivered</span><br>
-                                <span class="status-pill status-forwarded">forward</span>
-                            </td>
-                            <td>
-                                Amount: ₹880<br>
-                                <span class="status-pill status-cod">cod</span>
-                            </td>
-                            <td>
-                                Name: GARMENTS<br>
-                                SKU: GM005<br>
-                                Qty: 1
-                            </td>
-                            <td>
-                                Name: CHINMAYI LANKA<br>
-                                Contact: 8712727289
-                            </td>
-                            <td>eDelivery</td>
-                            <td>
-                                TELANGANA<br>
-                                HYDERABAD<br>
-                                500072
-                            </td>
-                            <td>
-                                Wt: 0.2<br>
-                                (L * B * H): 10 * 10 * 10<br>
-                                Vol. Wt: 0.2
-                            </td>
-                            <td>
-                                Courier: Delhivery Lite<br>
-                                AWB: 23189711827136
-                            </td>
-                            <td>
-                                <button class="btn btn-primary btn-icon">🔍</button>
-                                <button class="btn btn-success btn-icon">✏️</button>
-                                <button class="btn btn-danger btn-icon">♻️</button>
-                            </td>
-                        </tr>
-                        <!-- Add additional rows as needed -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Footer -->
-            <div class="d-flex justify-content-between mt-3">
-                <div>
-                    Showing <b>20</b> of <b>24</b> | Selected <b>0</b> out of <b>20</b>
-                </div>
-                <button class="btn btn-primary">Export</button>
-            </div>
-        </div>
         </body>
         <!-- END: Card DATA-->
     </div>

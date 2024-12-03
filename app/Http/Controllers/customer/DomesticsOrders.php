@@ -26,13 +26,25 @@ class DomesticsOrders extends Controller
     }
     public function index()
     {
+        
+        $searchData = request()->input('search');
+        $from_date = request()->input('from_date');
+        $to_date = request()->input('to_date');
         $currentPage = request()->input('page', 1);
         $domesticBooking = new DomesticBooking();
-        $internationalBooking = new InternationalBooking();
+        $where = '';
+        // if (!empty($from_date) && !empty($to_date)) {
+        //     $where .= $domesticBooking->whereBetween('created_at', [$from_date, $to_date]);
+        // }
+        // if (!empty($searchData)) {
+        //     $where .= $domesticBooking->where('order_id', 'like', '%' . $searchData . '%')
+        //           ->orWhere('customer_name', 'like', '%' . $searchData . '%');
+        //         //   ->orWhere('order_status', 'like', '%' . $searchData . '%');
+        // }
+        // dd( $where); 
         $data = [];
         $data['title'] = "View Orders";
         $data['orders'] = $domesticBooking->get_domestic_orders('', 50, $currentPage); // Page 1
-        $data['interorders'] = $internationalBooking->get_international_orders('', 50, $currentPage); // Page 1
         return view('customer.orders.view_orders', $data);
     }
 
