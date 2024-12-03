@@ -134,14 +134,14 @@
                         <!-- Filter Buttons -->
                         <div class="d-flex justify-content-between mb-3 align-items-center">
                             <div class="filter-buttons">
-                                <a href="{{route('app.view-orders')}}" class="badge bg-primary">All Orders</a>
+                            <a href="{{route('app.view-orders')}}" class="badge bg-primary">All Orders</a>
                                 <a href="{{route('app.view-Processing-orders')}}" class="badge bg-warning text-dark">Processing</a>
                                 <a href="{{route('app.view-readyforship-orders')}}" class="badge bg-info text-white">Ready to Ship</a>
                                 <a href="{{route('app.view-manifest-orders')}}" class="badge bg-success">Manifest</a>
                                 <a href="{{route('app.view-return-orders')}}" class="badge bg-secondary">Returns</a>
                             </div>
                         </div>
-                        <form action="{{route('app.view-orders')}}" method="get">
+                        <form action="{{route('app.view-readyforship-orders')}}" method="get">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -159,7 +159,7 @@
                                 
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-outline-primary mt-4"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                    <a href="{{route('app.view-orders')}}" class="btn btn-outline-danger mt-4"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                    <a href="{{route('app.view-readyforship-orders')}}" class="btn btn-outline-danger mt-4"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </form>
@@ -250,10 +250,7 @@
                                             AWB:
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-action"
-                                                onclick="return domesticModel('{{ $val->id }}');">
-                                                Ship Now
-                                            </button>
+                                            
                                             <!-- <button class="btn btn-primary btn-icon">🔍</button>
                                             <button class="btn btn-success btn-icon">✏️</button>
                                             <button class="btn btn-danger btn-icon">♻️</button> -->

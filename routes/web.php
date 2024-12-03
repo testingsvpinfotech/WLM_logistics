@@ -71,6 +71,10 @@ Route::group(['middleware' => 'customer'], function () {
     Route::get('app/logout', [CustomerDashboard::class, 'logout'])->name('app.logout');
     // domestic orders 
     Route::get('app/view-orders',[DomesticsOrders::class,'index'])->name('app.view-orders');
+    Route::get('app/view-Processing-orders',[DomesticsOrders::class,'ProcessOrders'])->name('app.view-Processing-orders');
+    Route::get('app/view-readyforship-orders',[DomesticsOrders::class,'readyforship'])->name('app.view-readyforship-orders');
+    Route::get('app/view-manifest-orders',[DomesticsOrders::class,'Manifest'])->name('app.view-manifest-orders');
+    Route::get('app/view-return-orders',[DomesticsOrders::class,'returnOrders'])->name('app.view-return-orders');
     Route::get('app/add-orders',[DomesticsOrders::class,'add_orders'])->name('app.add-orders');
     Route::post('app/get-pincode',[DomesticsOrders::class,'get_pincode'])->name('app.get-pincode');
     Route::post('app/get-domestic-order',[DomesticsOrders::class,'getModel'])->name('app.get-domestic-order');

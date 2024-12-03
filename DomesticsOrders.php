@@ -24,131 +24,28 @@ class DomesticsOrders extends Controller
         $this->pincode = new PincodeMaster;
         $this->rate = new DomesticRate;
     }
-    //  All Orders
     public function index()
     {
+        
         $searchData = request()->input('search');
         $from_date = request()->input('from_date');
         $to_date = request()->input('to_date');
         $currentPage = request()->input('page', 1);
-        $query = DomesticBooking::query();
-        if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
-        }
-        if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
-        }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
-        $data = [
-            'title' => "All Orders",
-            'orders' => $orders,
-            'search' => $searchData, 
-            'from_date' => $from_date, 
-            'to_date' => $to_date,
-        ];
-
+        $domesticBooking = new DomesticBooking();
+        $where = '';
+        // if (!empty($from_date) && !empty($to_date)) {
+        //     $where .= $domesticBooking->whereBetween('created_at', [$from_date, $to_date]);
+        // }
+        // if (!empty($searchData)) {
+        //     $where .= $domesticBooking->where('order_id', 'like', '%' . $searchData . '%')
+        //           ->orWhere('customer_name', 'like', '%' . $searchData . '%');
+        //         //   ->orWhere('order_status', 'like', '%' . $searchData . '%');
+        // }
+        // dd( $where); 
+        $data = [];
+        $data['title'] = "View Orders";
+        $data['orders'] = $domesticBooking->get_domestic_orders('', 50, $currentPage); // Page 1
         return view('customer.orders.view_orders', $data);
-    }
-
-    // Processing Ordrs
-    public function ProcessOrders()
-    {
-        $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
-        $currentPage = request()->input('page', 1);
-        $query = DomesticBooking::query();
-        if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
-        }
-        if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
-        }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
-        $data = [
-            'title' => "Processing",
-            'orders' => $orders,
-            'search' => $searchData, 
-            'from_date' => $from_date, 
-            'to_date' => $to_date,
-        ];
-
-        return view('customer.orders.view_ProcessOrders_orders', $data);
-    }
-    // Processing Ordrs
-    public function readyforship()
-    {
-        $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
-        $currentPage = request()->input('page', 1);
-        $query = DomesticBooking::query();
-        if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
-        }
-        if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
-        }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
-        $data = [
-            'title' => "Ready to Ship",
-            'orders' => $orders,
-            'search' => $searchData, 
-            'from_date' => $from_date, 
-            'to_date' => $to_date,
-        ];
-        return view('customer.orders.view_readyforship_orders', $data);
-    }
-    public function Manifest()
-    {
-        $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
-        $currentPage = request()->input('page', 1);
-        $query = DomesticBooking::query();
-        if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
-        }
-        if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
-        }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
-        $data = [
-            'title' => "Manifest Orders",
-            'orders' => $orders,
-            'search' => $searchData, 
-            'from_date' => $from_date, 
-            'to_date' => $to_date,
-        ];
-        return view('customer.orders.view_Manifest_orders', $data);
-    }
-    public function returnOrders()
-    {
-        $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
-        $currentPage = request()->input('page', 1);
-        $query = DomesticBooking::query();
-        if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
-        }
-        if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
-        }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
-        $data = [
-            'title' => "Returns Order",
-            'orders' => $orders,
-            'search' => $searchData, 
-            'from_date' => $from_date, 
-            'to_date' => $to_date,
-        ];
-        return view('customer.orders.view_returnOrders', $data);
     }
 
     public function add_orders()
@@ -1016,16 +913,16 @@ class DomesticsOrders extends Controller
                     }
                 }
             }
-            if (empty($data['courier_company'])) {
+            if(empty($data['courier_company'] )){
                 return json_encode([
-                    'status' => 'rate',
-                    'data' => 'Rate Not Exist'
-                ]);
-            } else {
+                                'status'=> 'rate',
+                                'data' => 'Rate Not Exist'
+                            ]);
+            }else{
                 return json_encode([
-                    'status' => 'true',
-                    'data' => $data
-                ]);
+                                'status' => 'true',
+                                'data'=>$data
+                            ]);
             }
         } else {
             return json_encode([
@@ -1033,5 +930,6 @@ class DomesticsOrders extends Controller
                 'data' => $validation->errors()
             ]);
         }
+       
     }
 }
