@@ -33,6 +33,16 @@ if(!function_exists('company_type'))
         ];
     }
 }
+if(!function_exists('internationalType'))
+{
+    function internationalType()
+    {
+       return   $data = [
+                    '1'=>'Import',
+                    '2'=> 'Export'
+        ];
+    }
+}
 
 if(!function_exists('ordersMenus'))
 {

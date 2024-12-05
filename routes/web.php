@@ -18,6 +18,7 @@ use App\Http\Controllers\admin\ReginalZone;
 use App\Http\Controllers\admin\AdminDomesticRate;
 // international 
 use App\Http\Controllers\admin\International\RateGroup;
+use App\Http\Controllers\admin\International\InternationalZoneMaster;
 
 // customer 
 use App\Http\Controllers\customer\CustomerRegistrationLogin;
@@ -187,4 +188,12 @@ Route::group(['middleware' => 'admin'], function () {
     Route::put('admin/update-inet-rate-group', [RateGroup::class, 'update_rate_group'])->name('admin.update-inet-rate-group');
     Route::put('admin/delete-inet-rate-group', [RateGroup::class, 'destroyRategroup'])->name('admin.delete-inet-rate-group');
     Route::put('admin/status-inet-rate-group', [RateGroup::class, 'status'])->name('admin.status-inet-rate-group');
+
+    // International Zone
+    Route::get('admin/view-zone-master', [InternationalZoneMaster::class,'index'])->name('admin.view-zone-master');
+    Route::get('admin/export-zone-master', [InternationalZoneMaster::class,'export_zone_file'])->name('admin.export-zone-master');
+    Route::get('admin/view-add-zone', [InternationalZoneMaster::class,'add_zone'])->name('admin.view-add-zone');
+    Route::post('admin/store-add-zone', [InternationalZoneMaster::class,'store_zone'])->name('admin.store-add-zone');
+    Route::get('admin/view-zone-details/{id1}/{id2}',[InternationalZoneMaster::class,'getZoneData'])->name('admin.view-zone-details');
+    Route::put('admin/zone-destryment', [InternationalZoneMaster::class, 'status'])->name('admin.zone-destryment');
 });
