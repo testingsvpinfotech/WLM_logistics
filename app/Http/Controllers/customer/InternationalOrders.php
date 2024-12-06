@@ -23,6 +23,12 @@ use App\Models\InternationalBooking;
 class InternationalOrders extends Controller
 {
 
+    protected $rate;
+
+    function __construct()
+    {
+        $this->rate = new InternationalBooking;
+    }
     public function index()
     {
         $currentPage = request()->input('page', 1);
@@ -211,6 +217,73 @@ class InternationalOrders extends Controller
                 'data'=> $validation->errors()
             ];
             echo json_encode($json);exit; 
+        }
+    }
+
+
+    public function getModel(Request $request)
+    {
+        $id = $request->id;
+        dd( $id);
+        $data['booking_data'] = DB::table('tbl_international_booking')->where(['id' => $id])->first();
+        if (!empty($data['booking_data'])) {
+            // from address
+            if ($data['booking_data']->pickup_address == 'primary') {
+                $customer = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
+                $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
+                $frompin = $this->pincode->pincodedata($pincodewhere);
+                $data['from_address'] = $customer->address_line1 . ',' . $customer->address_line2 . ',' . $frompin->city . ',' . $frompin->state . ' ' . $frompin->pincode;
+            } else {
+                $customer = DB::table('tbl_pickup_address')->where(['id' => $data['booking_data']->pickup_address])->first();
+                $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
+                $frompin = $this->pincode->pincodedata($pincodewhere);
+                $data['from_address'] = $customer->address . ',' . $customer->landmark . ',' . $frompin->city . ',' . $frompin->state . ' ' . $frompin->pincode;
+            }
+            // To Address
+            if ($data['booking_data']->billing_status == "on") {
+                $data['to_address'] = $data['booking_data']->buy_delivery_addressline1 . ',' . $data['booking_data']->buy_delivery_addressline2 . ',' . $data['booking_data']->buy_delivery_city. ',' . $data['booking_data']->buy_delivery_state;
+            } else {
+                $data['to_address'] = $data['booking_data']->buy_delivery_billing_addressline1 . ',' . $data['booking_data']->buy_delivery_billing_addressline2 . ',' . $data['booking_data']->buy_delivery_billing_city . ',' . $data['booking_data']->buy_delivery_billing_state . ' ' . $data['booking_data']->buy_delivery_billing_pincode;
+            }
+            $rate_id = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
+            $courier_company = DB::table('tbl_courier_company')->where(['status' => 0, 'mfd' => 0,'company_type'=>2])->get();
+            $delDate = date('Y-m-d', strtotime($data['booking_data']->order_date));
+            $data['courier_company'] = [];
+            $modewiseRate = $this->rate->CustomerRate($rate_id->fuel_group_id, $fromZone, $toZone, $data['booking_data']->applicable_weight, date('Y-m-d', strtotime($data['booking_data']->orderDate)));
+            // dd($modewiseRate);
+            foreach ($modewiseRate as $key => $val) {
+                $rate = $this->RateCalculate($val->mode_id, $val->courier, $rate_id->fuel_group_id, $rate_id->rate_group_id, $frompin, $topin, $data['booking_data']->applicable_weight, $data['booking_data']->orderDate);
+                $daysToAdd = $rate[1];
+                $mode = DB::table('tbl_transfer_mode')->where(['id' => $val->mode_id])->first();
+                $courier = DB::table('tbl_courier_company')->where(['id' => $val->courier, 'mfd' => 0,'company_type'=>2,'status' => 0])->first();
+                if (!empty($rate)) {
+                    $exists = false;
+                    foreach ($data['courier_company'] as $existing) {
+                        if ($existing['mode_id'] == $mode->id && $existing['company_id'] == $val->courier) {
+                            $exists = true;
+                            break;
+                        }
+                    }
+                    // Only add if not already exists
+                    if (!$exists) {
+                        $data['courier_company'][] = [
+                            'img_logo' => asset('admin-assets/courier_company_logo/' . $courier->img_logo),
+                            'company_name' => $courier->company_name,
+                            'amount' => $rate[0],
+                            'company_id' => $val->courier,
+                            'mode' => $mode->mode_name,
+                            'mode_id' => $mode->id,
+                            'deliverydate' => date('M d Y', strtotime("$delDate + $daysToAdd days")),
+                            'pickupdate' => date('M d Y', strtotime($delDate)),
+                        ];
+                    }
+                }
+            }
+            $responce = [
+                'status' => 'success',
+                'data' => $data,
+            ];
+            echo json_encode($responce);
         }
     }
 }

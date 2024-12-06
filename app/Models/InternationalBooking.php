@@ -40,5 +40,17 @@ class InternationalBooking extends Model
         // dd($query->toSql(), $query->getBindings());
         return $result;
     }
+
+    public function CustomerRate($group_id,$fromZone,$toZone,$applicableWeight,$booking_date)
+    {
+
+        return DB::table('tbl_domestic_rate')
+        ->where(['group_id'=>$group_id,'from_zone'=>$fromZone,'to_zone'=>$toZone,'mfd'=>0])
+        ->where('applicable_from', '<=', $booking_date)    
+        ->where('applicable_to', '>=', $booking_date)     
+        ->orderBy('id', 'desc')  
+        ->get();
+    }
+
     
 }
