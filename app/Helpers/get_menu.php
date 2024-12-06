@@ -43,6 +43,16 @@ if(!function_exists('internationalType'))
         ];
     }
 }
+if(!function_exists('docType'))
+{
+    function docType()
+    {
+       return   $data = [
+                    '1'=>'Document',
+                    '2'=> 'No Document'
+        ];
+    }
+}
 
 if(!function_exists('ordersMenus'))
 {
