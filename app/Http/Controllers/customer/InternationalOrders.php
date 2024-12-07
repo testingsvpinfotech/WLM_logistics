@@ -49,6 +49,20 @@ class InternationalOrders extends Controller
         $data['addressbook'] = DB::table('tbl_pickup_address')->where(['customer_id'=>Session('customer.id'),'mfd'=>0])->get();
         return view('customer.orders.add_international_order',$data);
     }
+
+    public function getcoutry(Request $request)
+    {
+       $request = request()->input('id');
+       $country = DB::table('tbl_country')->where(['id'=>$request])->first();
+       if(!empty($country))
+       {
+         $data = [
+            'status'=>1,
+            'data'=> $country
+         ];
+         echo json_encode($data);
+       }
+    }
     public function store_orders(Request $request)
     {
         // dd($request->all());
@@ -63,6 +77,7 @@ class InternationalOrders extends Controller
             'inter_buy_state' => 'required|string',
             'inter_buy_city' => 'required|string',
             'inter_country_id' => 'required|numeric',
+            'export_import_type' => 'required|numeric',
             // 'buy_billing_mobile' => 'numeric|digits:10',
             // 'buy_full_billing_name' => 'string',
             // 'buy_billing_email' => 'string',
@@ -125,7 +140,7 @@ class InternationalOrders extends Controller
                     'ship_to_fba' =>$request->ship_to_fba,
                     'shipment_purpose' =>$request->shipment_purpose,
                     'buy_delivery_country_id' =>$request->inter_country_id,
-                    'buy_delivery_currency_id' =>$request->inter_currency_id,
+                    'export_import_type' =>$request->export_import_type,
                     'buy_full_name' =>$request->inter_buy_full_name,
                     'buy_mobile' =>$request->inter_buy_mobile,
                     'pickup_address' =>$request->inter_pickup_address,

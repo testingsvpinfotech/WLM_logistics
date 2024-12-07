@@ -12,7 +12,7 @@ class InternationalBooking extends Model
     protected $table = 'tbl_international_booking';
     public $timestamps = false;
     protected $fillable = [
-        'id', 'order_id', 'order_channel', 'order_tag', 'channel_invoice','pickup_address' ,'channel_invoice_date',
+        'id', 'order_id', 'order_channel','export_import_type','doc_type' ,'order_tag', 'channel_invoice','pickup_address' ,'channel_invoice_date',
         'payment_transaction_id', 'transaction_url', 'signature_type', '3C_applicable', 'meis_applicable',
         'payment_status', 'inco_terms', 'tax_id', 'payment_mode', 'buy_full_name', 'buy_mobile', 'buy_email',
         'buy_alter_mobile', 'buy_company_name', 'buy_gst_in', 'buy_delivery_addressline1', 'buy_delivery_addressline2',

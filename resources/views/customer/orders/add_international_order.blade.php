@@ -121,7 +121,7 @@
                                         </div>
                                         <div class="form-group mb-0 col-md-2">
                                             <label for="mobileNumber">Country</label>
-                                            <select name="inter_country_id" class="form-control" id="inter_country_id">
+                                            <select name="inter_country_id" class="form-control"  id="inter_country_id">
                                                 @foreach ($country as $val)
                                                 <option value="{{$val->id}}" @if($val->id == 183) {{'selected'}} @endif>{{$val->country_name}}</option>
                                                 @endforeach
@@ -157,6 +157,16 @@
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="form-group mb-0 col-md-2">
+                                            <label for="mobileNumber">Export / Import</label>
+                                            <select name="export_import_type" class="form-control" id="export_import_type">
+                                                <option value="">-- select Export / Import</option>
+                                                @foreach (internationalType() as $key=> $val)
+                                                    <option value="{{$key}}">{{$val}}</option>
+                                                @endforeach
+                                            </select>
+                                            <p style="color: red;"></p>
+                                        </div>
                                         <div class="form-group mb-0 col-md-6">
                                             <label for="email">Address Line 1</label>
                                             <input type="text" class="form-control" id="inter_buy_address_line1"
@@ -164,7 +174,7 @@
                                                 placeholder="House/Floor No. Building Name or Street, Locality">
                                             <p style="color:red;"></p>
                                         </div>
-                                        <div class="form-group mb-0 col-md-6">
+                                        <div class="form-group mb-0 col-md-4">
                                             <label for="email">Address Line 1</label>
                                             <input type="text" class="form-control" id="inter_buy_address_line2"
                                                 name="inter_buy_address_line2" placeholder="House/Floor No. Building Name or Street, Locality">
@@ -184,14 +194,14 @@
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text bg-transparent border-right-0"
-                                                        id="basic-addon1"><span style="font-size: 12px;">+1</span></span>
+                                                        id="basic-addon1"><span style="font-size: 12px;" class="mobile_country">+1</span></span>
                                                 </div>
                                                 <input type="text" class="form-control buttonCall" maxlength="10" minlength="10"
                                                     name="inter_buy_mobile" id="inter_buy_mobile"
                                                     placeholder="Mobile No" aria-label="Password"
                                                     aria-describedby="basic-email">
-                                                    <p style="color:red;"></p>
                                             </div>
+                                            <p style="color:red;" class="mobile_error"></p>
                                         </div>
                                         <div class="form-group mb-0 col-md-4">
                                             <label for="fullName">Full Name</label>
@@ -225,6 +235,11 @@
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="shipment_purpose"
+                                                    id="Sample" value="Document">
+                                                <label class="form-check-label" for="Sample"> Document </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="shipment_purpose"
                                                     id="Commercial" value="Commercial(CSB5)">
                                                 <label class="form-check-label" for="Commercial"> Commercial(CSB5)</label>
                                             </div>
@@ -244,6 +259,11 @@
                                                     id="Sample" value="Sample(CSB4)">
                                                 <label class="form-check-label" for="Sample"> Sample(CSB4) </label>
                                                 <p style="color:red;"></p>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="shipment_purpose"
+                                                    id="Sample" value="Document">
+                                                <label class="form-check-label" for="Sample"> Document </label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="shipment_purpose"
@@ -330,7 +350,7 @@
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text bg-transparent border-right-0"
-                                                        id="basic-addon1"><span style="font-size: 12px;">+1</span></span>
+                                                        id="basic-addon1"><span style="font-size: 12px;" class="mobile_country">+1</span></span>
                                                 </div>
                                                 <input type="text" class="form-control buttonCall" maxlength="10" minlength="10"
                                                     name="inter_delivery_mobile" id="inter_delivery_mobile"
@@ -886,6 +906,7 @@
         var callurl = "{{ route('app.store-orders')}}";
         var Intercallurl = "{{ route('app.store-international')}}";
         var view = "{{ route('app.view-orders')}}";
+        var coutryUrl = "{{ route('app.get-country')}}";
     </script>
     <script src="{{ asset('customer-assets/js/domestic_orders.js') }}"></script>
     <script src="{{ asset('customer-assets/js/international_orders.js') }}"></script>

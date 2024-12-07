@@ -93,6 +93,7 @@ Route::group(['middleware' => 'customer'], function () {
     Route::get('app/international-order',[InternationalOrders::class,'add_orders'])->name('app.international-order');
     Route::post('app/get-international-order',[InternationalOrders::class,'getModel'])->name('app.get-international-order');
     Route::post('app/store-international',[InternationalOrders::class,'store_orders'])->name('app.store-international');
+    Route::get('app/get-country',[InternationalOrders::class,'getcoutry'])->name('app.get-country');
 });
 
 
