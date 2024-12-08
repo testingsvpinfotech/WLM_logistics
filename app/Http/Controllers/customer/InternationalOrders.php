@@ -22,12 +22,13 @@ use App\Models\InternationalOrdersProduct;
 use App\Models\InternationalBooking;
 class InternationalOrders extends Controller
 {
-
+    protected $pincode;
     protected $rate;
 
     function __construct()
     {
         $this->rate = new InternationalBooking;
+        $this->pincode = new PincodeMaster;
     }
     public function index()
     {
@@ -153,6 +154,7 @@ class InternationalOrders extends Controller
                     'buy_delivery_pincode' =>$request->inter_buy_pincode,
                     'buy_delivery_state' =>$request->inter_buy_state,
                     'buy_delivery_city' =>$request->inter_buy_city,
+                    'buy_delivery_currency_id' =>$request->inter_currency_id,
                     'billing_status' =>$request->inter_billing_status,
                     'buy_full_billing_name' =>$request->inter_buy_full_billing_name,
                     'buy_billing_mobile' =>$request->inter_buy_billing_mobile,
@@ -239,7 +241,7 @@ class InternationalOrders extends Controller
     public function getModel(Request $request)
     {
         $id = $request->id;
-        dd( $id);
+        // dd( $id);
         $data['booking_data'] = DB::table('tbl_international_booking')->where(['id' => $id])->first();
         if (!empty($data['booking_data'])) {
             // from address
@@ -257,24 +259,28 @@ class InternationalOrders extends Controller
             // To Address
             if ($data['booking_data']->billing_status == "on") {
                 $data['to_address'] = $data['booking_data']->buy_delivery_addressline1 . ',' . $data['booking_data']->buy_delivery_addressline2 . ',' . $data['booking_data']->buy_delivery_city. ',' . $data['booking_data']->buy_delivery_state;
+                $country_id = $data['booking_data']->buy_delivery_country_id;
             } else {
                 $data['to_address'] = $data['booking_data']->buy_delivery_billing_addressline1 . ',' . $data['booking_data']->buy_delivery_billing_addressline2 . ',' . $data['booking_data']->buy_delivery_billing_city . ',' . $data['booking_data']->buy_delivery_billing_state . ' ' . $data['booking_data']->buy_delivery_billing_pincode;
+                $country_id = $data['booking_data']->buy_delivery_country_id;
             }
             $rate_id = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
             $courier_company = DB::table('tbl_courier_company')->where(['status' => 0, 'mfd' => 0,'company_type'=>2])->get();
             $delDate = date('Y-m-d', strtotime($data['booking_data']->order_date));
             $data['courier_company'] = [];
-            $modewiseRate = $this->rate->CustomerRate($rate_id->fuel_group_id, $fromZone, $toZone, $data['booking_data']->applicable_weight, date('Y-m-d', strtotime($data['booking_data']->orderDate)));
-            // dd($modewiseRate);
-            foreach ($modewiseRate as $key => $val) {
-                $rate = $this->RateCalculate($val->mode_id, $val->courier, $rate_id->fuel_group_id, $rate_id->rate_group_id, $frompin, $topin, $data['booking_data']->applicable_weight, $data['booking_data']->orderDate);
-                $daysToAdd = $rate[1];
-                $mode = DB::table('tbl_transfer_mode')->where(['id' => $val->mode_id])->first();
-                $courier = DB::table('tbl_courier_company')->where(['id' => $val->courier, 'mfd' => 0,'company_type'=>2,'status' => 0])->first();
+            foreach ($courier_company as $key => $val) {
+                if($data['booking_data']->shipment_purpose=='Document'){
+                    $doctype = '1';
+                }else{
+                    $doctype = '2';
+                }
+                $zoneId = $this->rate->getZone($val->id,$country_id,$data['booking_data']->export_import_type,date('Y-m-d',strtotime($data['booking_data']->order_date)));
+                if(!empty($zoneId->zone)){
+                $rate = $this->rate->GetRate($rate_id->inter_rate_group,$val->id,$data['booking_data']->applicable_weight,$zoneId->zone,date('Y-m-d',strtotime($data['booking_data']->order_date)),$doctype,$data['booking_data']->export_import_type);
                 if (!empty($rate)) {
                     $exists = false;
                     foreach ($data['courier_company'] as $existing) {
-                        if ($existing['mode_id'] == $mode->id && $existing['company_id'] == $val->courier) {
+                        if ($existing['company_id'] == $val->id) {
                             $exists = true;
                             break;
                         }
@@ -282,17 +288,18 @@ class InternationalOrders extends Controller
                     // Only add if not already exists
                     if (!$exists) {
                         $data['courier_company'][] = [
-                            'img_logo' => asset('admin-assets/courier_company_logo/' . $courier->img_logo),
-                            'company_name' => $courier->company_name,
-                            'amount' => $rate[0],
-                            'company_id' => $val->courier,
-                            'mode' => $mode->mode_name,
-                            'mode_id' => $mode->id,
-                            'deliverydate' => date('M d Y', strtotime("$delDate + $daysToAdd days")),
-                            'pickupdate' => date('M d Y', strtotime($delDate)),
+                            'img_logo' => asset('admin-assets/courier_company_logo/' . $val->img_logo),
+                            'company_name' => $val->company_name,
+                            'amount' => $rate->rate,
+                            'company_id' => $val->id,
+                            'mode' => '',
+                            'mode_id' => '',
+                            'deliverydate' => '',
+                            'pickupdate' => date('Y-m-d',strtotime($data['booking_data']->order_date)),
                         ];
                     }
                 }
+            }
             }
             $responce = [
                 'status' => 'success',

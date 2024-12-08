@@ -41,15 +41,26 @@ class InternationalBooking extends Model
         return $result;
     }
 
-    public function CustomerRate($group_id,$fromZone,$toZone,$applicableWeight,$booking_date)
+    public function getZone($courier,$country_id,$type,$date)
     {
-
-        return DB::table('tbl_domestic_rate')
-        ->where(['group_id'=>$group_id,'from_zone'=>$fromZone,'to_zone'=>$toZone,'mfd'=>0])
-        ->where('applicable_from', '<=', $booking_date)    
-        ->where('applicable_to', '>=', $booking_date)     
+        return DB::table('tbl_international_zone_master')
+        ->where(['courier_id'=>$courier,'country_id'=>$country_id,'type'=>$type,'mfd'=>0])
+        ->where('from_date', '<=', $date)       
         ->orderBy('id', 'desc')  
-        ->get();
+        ->first();
+    }
+
+    public function GetRate($group_id,$courier,$applicableWeight,$fromZone,$booking_date,$doctype,$etype)
+    {
+        // dd($group_id.' '.$courier.' '.$fromZone.' '.$applicableWeight.' '.$booking_date.' '.$doctype.' '.$etype);
+        return DB::table('tbl_international_rate')
+        ->where(['rate_group_id'=>$group_id,'courier_company'=>$courier,'zone_id'=>$fromZone,'doc_type'=>$doctype,'type_export_import'=>$etype,'mfd'=>0])
+        ->where('from_weight', '<=', $applicableWeight)    
+        ->where('to_weight', '>=', $applicableWeight)  
+        ->where('from_date', '<=', $booking_date)       
+        ->orderBy('id', 'desc')  
+        ->limit(1)
+        ->first();
     }
 
     
