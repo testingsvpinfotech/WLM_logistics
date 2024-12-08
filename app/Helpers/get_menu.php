@@ -53,6 +53,16 @@ if(!function_exists('docType'))
         ];
     }
 }
+if(!function_exists('walletType'))
+{
+    function walletType()
+    {
+       return   $data = [
+                    '1'=>'Credit',
+                    '2'=> 'Debit'
+        ];
+    }
+}
 
 if(!function_exists('ordersMenus'))
 {

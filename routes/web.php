@@ -20,6 +20,10 @@ use App\Http\Controllers\admin\AdminDomesticRate;
 use App\Http\Controllers\admin\International\RateGroup;
 use App\Http\Controllers\admin\International\InternationalZoneMaster;
 use App\Http\Controllers\admin\International\InternationalRateMaster;
+// Wallet 
+use App\Http\Controllers\admin\AdminWalletTrasection;
+
+
 
 // customer 
 use App\Http\Controllers\customer\CustomerRegistrationLogin;
@@ -27,6 +31,7 @@ use App\Http\Controllers\customer\CustomerDashboard;
 use App\Http\Controllers\customer\DomesticsOrders;
 use App\Http\Controllers\customer\InternationalOrders;
 use App\Http\Controllers\customer\RateMaster;
+use App\Http\Controllers\customer\CustomerWalletTrasection;
 
 
 /*
@@ -94,6 +99,9 @@ Route::group(['middleware' => 'customer'], function () {
     Route::post('app/get-international-order',[InternationalOrders::class,'getModel'])->name('app.get-international-order');
     Route::post('app/store-international',[InternationalOrders::class,'store_orders'])->name('app.store-international');
     Route::get('app/get-country',[InternationalOrders::class,'getcoutry'])->name('app.get-country');
+
+    // Wallet Transection 
+    Route::get('app/view-wallet-transaction',[CustomerWalletTrasection::class,'index'])->name('app.view-wallet-transaction');
 });
 
 
@@ -204,4 +212,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/view-store-rate-master',[InternationalRateMaster::class,'store_rate'])->name('admin.view-store-rate-master');
     Route::get('admin/view-intRate-details/{id1}/{id2}/{id3}/{id4}',[InternationalRateMaster::class,'getRateData'])->name( 'admin.view-intRate-details');
     Route::put('admin/rate-destryment', [InternationalRateMaster::class, 'Ratedelete'])->name('admin.rate-destryment');
+
+    // Wallet Transection 
+    Route::get('admin/view-wallet-transaction',[AdminWalletTrasection::class,'index'])->name('admin.view-wallet-transaction');
+    Route::get('admin/add-toup-transaction',[AdminWalletTrasection::class,'add_topup'])->name('admin.add-toup-transaction');
+    Route::post('admin/store-toup-transaction',[AdminWalletTrasection::class,'store_topup'])->name('admin.store-toup-transaction');
 });

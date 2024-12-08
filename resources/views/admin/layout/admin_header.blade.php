@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/simple-line-icons/css/simple-line-icons.css')}}">        
         <link rel="stylesheet" href="{{ asset('admin-assets/dist/vendors/flags-icon/css/flag-icon.min.css')}}">         
         <!-- END Template CSS-->
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <!-- START: Page CSS-->
         <link rel="stylesheet"  href="{{ asset('admin-assets/dist/vendors/chartjs/Chart.min.css')}}">
         <link rel="stylesheet"  href="{{ asset('admin-assets/multiselect/bootstrap-multiselect.css')}}">
