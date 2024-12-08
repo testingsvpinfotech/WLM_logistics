@@ -102,6 +102,9 @@ Route::group(['middleware' => 'customer'], function () {
 
     // Wallet Transection 
     Route::get('app/view-wallet-transaction',[CustomerWalletTrasection::class,'index'])->name('app.view-wallet-transaction');
+
+    // Tracking Shipment 
+    Route::get('app/tracking-shipment',[DomesticsOrders::class,'shipmentTracking'])->name('app.tracking-shipment');
 });
 
 

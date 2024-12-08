@@ -1034,4 +1034,30 @@ class DomesticsOrders extends Controller
             ]);
         }
     }
+
+    public function shipmentTracking()
+    {
+
+        $type = request()->input('shipment_type');
+        if($type==1)
+        {
+            $searchData = request()->input('reference_no');
+            $currentPage = request()->input('page', 1);
+            $query = DomesticBooking::query();
+            if (!empty($searchData)) {
+                $query->where('order_id', 'like', '%' . $searchData . '%')
+                    ->orWhere('forwording_no', 'like', '%' . $searchData . '%');
+            }
+            $orders = $query->get();
+            $track = DB::table('tbl_domestic_tracking')->where(['order_id'=>$orders[0]->order_id])->get();
+            $data = [
+                'domesticShipment' => $orders,
+                'track' => $track,
+                'reference_no' => $searchData, 
+            ];
+        }
+        $data['title'] = "Track Our Shipment";
+
+        return view('customer.trackingShipement.view_trackShipment', $data);
+    }
 }
