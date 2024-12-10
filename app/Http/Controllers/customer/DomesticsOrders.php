@@ -1048,16 +1048,36 @@ class DomesticsOrders extends Controller
                 $query->where('order_id', 'like', '%' . $searchData . '%')
                     ->orWhere('forwording_no', 'like', '%' . $searchData . '%');
             }
+            $data['domesticShipment'] = [];
             $orders = $query->get();
-            $track = DB::table('tbl_domestic_tracking')->where(['order_id'=>$orders[0]->order_id])->get();
-            $data = [
-                'domesticShipment' => $orders,
-                'track' => $track,
-                'reference_no' => $searchData, 
-            ];
+            if(!empty($orders)){
+                $track = DB::table('tbl_domestic_tracking')->where(['order_id'=>$orders[0]->order_id])->get();
+                $data = [
+                    'domesticShipment' => $orders,
+                    'track' => $track,
+                    'reference_no' => $searchData, 
+                ];
+            }
+        }elseif($type==2){
+            $searchData = request()->input('reference_no');
+            $currentPage = request()->input('page', 1);
+            $query = InternationalBooking::query();
+            if (!empty($searchData)) {
+                $query->where('order_id', 'like', '%' . $searchData . '%')
+                    ->orWhere('forwording_no', 'like', '%' . $searchData . '%');
+            }
+            $orders = $query->get();
+            $data['internationalShipment'] = [];
+            if(!empty($orders)){
+                $track = DB::table('tbl_international_tracking')->where(['order_id'=>$orders[0]->order_id])->get();
+                $data = [
+                    'internationalShipment' => $orders,
+                    'track' => $track,
+                    'reference_no' => $searchData, 
+                ];
+            }
         }
         $data['title'] = "Track Our Shipment";
-
         return view('customer.trackingShipement.view_trackShipment', $data);
     }
 }
