@@ -22,6 +22,9 @@ use App\Http\Controllers\admin\International\InternationalZoneMaster;
 use App\Http\Controllers\admin\International\InternationalRateMaster;
 // Wallet 
 use App\Http\Controllers\admin\AdminWalletTrasection;
+//  user type permission
+use App\Http\Controllers\admin\AdminPermissions;  
+
 
 
 
@@ -220,4 +223,8 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/view-wallet-transaction',[AdminWalletTrasection::class,'index'])->name('admin.view-wallet-transaction');
     Route::get('admin/add-toup-transaction',[AdminWalletTrasection::class,'add_topup'])->name('admin.add-toup-transaction');
     Route::post('admin/store-toup-transaction',[AdminWalletTrasection::class,'store_topup'])->name('admin.store-toup-transaction');
+
+    //  User type Permissions
+    Route::get('admin/permisssion-update/{id}',[AdminPermissions::class,'edit_permission'])->name('admin.permisssion-update');
+    Route::put('admin/permisssion-update-data',[AdminPermissions::class,'update_permission'])->name('admin.permisssion-update-data');
 });

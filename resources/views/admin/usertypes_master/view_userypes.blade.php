@@ -32,7 +32,12 @@
                                                     <td>{{ $count }}</td>
                                                     <td>{{ $val->name }}</td>
                                                     <td>{{ $val->description }}</td>
-                                                    <td> <a style="color:blue"
+                                                    <td> <a style="color:#2aea73"
+                                                            href="{{ route('admin.permisssion-update', ['id' => $val->id]) }}" title ="Menu Permissions">
+                                                            <i class="fa fa-list-alt" aria-hidden="true"></i>
+                                                            </i>
+                                                        </a> |
+                                                     <a style="color:blue"
                                                             href="{{ route('admin.edit-usertype', ['id' => $val->id]) }}">
                                                             <i class="fas fa-pencil-alt">
                                                             </i>
