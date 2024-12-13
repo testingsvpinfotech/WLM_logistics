@@ -20,6 +20,7 @@ use App\Models\DomesticBooking;
 use App\Models\DomesticOrdersProducts;
 use App\Models\InternationalOrdersProduct;
 use App\Models\InternationalBooking;
+use Carbon\Carbon;
 class InternationalOrders extends Controller
 {
     protected $pincode;
@@ -189,7 +190,14 @@ class InternationalOrders extends Controller
                         dd($e->getMessage());
                     }
                    $booking_id = $orderBooking->id; // last genrated Id
-
+                    $stockData = [
+                        'booking_id'=> $booking_id,
+                        'order_id' => $orderId,
+                        'shipment_type'=>2,
+                        'order_booked'=>1,
+                        'created_at'=> Carbon::now(),
+                    ];
+                    DB::table('tbl_shipment_stock_manager')->insert($stockData);
                    // product insetion 
                     for ($i = 0; $i < count($request->inter_productName); $i++) {
                          $productData = [

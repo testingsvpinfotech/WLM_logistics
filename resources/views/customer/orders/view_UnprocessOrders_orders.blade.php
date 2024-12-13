@@ -142,7 +142,7 @@
                                 <a href="{{route('app.view-return-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-repeat"></i> Returns <button class="badge bg-secondary border rounded-pill">{{$Return}}</button> </a>
                             </div>
                         </div>
-                        <form action="{{route('app.view-orders')}}" method="get">
+                        <form action="{{route('app.view-Unprocessing-orders')}}" method="get">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -160,7 +160,7 @@
 
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-outline-primary mt-4"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                    <a href="{{route('app.view-orders')}}" class="btn btn-outline-danger mt-4"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                    <a href="{{route('app.view-Unprocessing-orders')}}" class="btn btn-outline-danger mt-4"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </form>
@@ -181,6 +181,7 @@
                                         <th>Delivery Address</th>
                                         <th>Dimension (CM)</th>
                                         <th>Courier Partner</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -250,26 +251,22 @@
                                             AWB:
                                         </td>
                                         <td>
-                                            <!-- <button type="button" class="btn btn-action"
+                                            <button type="button" class="btn btn-action"
                                                 onclick="return domesticModel('{{ $val->id }}');">
                                                 Ship Now
-                                            </button> -->
-                                            <!-- <button class="btn btn-primary btn-icon">🔍</button>
-                                            <button class="btn btn-success btn-icon">✏️</button>
-                                            <button class="btn btn-danger btn-icon">♻️</button> -->
+                                            </button>
                                         </td>
                                     </tr>
                                     @endforeach
-                                    @else
-                                    <tr>
-                                        <td colspan="12">No Data Found</td>
-                                    </tr>
-                                    @endif
                                     <!-- Add additional rows as needed -->
                                 </tbody>
                             </table>
                         </div>
-
+                        @else
+                        <tr>
+                            <td colspan="12">No Data Found</td>
+                        </tr>
+                        @endif
                         <!-- Footer -->
                         <div class="pagination-wrapper">
                             {{ $orders->links() }}
@@ -295,8 +292,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Select Courier Partner</h5>
+                <div class="errors">
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+           
             <style>
                 .preferred-badge {
                     background-color: #826AF9;
@@ -393,7 +393,7 @@
 @section('script')
 <script>
     var callurl = "{{ route('admin.destroy-usertypes') }}";
-    var view = "{{ route('admin.view-usertypes') }}";
+    var view = "{{ route('app.view-Processing-orders') }}";
     var modelURL = "{{ route('app.get-domestic-order') }}";
     var bookingURL = "{{ route('app.api-booking') }}";
     $(function() {

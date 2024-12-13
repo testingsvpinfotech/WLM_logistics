@@ -107,8 +107,8 @@ if(!function_exists('delhiveryAuth'))
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => '{
-                                    "username": "ERCARGODCB2BR",
-                                    "password": "Deepak@2024"
+                                    "username": "chetanenterprised2brc",
+                                    "password": "123Deepak.com"
                                     }',
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
@@ -214,7 +214,6 @@ if(!function_exists('BlueDartAuth'))
     }
 }
 
-
 if(!function_exists('BookingblueDart')){
     function BookingblueDart($data , $key)
     {
@@ -241,8 +240,7 @@ if(!function_exists('BookingblueDart')){
         curl_setopt($curl, CURLOPT_VERBOSE, true);
         $response = curl_exec($curl);
         curl_close($curl);
-        $response = json_decode($response);
-        dd($response);
+       return $response = json_decode($response);
     }
 }
 
@@ -308,6 +306,26 @@ if(!function_exists('Bookingdelhivery'))
             $response11 = json_decode($response_job_id);
           return  $forwording_no = $response11->status->value->lrnum;
         }
+    }
+}
+
+//  pickup date convter
+if(!function_exists('date_convter')){
+    function date_convter($netDate)
+    {
+        preg_match('/\/Date\((\d+)([+-]\d{4})?\)\//', $netDate, $matches);
+        $timestampMs = $matches[1];
+        $timezoneOffset = $matches[2] ?? null;
+        $timestampSeconds = $timestampMs / 1000;
+        $date = new DateTime();
+        $date->setTimestamp($timestampSeconds);
+        if ($timezoneOffset) {
+            $hours = (int) substr($timezoneOffset, 0, 3);
+            $minutes = (int) substr($timezoneOffset, 3, 2);
+            $offsetInSeconds = ($hours * 3600) + ($minutes * 60);
+            $date->modify(($hours >= 0 ? '+' : '-') . abs($offsetInSeconds) . ' seconds');
+        }
+       return $date->format('Y-m-d');
     }
 }
 

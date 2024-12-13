@@ -20,7 +20,7 @@ class CustomerRegistrationLogin extends Controller
     {
         session('customer');
         $data = [];
-        $data['title'] = "WLM LOGISTICS";
+        $data['title'] = "User Registeration LOGISTICS";
         return view('customer.register',$data);
     }
 
@@ -182,7 +182,7 @@ class CustomerRegistrationLogin extends Controller
     {   
         $data = [];
         $id = session('customer.id');
-        $data['title'] = "WLM LOGISTICS";
+        $data['title'] = "Address Details ";
         return view('customer.address_updation',$data);
     }
 
@@ -287,7 +287,7 @@ class CustomerRegistrationLogin extends Controller
     public function customer_login()
     {
         $data = [];
-        $data['title'] = 'WLM Logistics Sign In';
+        $data['title'] = 'Sign In Logistics Panel';
         return view('customer.customer_login',$data);
     }
 
@@ -340,7 +340,7 @@ class CustomerRegistrationLogin extends Controller
      public function forgotpassHomepage()
      {
          $data = [];
-         $data['title'] = 'WLM Logistics Forgotpass';
+         $data['title'] = 'Forgot password';
          return view('customer.forgotpassword.forgothome',$data);
      }
 

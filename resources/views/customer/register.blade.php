@@ -52,7 +52,8 @@
         <div class="row vh-100 justify-content-between ">
             <div class="col-12">
                 <div class="row row-eq-height lockscreenr  mt-5 mb-5">
-                    <div class="lock-image col-12 col-sm-5"></div>
+                <div class="lock-image col-12 col-sm-5 d-flex justify-content-center align-items-center" ><img src="{{ asset('admin-assets/logo.jpeg') }}"
+                alt="" class="d-flex mr-3" style="width:100%;"></div>
                     <div class="login-form col-12 col-sm-7">
                         <h5 class="text-center">Get started with a free account</h5>
                         <form action="" method="POST" id="RegistrationCustomer" >

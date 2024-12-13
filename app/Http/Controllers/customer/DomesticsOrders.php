@@ -6,51 +6,97 @@ use App\Http\Controllers\Controller;
 use App\Models\DomesticBooking;
 use App\Models\DomesticOrdersProducts;
 use App\Models\DomesticRate;
-use App\Models\InternationalBooking;
 use App\Models\PickupAddress;
 use App\Models\PincodeMaster;
+use App\Models\StackManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class DomesticsOrders extends Controller
 {
     protected $pincode;
     protected $rate;
+    protected $domestic;
 
     public function __construct()
     {
         $this->pincode = new PincodeMaster;
         $this->rate = new DomesticRate;
+        $this->domestic = new DomesticBooking;
     }
     //  All Orders
     public function index()
     {
         $searchData = request()->input('search');
         $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
+        $to_date = request()->input('to_date');  
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1]);
         if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
+            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
+                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
         }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
+        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(Session('customer.id'));
         $data = [
             'title' => "All Orders",
             'orders' => $orders,
             'search' => $searchData, 
             'from_date' => $from_date, 
             'to_date' => $to_date,
+            'all_orders' => $count['all_orders'],
+            'Unprocessable' => $count['Unprocessable'],
+            'Processing' => $count['Processing'],
+            'Ready_to_ship' => $count['Ready_to_ship'],
+            'Manifest' => $count['Manifest'],
+            'Return' => $count['Return']
         ];
 
         return view('customer.orders.view_orders', $data);
     }
 
+    // Unprocessing Ordrs
+    public function UnprocessOrders()
+    {
+        $searchData = request()->input('search');
+        $from_date = request()->input('from_date');
+        $to_date = request()->input('to_date');
+        $currentPage = request()->input('page', 1);
+        $query = DomesticBooking::query();
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 0, 'tbl_shipment_stock_manager.lable_genration' => 0, 'tbl_shipment_stock_manager.pickup' => 0]);
+        if (!empty($searchData)) {
+            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
+                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
+        }
+        if (!empty($from_date) && !empty($to_date)) {
+            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
+        }
+        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(Session('customer.id'));
+        $data = [
+            'title' => "Unprocessable",
+            'orders' => $orders,
+            'search' => $searchData, 
+            'from_date' => $from_date, 
+            'to_date' => $to_date,
+            'all_orders' => $count['all_orders'],
+            'Unprocessable' => $count['Unprocessable'],
+            'Processing' => $count['Processing'],
+            'Ready_to_ship' => $count['Ready_to_ship'],
+            'Manifest' => $count['Manifest'],
+            'Return' => $count['Return']
+        ];
+        return view('customer.orders.view_UnprocessOrders_orders', $data);
+    }
     // Processing Ordrs
     public function ProcessOrders()
     {
@@ -59,22 +105,30 @@ class DomesticsOrders extends Controller
         $to_date = request()->input('to_date');
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 0, 'tbl_shipment_stock_manager.pickup' => 0]);
         if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
+            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
+                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
         }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
+        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(Session('customer.id'));
         $data = [
             'title' => "Processing",
             'orders' => $orders,
             'search' => $searchData, 
             'from_date' => $from_date, 
             'to_date' => $to_date,
+            'all_orders' => $count['all_orders'],
+            'Unprocessable' => $count['Unprocessable'],
+            'Processing' => $count['Processing'],
+            'Ready_to_ship' => $count['Ready_to_ship'],
+            'Manifest' => $count['Manifest'],
+            'Return' => $count['Return']
         ];
-
         return view('customer.orders.view_ProcessOrders_orders', $data);
     }
     // Processing Ordrs
@@ -85,20 +139,29 @@ class DomesticsOrders extends Controller
         $to_date = request()->input('to_date');
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 0]);
         if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
+            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
+                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
         }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
+        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(Session('customer.id'));
         $data = [
             'title' => "Ready to Ship",
             'orders' => $orders,
             'search' => $searchData, 
             'from_date' => $from_date, 
             'to_date' => $to_date,
+            'all_orders' => $count['all_orders'],
+            'Unprocessable' => $count['Unprocessable'],
+            'Processing' => $count['Processing'],
+            'Ready_to_ship' => $count['Ready_to_ship'],
+            'Manifest' => $count['Manifest'],
+            'Return' => $count['Return']
         ];
         return view('customer.orders.view_readyforship_orders', $data);
     }
@@ -109,20 +172,29 @@ class DomesticsOrders extends Controller
         $to_date = request()->input('to_date');
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 1]);
         if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
+            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
+                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
         }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
+        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(Session('customer.id'));
         $data = [
             'title' => "Manifest Orders",
             'orders' => $orders,
             'search' => $searchData, 
             'from_date' => $from_date, 
             'to_date' => $to_date,
+            'all_orders' => $count['all_orders'],
+            'Unprocessable' => $count['Unprocessable'],
+            'Processing' => $count['Processing'],
+            'Ready_to_ship' => $count['Ready_to_ship'],
+            'Manifest' => $count['Manifest'],
+            'Return' => $count['Return']
         ];
         return view('customer.orders.view_Manifest_orders', $data);
     }
@@ -133,20 +205,29 @@ class DomesticsOrders extends Controller
         $to_date = request()->input('to_date');
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 1,'tbl_shipment_stock_manager.returns'=>1]);
         if (!empty($searchData)) {
-            $query->where('order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('buy_full_name', 'like', '%' . $searchData . '%');
+            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
+                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('created_at', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
         }
-        $orders = $query->paginate(50, ['*'], 'page', $currentPage);
+        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(Session('customer.id'));
         $data = [
             'title' => "Returns Order",
             'orders' => $orders,
             'search' => $searchData, 
             'from_date' => $from_date, 
             'to_date' => $to_date,
+            'all_orders' => $count['all_orders'],
+            'Unprocessable' => $count['Unprocessable'],
+            'Processing' => $count['Processing'],
+            'Ready_to_ship' => $count['Ready_to_ship'],
+            'Manifest' => $count['Manifest'],
+            'Return' => $count['Return']
         ];
         return view('customer.orders.view_returnOrders', $data);
     }
@@ -388,7 +469,14 @@ class DomesticsOrders extends Controller
                 $orderBooking = DomesticBooking::create($orderData);
                 //    dd($orderBooking);
                 $booking_id = $orderBooking->id; // last genrated Id
-
+                $stockData = [
+                    'booking_id'=> $booking_id,
+                    'order_id' => $orderId,
+                    'shipment_type'=>1,
+                    'order_booked'=>1,
+                    'created_at'=> Carbon::now(),
+                ];
+                DB::table('tbl_shipment_stock_manager')->insert($stockData);
                 // product insetion
                 for ($i = 0; $i < count($request->productName); $i++) {
                     $productData = [
@@ -642,14 +730,9 @@ class DomesticsOrders extends Controller
                         ]
                     ]
 
-                ];
-                //    echo '<pre></pre>'; dd(json_encode($BookingData));             
-                $booking = Bookingdelhivery(json_encode($BookingData), $jwtKey->jwt);
-                if (!empty($booking)) {
-                    $post = DomesticBooking::find($booking_data->id);
-                    $post->update(['forwording_no' =>  $booking, 'courier' => $courier]);
-                    $post->save();
-                }
+                ];        
+             return  $booking = Bookingdelhivery(json_encode($BookingData), $jwtKey->jwt);
+              
             }
         }
     }
@@ -747,11 +830,11 @@ class DomesticsOrders extends Controller
         }
     }
 
-    public function BlueDartAPICall($booking_id, $courier, $mode, $amount)
+    public function BlueDartAPICall($booking_id,$courier,$mode,$amount)
     {
         $authkey = BlueDartAuth();
-        $key1 = $authkey->JWTToken;
-        dd($key1);
+        $keyToekn = $authkey->JWTToken;
+       
         $booking_data = DB::table('tbl_domestic_booking')->where(['id' => $booking_id])->first();
         if (!empty($booking_data)) {
             $product = DB::table('tbl_domestic_products')->where(['booking_id' => $booking_id])->get();
@@ -760,9 +843,9 @@ class DomesticsOrders extends Controller
                 $customer = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
                 $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
                 $frompin = $this->pincode->pincodedata($pincodewhere);
-                $sender_name = $customer->personal_name . ' ' . $customer->surname;
+                $sender_name = $customer->personal_name.' '.$customer->surname;
                 $mobile_no = $customer->mobile_number;
-                $sender_address = $customer->address_line1 . ' ' . $customer->address_line2;
+                $sender_address = $customer->address_line1 .' '.$customer->address_line2;
             } else {
                 $customer = DB::table('tbl_pickup_address')->where(['id' => $booking_data->pickup_address])->first();
                 $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
@@ -770,25 +853,27 @@ class DomesticsOrders extends Controller
                 $data['from_address'] = $customer->address . ',' . $customer->landmark . ',' . $frompin->city . ',' . $frompin->state . ' ' . $frompin->pincode;
                 $sender_name = $customer->contact_person;
                 $mobile_no = $customer->contact_no;
-                $sender_address = $customer->address . ' ' . $customer->landmark;
+                $sender_address = $customer->address .' '.$customer->landmark;
             }
             // To Address              
             $pincodewhere = ['tbl_pincode.pincode' => $booking_data->buy_delivery_pincode];
             $topin = $this->pincode->pincodedata($pincodewhere);
-
             $itemdtl = [];
-            foreach ($product as $key => $val) {
+            $date = date('Y-m-d H:i:s');
+            $date = strtotime($date);
+            $date = $date*1000;
+            foreach($product as $key => $val){
                 $itemdtl[] = [
                     "CGSTAmount" => 0,
                     "HSCode" => "",
                     "IGSTAmount" => 0,
                     "IGSTRate" => 0,
                     "Instruction" => "",
-                    "InvoiceDate" => "",
+                    "InvoiceDate"=> "/Date(".$date.")/",
                     "InvoiceNumber" => $val->inv_no,
                     "ItemID" => "Test Item ID1",
                     "ItemName" => $val->productName,
-                    "ItemValue" => $val->unitPrice,
+                    "ItemValue" => (int)$val->unitPrice,
                     "Itemquantity" => $val->quantity,
                     "PlaceofSupply" => $frompin->state,
                     "ProductDesc1" => '',
@@ -798,9 +883,9 @@ class DomesticsOrders extends Controller
                     "SKUNumber" => "",
                     "SellerGSTNNumber" => "Z2222222",
                     "SellerName" => "ABC ENTP",
-                    "TaxableAmount" => $val->order_tax_rate,
-                    "TotalValue" => $val->unitPrice,
-                    "cessAmount" => "0.0",
+                    "TaxableAmount" => (int)$val->order_tax_rate,
+                    "TotalValue" => (int)$val->unitPrice,
+                    "cessAmount" => "0",
                     "countryOfOrigin" => "IN",
                     "docType" => "INV",
                     "subSupplyType" => 1,
@@ -809,7 +894,7 @@ class DomesticsOrders extends Controller
             }
             // invoice
             $Dimensions = [];
-            foreach ($product as $key => $val) {
+            foreach($product as $key => $val){
                 $Dimensions[] = [
                     "Count" => count($product),
                     "Breadth" => $val->width,
@@ -817,121 +902,130 @@ class DomesticsOrders extends Controller
                     "Length" => $val->length,
                 ];
             }
-            $postdata = [
-                "Request" => [
-                    "Consignee" => [
-                        "AvailableDays" => "",
-                        "AvailableTiming" => "",
-                        "ConsigneeAddress1" => $booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark,
-                        "ConsigneeAddress2" => "",
-                        "ConsigneeAddress3" => "",
-                        "ConsigneeAddressType" => "",
-                        "ConsigneeAddressinfo" => "",
-                        "ConsigneeAttention" => "",
-                        "ConsigneeEmailID" => "demo@gmail.com",
-                        "ConsigneeFullAddress" => "",
-                        "ConsigneeGSTNumber" => '',
-                        "ConsigneeLatitude" => "",
-                        "ConsigneeLongitude" => "",
-                        "ConsigneeMaskedContactNumber" => "",
-                        "ConsigneeMobile" => $booking_data->buy_mobile,
-                        "ConsigneeName" => $booking_data->buy_full_name,
-                        "ConsigneePincode" => $topin->pincode,
-                        "ConsigneeTelephone" => ""
-                    ],
-                    "Returnadds" => [
-                        "ManifestNumber" => "",
-                        "ReturnAddress1" => "TEST ADDRESS",
-                        "ReturnAddress2" => "",
-                        "ReturnAddress3" => "",
-                        "ReturnAddressinfo" => "",
-                        "ReturnContact" => $sender_name,
-                        "ReturnEmailID" => "demo@gmail.com",
-                        "ReturnLatitude" => "",
-                        "ReturnLongitude" => "",
-                        "ReturnMaskedContactNumber" => "",
-                        "ReturnMobile" => $mobile_no,
-                        "ReturnPincode" => $frompin->pincode,
-                        "ReturnTelephone" => ""
-                    ],
-                    "Services" => [
-                        "AWBNo" => "",
-                        "ActualWeight" => $booking_data->dead_weight,
-                        "CollectableAmount" => 0,
-                        "Commodity" => [
-                            "CommodityDetail1" => "", // data
-                            "CommodityDetail2" => "",
-                            "CommodityDetail3" => ""
-                        ],
-                        "CreditReferenceNo" => $booking_data->order_id,
-                        "CreditReferenceNo2" => "",
-                        "CreditReferenceNo3" => "",
-                        "CurrencyCode" => "",
-                        "DeclaredValue" => $booking_data->order_total,
-                        "DeliveryTimeSlot" => "",
-                        "Dimensions" => $Dimensions,
-                        "FavouringName" => "",
-                        "ForwardAWBNo" => "",
-                        "ForwardLogisticCompName" => "",
-                        "InsurancePaidBy" => "",
-                        "InvoiceNo" => '',
-                        "IsChequeDD" => "",
-                        "IsDedicatedDeliveryNetwork" => false,
-                        "IsForcePickup" => false,
-                        "IsPartialPickup" => false,
-                        "IsReversePickup" => false,
-                        "ItemCount" => 1,
-                        "OTPBasedDelivery" => "0",
-                        "OTPCode" => "",
-                        "Officecutofftime" => "",
-                        "PDFOutputNotRequired" => false,
-                        "PrinterLableSize" => "3",
-                        "PackType" => "",
-                        "ParcelShopCode" => "",
-                        "PayableAt" => "",
-                        "PickupDate" => "",
-                        "PickupMode" => "",
-                        "PickupTime" => "1600",
-                        "PickupType" => "",
-                        "PieceCount" => "1",
-                        "PreferredPickupTimeSlot" => "",
-                        "ProductCode" => 'E', // E = sufrace , A = Air
-                        "ProductFeature" => "",
-                        "ProductType" => '',
-                        "RegisterPickup" => '', // check
-                        "SpecialInstruction" => "",
-                        "SubProductCode" => "",
-                        "TotalCashPaytoCustomer" => 0,
-                        "itemdtl" => $itemdtl,
-                        "noOfDCGiven" => 0
-                    ],
-                    "Shipper" => [
-                        "CustomerAddress1" => $sender_address,
-                        "CustomerAddress2" => "",
-                        "CustomerAddress3" => "",
-                        "CustomerAddressinfo" => "",
-                        "CustomerCode" => "514813",
-                        "CustomerEmailID" => "",
-                        "CustomerGSTNumber" => "",
-                        "CustomerLatitude" => "",
-                        "CustomerLongitude" => "",
-                        "CustomerMaskedContactNumber" => "",
-                        "CustomerMobile" => $mobile_no,
-                        "CustomerName" => $sender_name,
-                        "CustomerPincode" => $frompin->pincode,
-                        "CustomerTelephone" => "",
-                        "IsToPayCustomer" => false,
-                        "OriginArea" => "BOM",
-                        "Sender" => $sender_name,
-                        "VendorCode" => ""
-                    ]
-                ],
-                "Profile" => [
-                    "LoginID" => "BOM85331",
-                    "LicenceKey" => "lerstmgofmrskogqelln8nmnwtrlkem"
-                ]
-            ];
-            $response = BookingblueDart(json_encode($postdata), $key1);
+            $postdata = '{
+                "Request": {
+                    "Consignee": {
+                        "AvailableDays": "",
+                        "AvailableTiming": "",
+                        "ConsigneeAddress1": "'.$booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark.'",
+                        "ConsigneeAddress2": "'.$booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark.'",
+                        "ConsigneeAddress3": "'.$booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark.'",
+                        "ConsigneeAddressType": "",
+                        "ConsigneeAddressinfo": "",
+                        "ConsigneeAttention": "",
+                        "ConsigneeEmailID": "",
+                        "ConsigneeFullAddress": "",
+                        "ConsigneeGSTNumber": "",
+                        "ConsigneeLatitude": "",
+                        "ConsigneeLongitude": "",
+                        "ConsigneeMaskedContactNumber": "",
+                        "ConsigneeMobile": "'.$booking_data->buy_mobile.'",
+                        "ConsigneeName": "'.$booking_data->buy_full_name.'",
+                        "ConsigneePincode": "'.$topin->pincode.'",
+                        "ConsigneeTelephone": ""
+                    },
+                    "Returnadds": {
+                        "ManifestNumber": "",
+                        "ReturnAddress1": "TEST ADDRESS",
+                        "ReturnAddress2": "",
+                        "ReturnAddress3": "",
+                        "ReturnAddressinfo": "",
+                        "ReturnContact": "'.$sender_name.'",
+                        "ReturnEmailID": "",
+                        "ReturnLatitude": "",
+                        "ReturnLongitude": "",
+                        "ReturnMaskedContactNumber": "",
+                        "ReturnMobile": "'.$mobile_no.'",
+                        "ReturnPincode": "'.$frompin->pincode.'",
+                        "ReturnTelephone": ""
+                    },
+                    "Services": {
+                        "AWBNo": "",
+                        "ActualWeight": "'.$booking_data->dead_weight.'",
+                        "CollectableAmount": 0,
+                        "Commodity": {
+                            "CommodityDetail1": "",
+                            "CommodityDetail2": "",
+                            "CommodityDetail3": ""
+                        },
+                       
+                        "CreditReferenceNo": "'.$booking_data->order_id.'",
+                        "CreditReferenceNo2": "",
+                        "CreditReferenceNo3": "",
+                        "CurrencyCode": "",
+                        "DeclaredValue": '.(int)$booking_data->order_total.',
+                        "DeliveryTimeSlot": "",';
+                        $postdata .=	'"Dimensions": [
+                            {
+                                "Breadth": '.(int)$booking_data->breath.',
+                                "Count": 1,
+                                "Height": '.(int)$booking_data->height.',
+                                "Length": '.(int)$booking_data->length.'
+                            }
+                        ],';
+                    $postdata .= '"FavouringName": "",
+                        "ForwardAWBNo": "",
+                        "ForwardLogisticCompName": "",
+                        "InsurancePaidBy": "",
+                        "InvoiceNo": "",  
+                        "IsChequeDD": "",
+                        "IsDedicatedDeliveryNetwork": false,
+                        "IsForcePickup": false,
+                        "IsPartialPickup": false,
+                        "IsReversePickup": false,
+                        "ItemCount": 1,
+                        "OTPBasedDelivery": "0",
+                        "OTPCode": "",
+                        "Officecutofftime": "",
+                        "PDFOutputNotRequired": true,
+                        "PrinterLableSize":"3",
+                        "PackType": "",
+                        "ParcelShopCode": "",
+                        "PayableAt": "",
+                        "PickupDate": "/Date('.$date.')/",
+                        "PickupMode": "",
+                        "PickupTime": "1800",
+                        "PickupType": "",
+                        "PieceCount": "1",
+                        "PreferredPickupTimeSlot": "",
+                        "ProductCode": "D",
+                        "ProductFeature": "",
+                        "ProductType": 1,
+                        "RegisterPickup": true,
+                        "SpecialInstruction": "",
+                        "SubProductCode": "",
+                        "TotalCashPaytoCustomer": 0,
+                        "itemdtl":  '.json_encode($itemdtl).',
+                        "noOfDCGiven": 0
+                    },
+                    "Shipper": {
+                        "CustomerAddress1": "'.$sender_address.'",
+                        "CustomerAddress2": "",
+                        "CustomerAddress3": "",
+                        "CustomerAddressinfo": "",
+                        "CustomerCode": "450914",
+                        "CustomerEmailID": "",
+                        "CustomerGSTNumber": "",
+                        "CustomerLatitude": "",
+                        "CustomerLongitude": "",
+                        "CustomerMaskedContactNumber": "",
+                        "CustomerMobile": "'.$mobile_no.'",
+                        "CustomerName": "'.$sender_name.'",
+                        "CustomerPincode": "'.$frompin->pincode.'",
+                        "CustomerTelephone": "",
+                        "IsToPayCustomer": false,
+                        "OriginArea": "BOM",
+                        "Sender": "'.$sender_name.'",
+                        "VendorCode": ""
+                    }
+                },
+                "Profile": {
+                    "LoginID": "BOM42763",
+                    "LicenceKey": "himmhphkekh2sqkfnrf3kelfllsiknog",
+                    "Api_type": "S"
+                }
+            }';
+           return $response = BookingblueDart($postdata,$keyToekn);
         }
     }
 
@@ -948,13 +1042,99 @@ class DomesticsOrders extends Controller
             $Customer = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
             $WalletAmount = $Customer->wallet_amount;
             $ShipmentAmount = $request->amount;
-            // Delhivery Api Docket Booking
-            if ($request->courier == 2) {
-                $this->DelhiveryAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
-            } elseif ($request->courier == 3) {
-                $this->XpressbeesAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
-            } elseif ($request->courier == 1) {
-                $this->BlueDartAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
+            $status = 1;
+            if($status == 1){
+                $booking = DB::table('tbl_domestic_booking')->where(['id'=>$request->booking_id])->first();
+                if(!empty($booking)){
+                    $WalletAmount = $Customer->wallet_amount;
+                    $ShipmentAmount = $request->amount;
+                    $BalanceAmount = $WalletAmount - $ShipmentAmount;
+                    if ( $BalanceAmount <= 0) {
+                        // session()->flash('success', "We don't have sufficent balance");
+                        $response = [
+                            'status' => 'false',
+                            'data' => "We don't have sufficent balance",
+                        ];
+                        return  json_encode($response);
+                    }else{
+                        $booking_status = 2;
+                        DB::beginTransaction();
+                        if ($request->courier == 2) {
+                            $booking = $this->DelhiveryAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
+                            if (!empty($booking)) {
+                                $booking_status = 1;
+                                $delhiveryData = ['forwording_no' =>  $booking, 'courier' => 2];
+                            }
+                        } elseif ($request->courier == 3) {
+                            $this->XpressbeesAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
+                        } elseif ($request->courier == 1) {
+                           $blueDart = $this->BlueDartAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
+                            if(!empty($blueDart)){
+                                if(!empty($blueDart->GenerateWayBillResult)){
+                                    if($blueDart->GenerateWayBillResult->Status[0]->StatusCode == 'Valid')
+                                    {
+                                        $booking_status = 1;
+                                        $blueDartUpdate = [
+                                            'forwording_no'=>$blueDart->GenerateWayBillResult->AWBNo,
+                                            'TokenNumber'=>$blueDart->GenerateWayBillResult->TokenNumber,
+                                            'DestinationArea'=>$blueDart->GenerateWayBillResult->DestinationArea,
+                                            'DestinationLocation'=>$blueDart->GenerateWayBillResult->DestinationLocation,
+                                            'ClusterCode'=>$blueDart->GenerateWayBillResult->ClusterCode,
+                                            'courier'=> 1,
+                                            'pickup_date'=> date_convter($blueDart->GenerateWayBillResult->ShipmentPickupDate)
+                                        ];
+                                        DB::table('tbl_domestic_booking')->where(['id'=>$request->booking_id])->update($blueDartUpdate);
+                                    }
+                                }
+                            }
+                        }
+                        try{
+                        if($booking_status == 1){
+                            $wallet = [
+                                'customer_id'=>Session('customer.id'),
+                                'transaction_type' => 2,
+                                'amount'=> $ShipmentAmount,
+                                'balance_amount' => $BalanceAmount,
+                                'reference_no' => '',
+                                'description' => 'Shipment booked Order No '.$booking->order_id,
+                                'date' => date('Y-m-d'),
+                                'status'=>1,
+                                'created_at' => date('Y-m-d h:i:s'),
+                                'display_status' => 1
+                            ];
+                            $transection =  DB::table('tbl_customer_wallet_transection')->insert($wallet);
+                            DB::table('tbl_customers')->where(['id'=>Session('customer.id')])->update(['wallet_amount'=>$BalanceAmount]);
+                            DB::table('tbl_shipment_stock_manager')->where(['booking_id'=>$request->booking_id])->update(['api_booked'=>1]);
+                            DB::commit();
+                            session()->flash('success', 'Shipment Booked successfully');
+                            if( $transection){
+                                $responce = [
+                                    'status' => 'success',
+                                    'data' => 'Shipment Booked successfully',
+                                ];
+                                echo json_encode($responce);
+                                exit;
+                            }
+                        }else{
+                            $responce = [
+                                'status' => 'faild',
+                                'data' =>  'Something went to wrong',
+                            ];
+                            echo json_encode($responce);
+                            exit;
+                        }
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        $msg = session()->flash('faild', 'An error occurred: ' . $e->getMessage());
+                        $responce = [
+                            'status' => 'faild',
+                            'data' =>  'An error occurred: ' . $e->getMessage(),
+                        ];
+                        echo json_encode($responce);
+                        exit;
+                    }
+                    }
+                }
             }
         }
     }

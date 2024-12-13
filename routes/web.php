@@ -49,10 +49,8 @@ use App\Http\Controllers\customer\CustomerWalletTrasection;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
+Route::get('/', [CustomerRegistrationLogin::class, 'index'] );  
 
 
 Route::post('app/login', [CustomerRegistrationLogin::class, 'app_login'])->name('app.login');
@@ -81,6 +79,7 @@ Route::group(['middleware' => 'customer'], function () {
     Route::get('app/logout', [CustomerDashboard::class, 'logout'])->name('app.logout');
     // domestic orders 
     Route::get('app/view-orders',[DomesticsOrders::class,'index'])->name('app.view-orders');
+    Route::get('app/view-Unprocessing-orders',[DomesticsOrders::class,'UnprocessOrders'])->name('app.view-Unprocessing-orders');
     Route::get('app/view-Processing-orders',[DomesticsOrders::class,'ProcessOrders'])->name('app.view-Processing-orders');
     Route::get('app/view-readyforship-orders',[DomesticsOrders::class,'readyforship'])->name('app.view-readyforship-orders');
     Route::get('app/view-manifest-orders',[DomesticsOrders::class,'Manifest'])->name('app.view-manifest-orders');
