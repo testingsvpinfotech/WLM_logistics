@@ -38,7 +38,7 @@ class DomesticBooking extends Model
         return $result;
     }
     // customer listing count 
-    public function get_listing_count($where = "0")
+    public function get_listing_count($where = 0)
     {
         // all orders
         $query_all_orders = DB::table('tbl_domestic_booking as b')

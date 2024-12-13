@@ -24,6 +24,8 @@ use App\Http\Controllers\admin\International\InternationalRateMaster;
 use App\Http\Controllers\admin\AdminWalletTrasection;
 //  user type permission
 use App\Http\Controllers\admin\AdminPermissions;  
+use App\Http\Controllers\admin\AdminOrders;  
+use App\Http\Controllers\admin\CustomerMaster;  
 
 
 
@@ -226,4 +228,15 @@ Route::group(['middleware' => 'admin'], function () {
     //  User type Permissions
     Route::get('admin/permisssion-update/{id}',[AdminPermissions::class,'edit_permission'])->name('admin.permisssion-update');
     Route::put('admin/permisssion-update-data',[AdminPermissions::class,'update_permission'])->name('admin.permisssion-update-data');
+     
+    // Admin panel orders
+     Route::get('admin/view-customers-all-order',[AdminOrders::class,'index'])->name('admin.view-customers-all-order'); 
+     Route::get('admin/view-Unprocessing-orders',[AdminOrders::class,'UnprocessOrders'])->name('admin.view-Unprocessing-orders'); 
+     Route::get('admin/view-Processing-orders',[AdminOrders::class,'ProcessOrders'])->name('admin.view-Processing-orders'); 
+     Route::get('admin/view-readyforship-orders',[AdminOrders::class,'readyforship'])->name('admin.view-readyforship-orders'); 
+     Route::get('admin/view-manifest-orders',[AdminOrders::class,'Manifest'])->name('admin.view-manifest-orders'); 
+     Route::get('admin/view-return-orders',[AdminOrders::class,'returnOrders'])->name('admin.view-return-orders'); 
+
+    //  customers
+    Route::get('admin/view-customer-master',[CustomerMaster::class,  'index'])->name('admin.view-customer-master'); 
 });

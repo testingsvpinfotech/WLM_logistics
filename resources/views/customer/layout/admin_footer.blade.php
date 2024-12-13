@@ -1,6 +1,6 @@
   <!-- START: Footer-->
   <footer class="site-footer">
-    2020 &copy; PICK
+  &copy; {{ '2024-'.date('Y').' SVP Infotech , All Rights Reseverd' }}
 </footer>
 <!-- END: Footer-->
 
