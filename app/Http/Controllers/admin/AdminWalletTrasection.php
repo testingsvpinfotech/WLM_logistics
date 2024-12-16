@@ -61,7 +61,7 @@ class AdminWalletTrasection extends Controller
             'customer_id' => 'required',
             'wallet_type' => 'required',
             'reference_no' => 'required',
-            'recharge_amount' => 'required|numeric',
+            'recharge_amount' => 'required|numeric|gte:0',
         ]);
         if($validation->fails())
         {

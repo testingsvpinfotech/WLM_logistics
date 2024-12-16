@@ -36,7 +36,7 @@ class DomesticsOrders extends Controller
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1]);
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1,'tbl_domestic_booking.created_id'=>Session('customer.id')]);
         if (!empty($searchData)) {
             $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
@@ -72,7 +72,7 @@ class DomesticsOrders extends Controller
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 0, 'tbl_shipment_stock_manager.lable_genration' => 0, 'tbl_shipment_stock_manager.pickup' => 0]);
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 0, 'tbl_shipment_stock_manager.lable_genration' => 0, 'tbl_shipment_stock_manager.pickup' => 0,'tbl_domestic_booking.created_id'=>Session('customer.id')]);
         if (!empty($searchData)) {
             $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
@@ -106,7 +106,7 @@ class DomesticsOrders extends Controller
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 0, 'tbl_shipment_stock_manager.pickup' => 0]);
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1,'tbl_domestic_booking.created_id'=>Session('customer.id'), 'tbl_shipment_stock_manager.lable_genration' => 0, 'tbl_shipment_stock_manager.pickup' => 0]);
         if (!empty($searchData)) {
             $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
@@ -140,7 +140,7 @@ class DomesticsOrders extends Controller
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 0]);
+        $query->where(['tbl_domestic_booking.mfd' => 0,'tbl_domestic_booking.created_id'=>Session('customer.id'), 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 0]);
         if (!empty($searchData)) {
             $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
@@ -173,7 +173,7 @@ class DomesticsOrders extends Controller
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 1]);
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1,'tbl_domestic_booking.created_id'=>Session('customer.id'), 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 1]);
         if (!empty($searchData)) {
             $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
@@ -206,7 +206,7 @@ class DomesticsOrders extends Controller
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 1,'tbl_shipment_stock_manager.returns'=>1]);
+        $query->where(['tbl_domestic_booking.mfd' => 0,'tbl_domestic_booking.created_id'=>Session('customer.id'), 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 1,'tbl_shipment_stock_manager.returns'=>1]);
         if (!empty($searchData)) {
             $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
