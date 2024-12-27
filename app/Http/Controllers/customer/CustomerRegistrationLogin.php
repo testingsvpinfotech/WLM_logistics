@@ -51,7 +51,10 @@ class CustomerRegistrationLogin extends Controller
                 ];
 
                 DB::beginTransaction();
-
+                $maxId = CustomerModel::max('id');
+                $inc = $maxId + 1;
+                $code = 'CIN00'.$inc;
+                $userData['Customer_Code'] = $code;
                 $customer = CustomerModel::create($userData);
                 $lastInsertedId = $customer->id;
 

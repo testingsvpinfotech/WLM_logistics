@@ -239,4 +239,6 @@ Route::group(['middleware' => 'admin'], function () {
 
     //  customers
     Route::get('admin/view-customer-master',[CustomerMaster::class,  'index'])->name('admin.view-customer-master'); 
+    Route::get('admin/edit-customer/{id}',[CustomerMaster::class,  'edit_customer'])->name('admin.edit-customer'); 
+    Route::post('admin/update-customer',[CustomerMaster::class,  'update_customer'])->name('admin.update-customer'); 
 });

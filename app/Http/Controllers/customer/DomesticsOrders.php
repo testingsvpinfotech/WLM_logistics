@@ -319,7 +319,8 @@ class DomesticsOrders extends Controller
                 'return_city' => $topin->city,
                 "return_country" => "India"
             ];
-            $jwtKey = delhiveryAuth();
+            $jwtKey = delhiveryAuth(); // 2bc
+            $jwtKey = delhiveryAuthB2B(); // b2b
             if (!empty($jwtKey->jwt)) {
                 $status =  Wearhouse_creation($APIDATA, $jwtKey->jwt);
             }
@@ -736,6 +737,109 @@ class DomesticsOrders extends Controller
             }
         }
     }
+    public function DelhiveryAPICallB2B($booking_id, $courier, $mode, $amount)
+    {
+        // login account
+        $jwtKey = delhiveryAuthB2B()->data->jwt;
+        if (!empty($jwtKey)) {
+            $booking_data = DB::table('tbl_domestic_booking')->where(['id' => $booking_id])->first();
+            if (!empty($booking_data)) {
+                $product = DB::table('tbl_domestic_products')->where(['booking_id' => $booking_id])->get();
+                // from address
+                if ($booking_data->pickup_address == 'primary') {
+                    $customer = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
+                    $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
+                    $frompin = $this->pincode->pincodedata($pincodewhere);
+                    $sender_name = $customer->personal_name . ' ' . $customer->surname;
+                    $mobile_no = $customer->mobile_number;
+                    $sender_address = $customer->address_line1 . ' ' . $customer->address_line2;
+                } else {
+                    $customer = DB::table('tbl_pickup_address')->where(['id' => $booking_data->pickup_address])->first();
+                    $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
+                    $frompin = $this->pincode->pincodedata($pincodewhere);
+                    $data['from_address'] = $customer->address . ',' . $customer->landmark . ',' . $frompin->city . ',' . $frompin->state . ' ' . $frompin->pincode;
+                    $sender_name = $customer->contact_person;
+                    $mobile_no = $customer->contact_no;
+                    $sender_address = $customer->address . ' ' . $customer->landmark;
+                }
+                // pices
+                $pieces_detail = [];
+                foreach ($product as $key => $val) {
+                    $pieces_detail[] = [
+                        "order_id" => $booking_data->order_id,
+                        "box_count" => count($product),
+                        "description" => 'box', // Use object syntax -> instead of []
+                        "weight" => round($val->weight * 1000),
+                        "waybills"=> [],
+                        'master' => false
+                    ];
+                }
+                // invoice
+                $invoice = [];
+                foreach ($product as $key => $val) {
+                    $invoice[] = [
+                        "ewaybill"=> "",
+                        "inv_amt" => round($val->inv_value),
+                        "inv_num" => $val->inv_no,
+                        'inv_qr_code'=>'eyJhbGciOiJSUzI1NiIsImtpZCI6IkI4RDYzRUNCNThFQTVFNkY0QUFDM0Q1MjQ1NDNCMjI0NjY2OUIwRjgiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJ1TlkteTFqcVhtOUtyRDFTUlVPeUpHWnBzUGcifQ.eyJkYXRhIjoie1wiU2VsbGVyR3N0aW5cIjpcIjMzQUFQQ1M5NTc1RTFaVVwiLFwiQnV5ZXJHc3RpblwiOlwiMjNBQVBDUzk1NzVFMVpWXCIsXCJEb2NOb1wiOlwiREVMLzExMjIvMDA5NTQwN1wiLFwiRG9jVHlwXCI6XCJJTlZcIixcIkRvY0R0XCI6XCIzMC8xMS8yMDIyXCIsXCJUb3RJbnZWYWxcIjoyNTIwNDgwLjAsXCJJdGVtQ250XCI6MSxcIk1haW5Ic25Db2RlXCI6XCI4NDI4MjBcIixcIklyblwiOlwiODBlZWIxYzA4Zjg0MTJkYWVhZTBmNmM3NjE0ZWJmMzRiZDEzYWU3NDJiZTYwNzM3MTNlY2Q4N2JlYzgwNjVjOFwiLFwiSXJuRHRcIjpcIjIwMjItMTEtMzAgMTI6MDI6MDBcIn0iLCJpc3MiOiJOSUMifQ.VInEh4yiYmEq0ikdj3qX5TlKVwarcNqFVqpUNRjP5rsOqtXH6vhsUZM2LrMfg1jlJRghfH-PKu77DlOR4bmj_4VmZVvhX-Waziey6Z4QBkOLL8qL2_RSNcxOwLUkd56kWWM5_HmiowSA11zFeE34pbaBaN1hRGy5XkEIAKFWqS-rgppPQAuW4CIvyDcbR0B4jYT3JuOHRzkkg4NB75xAsH9YXJ4ffY7Y5O6nxhxEIYcXhWHoKp1HmW1zelFmU-nLmuUif7eJ8U9s6PCL4onFzN4f2m0dYaNCddT-KgNKnFyghMqtXvBm8y6_ree8vfVcVoVrlr_EwyFOE4rpUKiyGg'
+                    ];
+                }
+                // amount 
+                $amount = ($booking_data->paymentMode == 'Prepaid') ? 0 : $booking_data->order_total;
+
+                // To Address              
+                $pincodewhere = ['tbl_pincode.pincode' => $booking_data->buy_delivery_pincode];
+                $topin = $this->pincode->pincodedata($pincodewhere);
+
+                $BookingData = [
+                    'lrn' => '',
+                    'pickup_location_name' => "testWH",
+                    'payment_mode' => $booking_data->paymentMode,
+                    'cod_amount' => round($amount),
+                    'weight' => round($booking_data->dead_weight * 1000),
+                    'dropoff_location' => json_encode([
+                        'consignee_name' => $booking_data->buy_full_name,
+                        'phone' => $booking_data->buy_mobile,
+                        'address' =>  $booking_data->buy_delivery_address . ' ' . $booking_data->buy_delivery_landmark,
+                        'zip' => $topin->pincode,
+                        'city' =>  $topin->city,
+                        'state' => $topin->state,
+                        'email' => ''
+                    ]),
+                    'rov_insurance' => true,                  
+                    'invoices' => json_encode($invoice),
+                    'shipment_details'=> json_encode($pieces_detail),
+                    'dimensions' => json_encode([[
+                            "box_count" => count($product),
+                            "length" => round($booking_data->length),
+                            "width" => round($booking_data->breath),
+                            "height" => round($booking_data->height)
+                        ]]),
+                    'doc_data' => [
+                        json_encode([
+                            'doc_type'=> 'INVOICE_COPY',
+                            'doc_meta'=> ['invoice_num'=>['I22331030453']]
+                        ]),
+                    ],
+                    'freight_mode'=>'fop',
+                    'fm_pickup'=>true,
+                    'billing_address' => json_encode([
+                        'name' => $sender_name,
+                        'consignor' => $sender_name,
+                        'company' => $sender_name,
+                        'phone' => $mobile_no,
+                        'address' => $sender_address,
+                        'pin' => $frompin->pincode,
+                        'city' => $frompin->city,
+                        'state' => $frompin->state,
+                         "pan_number"=>"ETKPD7819F"
+                    ]),
+                ];        
+                return  $booking = BookingdelhiveryB2B($BookingData, $jwtKey);
+              
+            }
+        }
+    }
 
     public function XpressbeesAPICall($booking_id, $courier, $mode, $amount)
     {
@@ -1060,11 +1164,20 @@ class DomesticsOrders extends Controller
                         $booking_status = 2;
                         DB::beginTransaction();
                         if ($request->courier == 2) {
-                            $booking = $this->DelhiveryAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
+                            // b2c
+                            // $booking = $this->DelhiveryAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
+                            // if (!empty($booking)) {
+                            //     $booking_status = 1;
+                            //     $delhiveryData = ['forwording_no' =>  $booking, 'courier' => 2];
+                            // }
+
+                            $booking = $this->DelhiveryAPICallB2B($request->booking_id, $request->courier, $request->mode_id, $request->amount);
                             if (!empty($booking)) {
                                 $booking_status = 1;
                                 $delhiveryData = ['forwording_no' =>  $booking, 'courier' => 2];
                             }
+
+
                         } elseif ($request->courier == 3) {
                             $this->XpressbeesAPICall($request->booking_id, $request->courier, $request->mode_id, $request->amount);
                         } elseif ($request->courier == 1) {
