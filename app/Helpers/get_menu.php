@@ -43,6 +43,16 @@ if(!function_exists('internationalType'))
         ];
     }
 }
+if(!function_exists('riskType'))
+{
+    function riskType()
+    {
+       return   $data = [
+                    '1'=>'CUSTOMER',
+                    '2'=> 'CARREIR'
+        ];
+    }
+}
 if(!function_exists('docType'))
 {
     function docType()

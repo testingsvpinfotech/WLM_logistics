@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Validation\Rules\Exists;
 
 class DomesticsOrders extends Controller
 {
@@ -444,6 +445,11 @@ class DomesticsOrders extends Controller
                     'buy_delivery_billing_landmark' => $request->buy_delivery_billing_landmark,
                     'buy_delivery_billing_pincode' => $request->buy_delivery_billing_pincode,
                     'order_shipping_charges' => $request->order_shipping_charges,
+                    'insuranse_chargeses' => $request->insuranse_chargeses,
+                    'invoice_value' => $request->invoice_value,
+                    'invoice_no' => $request->invoice_no,
+                    'eway_no' => $request->eway_no,
+                    'riskType' => $request->riskType,
                     'order_gift_wrap' => $request->order_gift_wrap,
                     'order_transaction_fee' => $request->order_transaction_fee,
                     'order_discounts' => $request->order_discounts,
@@ -494,8 +500,6 @@ class DomesticsOrders extends Controller
                         'length' => $request->length[$i],
                         'width' => $request->width[$i],
                         'weight' => $request->weight[$i],
-                        'inv_value' => $request->inv_value[$i],
-                        'inv_no' => $request->inv_no[$i]
                     ];
                     $productBooking = DomesticOrdersProducts::create($productData);
                 }
@@ -517,7 +521,7 @@ class DomesticsOrders extends Controller
                 DB::rollBack();
                 $msg = session()->flash('faild', 'An error occurred: ' . $e->getMessage());
                 $responce = [
-                    'status' => 'faild',
+                    'status' => 'false1',
                     'error' => 'An error occurred: ' . $e->getMessage(),
                 ];
                 echo json_encode($responce);
@@ -1372,5 +1376,37 @@ class DomesticsOrders extends Controller
         }
         $data['title'] = "Track Our Shipment";
         return view('customer.trackingShipement.view_trackShipment', $data);
+    }
+
+
+    public function GetEwayAccess()
+    {
+       if(!empty($_GET['senderPincode']))
+       {
+         $senderPincode = $_GET['senderPincode'];
+       }else{
+         $senderPincode = $_GET['senderPincodebilling'];
+       }
+       if($_GET['reciver'] == 'primary')
+       {
+         $customer = DB::table('tbl_customers')->where(['id'=>Session('customer.id')])->first();
+         $ReciverPincode = $customer->pincode;
+       }else{
+        $address = DB::table('tbl_pickup_address')->where(['id'=>$_GET['reciver']])->first();
+        $ReciverPincode = $address->pincode;
+       }
+       $frompincodewhere = ['tbl_pincode.pincode' => $senderPincode];
+       $frompin = $this->pincode->pincodedata($frompincodewhere);
+
+       $topincodewhere = ['tbl_pincode.pincode' => $senderPincode];
+       $topin = $this->pincode->pincodedata($topincodewhere);
+
+       if($frompin->state_id == $topin->state_id)
+       {
+           $data = ['from_state' => $frompin->state_id, 'to_state'=>$topin->state_id,'acces'=>'1'];
+       }else{
+           $data = ['from_state' => $frompin->state_id, 'to_state'=>$topin->state_id,'acces'=>'2'];
+       }
+      echo json_encode($data);Exit();
     }
 }

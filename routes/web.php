@@ -81,6 +81,7 @@ Route::group(['middleware' => 'customer'], function () {
     Route::get('app/logout', [CustomerDashboard::class, 'logout'])->name('app.logout');
     // domestic orders 
     Route::get('app/view-orders',[DomesticsOrders::class,'index'])->name('app.view-orders');
+    Route::get('app/get-ewayacess',[DomesticsOrders::class,'GetEwayAccess'])->name('app.get-ewayacess');
     Route::get('app/view-Unprocessing-orders',[DomesticsOrders::class,'UnprocessOrders'])->name('app.view-Unprocessing-orders');
     Route::get('app/view-Processing-orders',[DomesticsOrders::class,'ProcessOrders'])->name('app.view-Processing-orders');
     Route::get('app/view-readyforship-orders',[DomesticsOrders::class,'readyforship'])->name('app.view-readyforship-orders');

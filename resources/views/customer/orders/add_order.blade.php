@@ -456,6 +456,7 @@
                                                 style="color: blue !important; text-decoration: none;"
                                                 class="btn btn-link">+ Add Order Tag, Reseller's Name</button>
                                         </div>
+                                        <input type="hidden" id="ewayAccess" value="0">
                                     </div>
                                     <div class="row reseller_button_status" style="display: none;">
                                         <div class="form-group mb-0 col-md-4">
@@ -513,16 +514,6 @@
                                                         class="btn btn-danger rounded-btn btn-remove-product hidedelete"
                                                         style="margin-top: 25px;" disabled><i
                                                             class="fa fa-trash"></i></button>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label for="productCategory">Inv No</label>
-                                                    <input type="text" class="form-control" name="inv_no[]"
-                                                        placeholder="Inv No">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label for="productCategory">Inv Value</label>
-                                                    <input type="text" class="form-control" name="inv_value[]"
-                                                        placeholder="Inv Value">
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label for="productCategory">Weight</label>
@@ -601,7 +592,49 @@
                                                 <label class="form-check-label" for="CoD">Cash on Delivery</label>
                                                 <p style="color:red;"></p>
                                             </div>
-                                            
+                                        </div>
+                                        <div class="form-group mt-2 mb-0 col-md-4">
+                                            <label for="mobileNumber">Risk Type</label>
+                                                <select class="form-control buttonCall" name="riskType" id="riskType">
+                                                    @foreach (riskType() as $key => $val )
+                                                    <option value="{{$key}}"
+                                                     @if ($key ==1)
+                                                     {{'selected'}}
+                                                     @endif
+                                                    >{{$val}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <p style="color:red;"></p>
+                                        </div>
+                                        <div class="form-group mt-2 mb-0 col-md-2">
+                                            <label for="mobileNumber">INVOICE No</label>
+                                            <input type="text" class="form-control buttonCall"
+                                                name="invoice_no" id="invoice_no"
+                                                placeholder="INVOICE No" aria-label="Password">
+                                                <p style="color:red;"></p>
+                                        </div>
+                                        <div class="form-group mt-2 mb-0 col-md-2">
+                                            <label for="mobileNumber">INVOICE AMOUNT</label>
+                                            <input type="text" class="form-control buttonCall"
+                                                name="invoice_value" id="invoice_value"
+                                                placeholder="INVOICE VALUE (AMOUNT)" aria-label="Password" value="0" >
+                                                <p style="color:red;"></p>
+                                        </div>
+                                        <div class="form-group mt-2 mb-0 col-md-2">
+                                            <label for="mobileNumber">EWAY No</label>
+                                            <input type="text" class="form-control buttonCall"
+                                                name="eway_no" id="eway_no"
+                                                placeholder="EWAY No" aria-label="Password" 
+                                                aria-describedby="basic-email">
+                                                <p style="color:red;"></p>
+                                        </div>
+                                        <div class="form-group mt-2 mb-0 col-md-2">
+                                            <label for="mobileNumber">INSURANSE CHARGES</label>
+                                            <input type="text" class="form-control buttonCall"
+                                                name="insuranse_chargeses" id="insuranse_chargeses"
+                                                placeholder="INSURANSE CHARGES" aria-label="Password" value="0"
+                                                aria-describedby="basic-email">
+                                                <p style="color:red;"></p>
                                         </div>
                                         <div class="col-md-12">
                                             <button type="button" id="add_charges"
@@ -669,7 +702,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 mt-4">
                                             <p>Sub-total for Product</p>
                                             <p>Other Charges</p>
                                             <p>Discount</p> <br>
@@ -700,6 +733,7 @@
                                 <div id="step4" style="display:none;">
                                     <h5>Package Details</h5>
                                     <!-- Package details input fields go here -->
+                                     <p style="color:red;" id="error"></p>
                                     <div class="row">
                                         <div class="col-md-3">
                                             <label for="">Dead Weight</label>
@@ -712,7 +746,7 @@
                                                 </div>
                                                 <p style="color: red;"></p>
                                             </div>
-                                        </div>
+                                      p/div>
                                     </div>
                                     <label for="">Volumetric Weight</label>
                                     <div class="row">
@@ -786,6 +820,7 @@
         var callurl = "{{ route('app.store-orders')}}";
         var Intercallurl = "{{ route('app.store-international')}}";
         var view = "{{ route('app.view-orders')}}";
+        var getEway = "{{ route('app.get-ewayacess')}}";
     </script>
     <script src="{{ asset('customer-assets/js/domestic_orders.js') }}"></script>
     <script src="{{ asset('customer-assets/js/international_orders.js') }}"></script>
