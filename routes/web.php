@@ -26,9 +26,8 @@ use App\Http\Controllers\admin\AdminWalletTrasection;
 use App\Http\Controllers\admin\AdminPermissions;  
 use App\Http\Controllers\admin\AdminOrders;  
 use App\Http\Controllers\admin\CustomerMaster;  
-
-
-
+use App\Http\Controllers\admin\DomesticInvoice;  
+use App\Http\Controllers\admin\DomesticFuel;  
 
 // customer 
 use App\Http\Controllers\customer\CustomerRegistrationLogin;
@@ -104,10 +103,8 @@ Route::group(['middleware' => 'customer'], function () {
     Route::post('app/get-international-order',[InternationalOrders::class,'getModel'])->name('app.get-international-order');
     Route::post('app/store-international',[InternationalOrders::class,'store_orders'])->name('app.store-international');
     Route::get('app/get-country',[InternationalOrders::class,'getcoutry'])->name('app.get-country');
-
     // Wallet Transection 
     Route::get('app/view-wallet-transaction',[CustomerWalletTrasection::class,'index'])->name('app.view-wallet-transaction');
-
     // Tracking Shipment 
     Route::get('app/tracking-shipment',[DomesticsOrders::class,'shipmentTracking'])->name('app.tracking-shipment');
 });
@@ -242,4 +239,12 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/view-customer-master',[CustomerMaster::class,  'index'])->name('admin.view-customer-master'); 
     Route::get('admin/edit-customer/{id}',[CustomerMaster::class,  'edit_customer'])->name('admin.edit-customer'); 
     Route::post('admin/update-customer',[CustomerMaster::class,  'update_customer'])->name('admin.update-customer'); 
+
+    //  Fuel Master
+    Route::get('admin/view-domestic-fuel-master',[DomesticFuel::class,'index'])->name('admin.view-domestic-fuel-master');
+    Route::get('admin/add-domestic-fuel',[DomesticFuel::class,'add_fuel'])->name('admin.add-domestic-fuel');
+    Route::post('admin/fuel-master-store',[DomesticFuel::class,'store_fuel'])->name('admin.fuel-master-store');
+    Route::get('admin/edit-fuel-master/{id}',[DomesticFuel::class,'edit_fuel'])->name('admin.edit-fuel-master');
+    Route::post('admin/fuel-master-update',[DomesticFuel::class,'fuel_update'])->name('admin.fuel-master-update');
+    Route::put('admin/fuel-master-delete',[DomesticFuel::class,'destroyfuel'])->name('admin.fuel-master-delete');
 });
