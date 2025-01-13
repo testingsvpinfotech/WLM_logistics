@@ -128,11 +128,11 @@
                         <div class="d-flex justify-content-between mb-3 align-items-center">
                             <div class="filter-buttons">
                                 <a href="{{route('admin.view-customers-all-order')}}" style="color:blue;"><i class="fa fa-files-o"></i></i> All Orders <button class="badge bg-primary border  rounded-pill">{{ $all_orders }}</button></a>
-                                <a href="{{route('admin.view-Unprocessing-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-info-circle"></i> Unprocessable <button class="badge bg-danger border rounded-pill">{{$Unprocessable}}</button> </a>
-                                <a href="{{route('admin.view-Processing-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-cogs"></i> Processing <button class="badge bg-warning border rounded-pill">{{$Processing}}</button> </a>
-                                <a href="{{route('admin.view-readyforship-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-dropbox"></i></i> Ready to Ship <button class="badge bg-info border rounded-pill">{{$Ready_to_ship}}</button> </a>
-                                <a href="{{route('admin.view-manifest-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-truck"></i> Manifest <button class="badge bg-success border rounded-pill">{{$Manifest}}</button> </a>
-                                <a href="{{route('admin.view-return-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-repeat"></i> Returns <button class="badge bg-secondary border rounded-pill">{{$Return}}</button> </a>
+                                <a href="{{route('admin.view-Unprocessing-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-info-circle"></i> Not Shipped <button class="badge bg-danger border rounded-pill">{{$Unprocessable}}</button> </a>
+                                <a href="{{route('admin.view-Processing-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-cogs"></i> Booked <button class="badge bg-warning border rounded-pill">{{$Processing}}</button> </a>
+                                <!-- <a href="{{route('admin.view-readyforship-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-dropbox"></i></i> Ready to Ship <button class="badge bg-info border rounded-pill">{{$Ready_to_ship}}</button> </a> -->
+                                <a href="{{route('admin.view-manifest-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-close"></i> Cancelled <button class="badge bg-success border rounded-pill">{{$Manifest}}</button> </a>
+                                <!-- <a href="{{route('admin.view-return-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-repeat"></i> Returns <button class="badge bg-secondary border rounded-pill">{{$Return}}</button> </a> -->
                             </div>
                         </div>
                         <form action="{{route('admin.view-readyforship-orders')}}" method="get">
@@ -144,13 +144,13 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">From Date</label>
-                                    <input type="date" name="from_date" id="from_date" class="form-control buttonCall" value="{{ !empty($_GET['from_date'])?$_GET['from_date']:'';}}">
+                                    <input type="date" name="from_date" id="from_date" class="form-control buttonCall" value="{{ !empty($_GET['from_date'])?$_GET['from_date']:date('Y-m-01');}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">To Date</label>
-                                    <input type="date" name="to_date" id="to_date" class="form-control buttonCall" value="{{ !empty($_GET['to_date'])?$_GET['to_date']:'';}}">
+                                    <input type="date" name="to_date" id="to_date" class="form-control buttonCall" value="{{ !empty($_GET['to_date'])?$_GET['to_date']:date('Y-m-d');}}">
                                 </div>
-                                
+
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-outline-primary mt-4"><i class="fa fa-search" aria-hidden="true"></i></button>
                                     <a href="{{route('admin.view-readyforship-orders')}}" class="btn btn-outline-danger mt-4"><i class="fa fa-refresh" aria-hidden="true"></i></a>
@@ -178,7 +178,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @if($orders->isNotEmpty())
+                                    @if($orders->isNotEmpty())
                                     @php
                                     $count = 1;
                                     @endphp
@@ -200,7 +200,7 @@
                                             <span class="status-pill status-cod">{{ ucfirst($val->paymentMode) }}</span>
                                         </td>
                                         <td>
-                                        @php
+                                            @php
                                             $product = DB::table('tbl_domestic_products')
                                             ->where(['booking_id' => $val->id])
                                             ->first();
@@ -244,7 +244,7 @@
                                             AWB:
                                         </td>
                                         <td>
-                                            
+
                                             <!-- <button class="btn btn-primary btn-icon">🔍</button>
                                             <button class="btn btn-success btn-icon">✏️</button>
                                             <button class="btn btn-danger btn-icon">♻️</button> -->

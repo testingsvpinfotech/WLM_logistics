@@ -93,6 +93,10 @@ Route::group(['middleware' => 'customer'], function () {
     Route::post('app/store-orders',[DomesticsOrders::class,'store_orders'])->name('app.store-orders');
     Route::post('app/api-booking',[DomesticsOrders::class,'booking_API'])->name('app.api-booking');
 
+    // cancel orders 
+    Route::get('app/get-cancel-order',[DomesticsOrders::class,'getOrders'])->name('app.get-cancel-order');
+    Route::post('app/update-cancel-order',[DomesticsOrders::class,'updateCanelOrders'])->name('app.update-cancel-order');
+
     // B2B Domestic Booking 
     Route::get('app/add-b2b-order',[DomesticsOrders::class,'add_b2b_orders'])->name('app.add-b2b-order');
     Route::post('app/store-b2b-booking',[DomesticsOrders::class,'storeb2bBooking'])->name('app.b2bbooking-store');

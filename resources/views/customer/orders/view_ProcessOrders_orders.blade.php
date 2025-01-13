@@ -135,11 +135,11 @@
                         <div class="d-flex justify-content-between mb-3 align-items-center">
                             <div class="filter-buttons">
                                 <a href="{{route('app.view-orders')}}" style="color:blue;"><i class="fa fa-files-o"></i></i> All Orders <button class="badge bg-primary border  rounded-pill">{{ $all_orders }}</button></a>
-                                <a href="{{route('app.view-Unprocessing-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-info-circle"></i> Unprocessable <button class="badge bg-danger border rounded-pill">{{$Unprocessable}}</button> </a>
-                                <a href="{{route('app.view-Processing-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-cogs"></i> Processing <button class="badge bg-warning border rounded-pill">{{$Processing}}</button> </a>
-                                <a href="{{route('app.view-readyforship-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-dropbox"></i></i> Ready to Ship <button class="badge bg-info border rounded-pill">{{$Ready_to_ship}}</button> </a>
-                                <a href="{{route('app.view-manifest-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-truck"></i> Manifest <button class="badge bg-success border rounded-pill">{{$Manifest}}</button> </a>
-                                <a href="{{route('app.view-return-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-repeat"></i> Returns <button class="badge bg-secondary border rounded-pill">{{$Return}}</button> </a>
+                                <a href="{{route('app.view-Unprocessing-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-info-circle"></i> Not Shipped <button class="badge bg-danger border rounded-pill">{{$Unprocessable}}</button> </a>
+                                <a href="{{route('app.view-Processing-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-cogs"></i> Booked<button class="badge bg-warning border rounded-pill">{{$Processing}}</button> </a>
+                                <!-- <a href="{{route('app.view-readyforship-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-dropbox"></i></i> Ready to Ship <button class="badge bg-info border rounded-pill">{{$Ready_to_ship}}</button> </a> -->
+                                <a href="{{route('app.view-manifest-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-truck"></i> Cancelled <button class="badge bg-success border rounded-pill">{{$Manifest}}</button> </a>
+                                <!-- <a href="{{route('app.view-return-orders')}}" style="color:blue;" class="ml-3"> <i class="fa fa-repeat"></i> Returns <button class="badge bg-secondary border rounded-pill">{{$Return}}</button> </a> -->
                             </div>
                         </div>
                         <form action="{{route('app.view-Processing-orders')}}" method="get">
@@ -151,11 +151,11 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">From Date</label>
-                                    <input type="date" name="from_date" id="from_date" class="form-control buttonCall" value="{{ !empty($_GET['from_date'])?$_GET['from_date']:'';}}">
+                                    <input type="date" name="from_date" id="from_date" class="form-control buttonCall" value="{{ !empty($_GET['from_date'])?$_GET['from_date']:date('Y-m-01');}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">To Date</label>
-                                    <input type="date" name="to_date" id="to_date" class="form-control buttonCall" value="{{ !empty($_GET['to_date'])?$_GET['to_date']:'';}}">
+                                    <input type="date" name="to_date" id="to_date" class="form-control buttonCall" value="{{ !empty($_GET['to_date'])?$_GET['to_date']:date('Y-m-d');}}">
                                 </div>
 
                                 <div class="col-md-2">
@@ -254,14 +254,14 @@
                                         <td>
                                             @php
                                             $cour = '';
-                                             $couriers = DB::table('tbl_courier_company')->where('id', $val->courier)->first();
-                                             if(!empty($couriers)){
-                                              $cour = $couriers->company_name;
-                                             }
+                                            $couriers = DB::table('tbl_courier_company')->where('id', $val->courier)->first();
+                                            if(!empty($couriers)){
+                                            $cour = $couriers->company_name;
+                                            }
                                             @endphp
                                             Courier: {{$cour}} <br>
                                             AWB: {{$val->forwording_no }} <br>
-                                            Pickup Date : @php if(!empty($val->pickup_date)){ echo date('d-m-Y',strtotime($val->pickup_date)); } @endphp 
+                                            Pickup Date : @php if(!empty($val->pickup_date)){ echo date('d-m-Y',strtotime($val->pickup_date)); } @endphp
                                         </td>
                                         <td>
 

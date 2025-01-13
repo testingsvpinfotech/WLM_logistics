@@ -38,12 +38,13 @@ class DomesticBooking extends Model
         return $result;
     }
     // customer listing count 
-    public function get_listing_count($where = 0)
+    public function get_listing_count($where = 0,$from_date,$to_date)
     {
         // all orders
         $query_all_orders = DB::table('tbl_domestic_booking as b')
             ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
             ->select(DB::raw('COUNT(*) as all_orders'))
+            ->whereBetween('b.orderDate', [$from_date, $to_date])
             ->where('b.mfd', '=', 0);
         if ($where != 0) {
             $query_all_orders->where(['b.created_id' => $where]);
@@ -53,6 +54,7 @@ class DomesticBooking extends Model
         $query_Unprocessable = DB::table('tbl_domestic_booking as b')
             ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
             ->select(DB::raw('COUNT(*) as Unprocessable'))
+            ->whereBetween('b.orderDate', [$from_date, $to_date])
             ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 0, 's.lable_genration' => 0, 's.pickup' => 0]);
         if ($where != 0) {
             $query_Unprocessable->where(['b.created_id' => $where]);
@@ -62,7 +64,8 @@ class DomesticBooking extends Model
         $query_Processing = DB::table('tbl_domestic_booking as b')
             ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
             ->select(DB::raw('COUNT(*) as Processing'))
-            ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 1, 's.lable_genration' => 0, 's.pickup' => 0]);
+            ->whereBetween('b.orderDate', [$from_date, $to_date])
+            ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 1, 's.pickup' => 0]);
         if ($where != 0) {
             $query_Processing->where(['b.created_id' => $where]);
         }
@@ -71,6 +74,7 @@ class DomesticBooking extends Model
         $query_Ready_to_ship = DB::table('tbl_domestic_booking as b')
             ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
             ->select(DB::raw('COUNT(*) as Ready_to_ship'))
+            ->whereBetween('b.orderDate', [$from_date, $to_date])
             ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 1, 's.lable_genration' => 1, 's.pickup' => 0]);
         if ($where != 0) {
             $query_Ready_to_ship->where(['b.created_id' => $where]);
@@ -80,7 +84,8 @@ class DomesticBooking extends Model
         $query_Manifest = DB::table('tbl_domestic_booking as b')
             ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
             ->select(DB::raw('COUNT(*) as Manifest'))
-            ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 1, 's.lable_genration' => 1, 's.pickup' => 1]);
+            ->whereBetween('b.orderDate', [$from_date, $to_date])
+            ->where(['b.mfd' => 0, 's.shipment_type' => 1,'s.pickup' => 1]);
         if ($where != 0) {
             $query_Manifest->where(['b.created_id' => $where]);
         }
@@ -89,6 +94,7 @@ class DomesticBooking extends Model
         $query_Return = DB::table('tbl_domestic_booking as b')
             ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
             ->select(DB::raw('COUNT(*) as Manifest'))
+            ->whereBetween('b.orderDate', [$from_date, $to_date])
             ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 1, 's.lable_genration' => 1, 's.pickup' => 1,'s.returns'=>1]);
         if ($where != 0) {
             $query_Return->where(['b.created_id' => $where]);

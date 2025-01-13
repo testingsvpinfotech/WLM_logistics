@@ -32,8 +32,8 @@ class DomesticsOrders extends Controller
     public function index()
     {
         $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');  
+        $from_date = !empty(request()->input('from_date'))?request()->input('from_date'):date('Y-m-01');
+        $to_date = !empty(request()->input('to_date'))?request()->input('to_date'):date('Y-m-d');  
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
@@ -43,10 +43,12 @@ class DomesticsOrders extends Controller
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+        }else{
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
         }
         $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(Session('customer.id'));
+        $count = $this->domestic->get_listing_count(Session('customer.id'),$from_date,$to_date);
         $data = [
             'title' => "All Orders",
             'orders' => $orders,
@@ -68,23 +70,25 @@ class DomesticsOrders extends Controller
     public function UnprocessOrders()
     {
         $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
+        $from_date = !empty(request()->input('from_date'))?request()->input('from_date'):date('Y-m-01');
+        $to_date = !empty(request()->input('to_date'))?request()->input('to_date'):date('Y-m-d');  
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 0, 'tbl_shipment_stock_manager.lable_genration' => 0, 'tbl_shipment_stock_manager.pickup' => 0,'tbl_domestic_booking.created_id'=>Session('customer.id')]);
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 0,'tbl_shipment_stock_manager.pickup' => 0,'tbl_domestic_booking.created_id'=>Session('customer.id')]);
         if (!empty($searchData)) {
             $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+        }else{
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
         }
         $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(Session('customer.id'));
+        $count = $this->domestic->get_listing_count(Session('customer.id'),$from_date,$to_date);
         $data = [
-            'title' => "Unprocessable",
+            'title' => "Not Shipped",
             'orders' => $orders,
             'search' => $searchData, 
             'from_date' => $from_date, 
@@ -102,8 +106,8 @@ class DomesticsOrders extends Controller
     public function ProcessOrders()
     {
         $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
+        $from_date = !empty(request()->input('from_date'))?request()->input('from_date'):date('Y-m-01');
+        $to_date = !empty(request()->input('to_date'))?request()->input('to_date'):date('Y-m-d');  
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
@@ -113,12 +117,14 @@ class DomesticsOrders extends Controller
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+        }else{
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
         }
         $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(Session('customer.id'));
+        $count = $this->domestic->get_listing_count(Session('customer.id'),$from_date,$to_date);
         $data = [
-            'title' => "Processing",
+            'title' => "Booked",
             'orders' => $orders,
             'search' => $searchData, 
             'from_date' => $from_date, 
@@ -136,8 +142,8 @@ class DomesticsOrders extends Controller
     public function readyforship()
     {
         $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
+        $from_date = !empty(request()->input('from_date'))?request()->input('from_date'):date('Y-m-01');
+        $to_date = !empty(request()->input('to_date'))?request()->input('to_date'):date('Y-m-d');  
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
@@ -147,10 +153,12 @@ class DomesticsOrders extends Controller
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+        }else{
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
         }
         $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(Session('customer.id'));
+        $count = $this->domestic->get_listing_count(Session('customer.id'),$from_date,$to_date);
         $data = [
             'title' => "Ready to Ship",
             'orders' => $orders,
@@ -169,23 +177,25 @@ class DomesticsOrders extends Controller
     public function Manifest()
     {
         $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
+        $from_date = !empty(request()->input('from_date'))?request()->input('from_date'):date('Y-m-01');
+        $to_date = !empty(request()->input('to_date'))?request()->input('to_date'):date('Y-m-d');  
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1,'tbl_domestic_booking.created_id'=>Session('customer.id'), 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.lable_genration' => 1, 'tbl_shipment_stock_manager.pickup' => 1]);
+        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1,'tbl_domestic_booking.created_id'=>Session('customer.id'),'tbl_shipment_stock_manager.pickup' => 1]);
         if (!empty($searchData)) {
             $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+        }else{
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
         }
         $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(Session('customer.id'));
+        $count = $this->domestic->get_listing_count(Session('customer.id'),$from_date,$to_date);
         $data = [
-            'title' => "Manifest Orders",
+            'title' => "Cancelled",
             'orders' => $orders,
             'search' => $searchData, 
             'from_date' => $from_date, 
@@ -202,8 +212,8 @@ class DomesticsOrders extends Controller
     public function returnOrders()
     {
         $searchData = request()->input('search');
-        $from_date = request()->input('from_date');
-        $to_date = request()->input('to_date');
+        $from_date = !empty(request()->input('from_date'))?request()->input('from_date'):date('Y-m-01');
+        $to_date = !empty(request()->input('to_date'))?request()->input('to_date'):date('Y-m-d');  
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
         $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
@@ -213,10 +223,12 @@ class DomesticsOrders extends Controller
                 ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
         }
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.created_at', [$from_date, $to_date]);
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+        }else{
+             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
         }
         $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(Session('customer.id'));
+        $count = $this->domestic->get_listing_count(Session('customer.id'),$from_date,$to_date);
         $data = [
             'title' => "Returns Order",
             'orders' => $orders,
@@ -1578,5 +1590,78 @@ class DomesticsOrders extends Controller
             echo json_encode($json);
             exit;
         }            
+    }
+
+    public function getOrders()
+    {
+        $id = request()->input('id');
+        $booking = DB::table('tbl_domestic_booking')
+        ->where(['id' => $id])
+        ->first();
+        if(!empty($booking)){
+            echo json_encode(['status'=>true,
+            'id'=>$id]);
+            exit;
+        }else{
+            echo json_encode(['status'=>false,
+            'id'=>$id]);
+            exit;
+        }
+    }
+
+    function updateCanelOrders(Request $request)
+    {
+        $id = $request->id;
+        $msg = $request->msg;
+        $booking_data = DB::table('tbl_domestic_booking')->where(['id' => $id])->first();
+        if ($booking_data->pickup_address == 'primary') {
+            $customer = DB::table('tbl_customers')->where(['id' => session('customer.id')])->first();
+            $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
+            $frompin = $this->pincode->pincodedata($pincodewhere);
+           $location = $frompin->city;
+        } else {
+            $customer = DB::table('tbl_pickup_address')->where(['id' => $booking_data->pickup_address])->first();
+            $pincodewhere = ['tbl_pincode.pincode' => $customer->pincode];
+            $frompin = $this->pincode->pincodedata($pincodewhere);
+            $location = $frompin->city;
+        }
+        try {
+            $stockData = [
+                'pickup'=>1,
+            ];
+            $orderBooking = DB::table('tbl_shipment_stock_manager')->where(['shipment_type'=>1,'booking_id'=>$id])->update($stockData);
+        
+            $trackData = [
+                'order_id'=>$booking_data->order_id,
+                'location'=>$location,
+                'status'=>'Cancelled',
+                'comment'=>$msg,
+                'dateTime'=>date('Y-m-d h:i:s'),
+                'created_at'=>date('Y-m-d h:i:s'),
+            ];
+            DB::table('tbl_domestic_tracking')->insert($trackData);
+            if ($orderBooking) {
+                DB::commit();
+                $msg = session()->flash('success', 'Order added successfully');
+                $responce = [
+                    'status' => 'success',
+                    'error' => 'Order added successfully',
+                ];
+                echo json_encode($responce);
+                exit;
+            } else {
+                // If creation was not successful, throw an exception
+                throw new \Exception('Data not inserted');
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $msg = session()->flash('faild', 'An error occurred: ' . $e->getMessage());
+            $responce = [
+                'status' => 'false1',
+                'error' => 'An error occurred: ' . $e->getMessage(),
+            ];
+            echo json_encode($responce);
+            exit;
+        }
     }
 }
