@@ -236,7 +236,7 @@ class DomesticsOrders extends Controller
     public function add_orders()
     {
         $data = [];
-        $data['title'] = "WLM Logistics";
+        $data['title'] = "Speedy Fright Logistics";
         $data['state'] = DB::table('tbl_state')->get();
         $data['country'] = DB::table('tbl_country')->get();
         $data['pickup_address'] = DB::table('tbl_customers')->where(['id' => Session('customer.id')])->first();
@@ -256,7 +256,7 @@ class DomesticsOrders extends Controller
                 $city = DB::table('tbl_city')->where(['id' => $data->city_id, 'mfd' => 0])->first();
                 $json = [
                     'status' => 'True',
-                    'data' => ['state' => $data->state_id, 'city' => $city->name, 'country' => 'india'],
+                    'data' => ['state' => $data->state_id,'StateName'=> $city->state , 'city' => $city->name, 'country' => 'india'],
                 ];
             } else {
                 $json = [
@@ -548,7 +548,8 @@ class DomesticsOrders extends Controller
         $fuelCh = DB::table('tbl_fuel_master')->where('group_id', $fuel_id)->first();
         if (!empty($rate) && !empty($fuelCh)) {
             $fuelPrice = $rate->rate / 100 * $fuelCh->fuel_price;
-            $fovPrice = $rate->rate / 100 * $fuelCh->fov;
+            // $fovPrice = $rate->rate / 100 * $fuelCh->fov;
+            $fovPrice = 0;
             if ($rate->fixed_perkg == 4) {
                 $fixedRate = $this->rate->RateCalulateFixed($courier, $group_id, $fromZone, $toZone, $applicableWeight, $booking_date);
                 $weight = $applicableWeight - $fixedRate->to_weight;
@@ -1408,5 +1409,174 @@ class DomesticsOrders extends Controller
            $data = ['from_state' => $frompin->state_id, 'to_state'=>$topin->state_id,'acces'=>'2'];
        }
       echo json_encode($data);Exit();
+    }
+
+    public function add_b2b_orders()
+    {
+        $data = [];
+        $data['title'] = "B2B Order Create";
+        $data['state'] = DB::table('tbl_state')->get();
+        $data['country'] = DB::table('tbl_country')->get();
+        $data['pickup_address'] = DB::table('tbl_customers')->where(['id' => Session('customer.id')])->first();
+        $data['addressbook'] = DB::table('tbl_pickup_address')->where(['customer_id' => Session('customer.id'), 'mfd' => 0])->get();
+        return view('customer.orders.add_b2b_orders', $data);
+    }
+
+    public function storeb2bBooking(Request $request)
+    {
+        // dd($request->all());
+        $validation = Validator::make($request->all(), [
+            'order_id' => 'nullable', 
+            'gst_no' => 'nullable', 
+            'paymentMode' => 'required|string',
+            'consignee_name' => 'required|string',
+            'company_name' => 'required|string',
+            'phone_no' => 'required|numeric|digits:10',
+            'email' => 'email|nullable',
+            'consignee_address' => 'required',
+            'pincode' => 'required|numeric|digits:6',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'no_of_invoice' => 'required|numeric',
+            'no_of_box' => 'required|numeric',
+        ]);
+        if ($validation->passes()) {
+            $series = 900000000;
+            $MAxID = DomesticBooking::max('id');
+            $Usid = $MAxID + 1;
+            $orderId = $series + $Usid;
+            try {
+                $orderData = [
+                    'order_id' => $orderId,
+                    'created_id' => session('customer.id'),
+                    'created_by' => session('customer.personal_name') . ' ' . session('customer.surname'),
+                    'order_channel' =>'Custom',
+                    'order_tag' => '',
+                    'resellar_name' => '',
+                    'paymentMode' => $request->paymentMode,
+                    'buy_full_name' => $request->consignee_name,
+                    'buy_mobile' => $request->phone_no,
+                    'buy_email' => $request->email,
+                    'buy_alter_mobile' => '',
+                    'buy_company_name' => $request->company_name,
+                    'buy_gst_in' => $request->gst_no,
+                    'buy_delivery_address' => $request->consignee_address,
+                    'buy_delivery_landmark' => $request->city,
+                    'buy_delivery_pincode' => $request->pincode,
+                    'no_of_invoices' => $request->no_of_invoice,
+                    'no_of_boxes' => $request->no_of_box,
+                    'pickup_address' => 'primary',
+                    'billing_status' => 'on',
+                    'buy_full_billing_name' => '',
+                    'buy_billing_mobile' => '',
+                    'buy_billing_email' => '',
+                    'buy_delivery_billing_address' => '',
+                    'buy_delivery_billing_landmark' => '',
+                    'buy_delivery_billing_pincode' => '',
+                    'order_shipping_charges' => '0.00',
+                    'insuranse_chargeses' => '0.00',
+                    'invoice_value' => '0.00',
+                    'invoice_no' => '',
+                    'eway_no' => '',
+                    'riskType' => '1',
+                    'order_gift_wrap' => '0.00',
+                    'order_transaction_fee' => '0.00',
+                    'order_discounts' => '0',
+                    'product_sub_total' => '0.00',
+                    'product_other_charges' => '0.00',
+                    'product_discount' => '0',
+                    'order_total' => '0.00',
+                    'dead_weight' => '0.00',
+                    'length' => '0.00',
+                    'breath' => '0.00',
+                    'height' =>'0.00',
+                    'voluematrix_weight' => '0.00',
+                    'applicable_weight' => '0.00',
+                    'b2b_shipmet'=>1,
+                ];
+
+                // try {
+                //     $orderBooking = DomesticBooking::create($orderData);
+                //     dd($orderBooking);
+                // } catch (\Exception $e) {
+                //     dd($e->getMessage());
+                // }
+
+                DB::beginTransaction();
+                $orderBooking = DomesticBooking::create($orderData);
+                //    dd($orderBooking);
+                $booking_id = $orderBooking->id; // last genrated Id
+                $stockData = [
+                    'booking_id'=> $booking_id,
+                    'order_id' => $orderId,
+                    'shipment_type'=>1,
+                    'order_booked'=>1,
+                    'created_at'=> Carbon::now(),
+                ];
+                DB::table('tbl_shipment_stock_manager')->insert($stockData);
+                // product insetion
+                for ($i = 0; $i < count($request->box_name); $i++) {
+                    $productData = [
+                        'booking_id' => $booking_id,
+                        'productName' => $request->box_name[$i],
+                        'unitPrice' => $request->product_price[$i],
+                        'quantity' => $request->no_of_pkt[$i],
+                        'productCategory' => '',
+                        'order_hsn_code' => $request->hsn_code[$i],
+                        'order_sku' => '',
+                        'order_tax_rate' => $request->tax_rate[$i],
+                        'order_product_discount' => 0,
+                        'height' => $request->height[$i],
+                        'length' => $request->lenght[$i],
+                        'width' => $request->breath[$i],
+                        'weight' => $request->weight[$i],
+                        'lbh_unit' => $request->lbh_unit[$i],
+                        'wt_unit' => $request->wt_unit[$i],
+                    ];
+                    $productBooking = DomesticOrdersProducts::create($productData);
+                }
+                for ($i = 0; $i < count($request->invoice_no); $i++) {
+                    $invoiceData = [
+                        'booking_id' => $booking_id,
+                        'invoice_no' => $request->invoice_no[$i],
+                        'invoice_date' => $request->invoice_date[$i],
+                        'invoice_amount' => $request->invoice_amount[$i],
+                        'eway_no' => $request->eway_no[$i],
+                        'eway_date' => $request->eway_date[$i],
+                    ];
+                    $invoiceBooking = DB::table('tbl_domestic_invoice_b2b')->insert($invoiceData);
+                }
+
+                if ($orderBooking) {
+                    DB::commit();
+                    $msg = session()->flash('success', 'Order added successfully');
+                    $responce = [
+                        'status' => 'success',
+                        'error' => 'Order added successfully',
+                    ];
+                    echo json_encode($responce);
+                    exit;
+                } else {
+                    // If creation was not successful, throw an exception
+                    throw new \Exception('Data not inserted');
+                }
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $msg = session()->flash('faild', 'An error occurred: ' . $e->getMessage());
+                $responce = [
+                    'status' => 'false1',
+                    'error' => 'An error occurred: ' . $e->getMessage(),
+                ];
+                echo json_encode($responce);
+                exit;
+            }
+        } else {
+            $json = [
+                'status' => 'false',
+                'data' => $validation->errors(),
+            ];
+            echo json_encode($json);
+            exit;
+        }            
     }
 }

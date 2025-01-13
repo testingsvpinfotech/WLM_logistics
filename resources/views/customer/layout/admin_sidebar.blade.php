@@ -39,6 +39,12 @@
                                        Create International
                                    </a>
                                </li>
+                               <li class="pt-0">
+                                   <a href="{{route('app.add-b2b-order')}}">
+                                       <i class="icon-energy"></i>
+                                       Create B2B Order 
+                                   </a>
+                               </li>
 
                            </ul>
                        </li>

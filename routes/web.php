@@ -92,6 +92,10 @@ Route::group(['middleware' => 'customer'], function () {
     Route::post('app/pickup-address-store',[DomesticsOrders::class,'pickup_address_store'])->name('app.pickup-address-store');
     Route::post('app/store-orders',[DomesticsOrders::class,'store_orders'])->name('app.store-orders');
     Route::post('app/api-booking',[DomesticsOrders::class,'booking_API'])->name('app.api-booking');
+
+    // B2B Domestic Booking 
+    Route::get('app/add-b2b-order',[DomesticsOrders::class,'add_b2b_orders'])->name('app.add-b2b-order');
+    Route::post('app/store-b2b-booking',[DomesticsOrders::class,'storeb2bBooking'])->name('app.b2bbooking-store');
     // Domestic rate calculator
     Route::get('app/rate-calculator',action: [DomesticsOrders::class,'rate_calculator'])->name('app.ratecalculator');
     Route::post('app/get-calculator',action: [DomesticsOrders::class,'getRateCalculate'])->name('app.getcalculator');
