@@ -255,4 +255,8 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/edit-fuel-master/{id}',[DomesticFuel::class,'edit_fuel'])->name('admin.edit-fuel-master');
     Route::post('admin/fuel-master-update',[DomesticFuel::class,'fuel_update'])->name('admin.fuel-master-update');
     Route::put('admin/fuel-master-delete',[DomesticFuel::class,'destroyfuel'])->name('admin.fuel-master-delete');
+
+    //  Download route 
+    Route::get('admin/download-document/{id}', [CustomerMaster::class, 'downloadImage'])->name('admin.download-document');
+    Route::put('admin/verify-document', [CustomerMaster::class, 'VerifyData'])->name('admin.verify-document');
 });

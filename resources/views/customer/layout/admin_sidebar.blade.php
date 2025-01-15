@@ -1,7 +1,11 @@
    <!-- START: Main Menu-->
+   {{ Session('customers')}}
    <div class="sidebar">
        <div class="site-width">
            <!-- START: Menu-->
+           @php
+           $access = DB::table('tbl_customers')->where(['id'=> session('customer.id')])->first();
+           @endphp
            <ul id="side-menu" class="sidebar-menu pt-0">
                <li class="dropdown active"><a href="#"><i class="icon-rocket mr-1"></i> Dashboard</a>
                    <ul>
@@ -9,12 +13,15 @@
                                Home</a></li> -->
                        <li class="active pt-0"><a href="{{ route('app.dashboard') }}"><i class="fas fa-rocket"></i>
                                Dashboard</a></li>
-                       <li class="active pt-0"><a href="{{ route('app.tracking-shipment') }}"><i class="fas fa-shipping-fast"></i>
-                               Shipment Tarcking</a></li>
-                       <li class="active pt-0"><a href="{{ route('app.view-wallet-transaction') }}"><i class="fas fa-wallet"></i>
-                               PassBook</a></li>
+                       @if ($access->verified == '1')
+                        <li class="active pt-0"><a href="{{ route('app.tracking-shipment') }}"><i class="fas fa-shipping-fast"></i>
+                                Shipment Tarcking</a></li>
+                        <li class="active pt-0"><a href="{{ route('app.view-wallet-transaction') }}"><i class="fas fa-wallet"></i>
+                                PassBook</a></li>
+                       @endif
                    </ul>
                </li>
+               @if ($access->verified == '1')
                <li class="dropdown pt-0">
                    <ul class="mt-0">
                        <li class="dropdown pt-0"><a href="#"><i class="fas fa-shopping-cart"></i>
@@ -42,7 +49,7 @@
                                <li class="pt-0">
                                    <a href="{{route('app.add-b2b-order')}}">
                                        <i class="icon-energy"></i>
-                                       Create B2B Order 
+                                       Create B2B Order
                                    </a>
                                </li>
 
@@ -53,13 +60,13 @@
                <li class="dropdown pt-0">
                    <ul class="mt-0">
                        <li class="dropdown pt-0"><a href="#"><i class="fas fa-tools"></i>
-                       Tools</a>
+                               Tools</a>
                            <ul class="sub-menu">
 
                                <li class="pt-0">
                                    <a href="{{route('app.rate-card')}}">
                                        <i class="icon-energy"></i>
-                                      Rate Cards
+                                       Rate Cards
                                    </a>
                                </li>
                                <li class="pt-0">
@@ -72,7 +79,7 @@
                        </li>
                    </ul>
                </li>
-
+               @endif
            </ul>
            <!-- END: Menu-->
            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0 ml-auto">

@@ -58,6 +58,31 @@
                         <form action="" method="POST" id="addressSubmission" >
                             <div class="row">
                                 <div class="form-group col-12 mb-0">
+                                    <label for="">Name on PAN Card</label>
+                                    <input type="text" class="form-control" name="pan_card_name" id="pan_card_name" placeholder="Name on PAN Card">
+                                    <p style="color: red;"></p>
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    <label for="">PAN Number</label>
+                                    <input type="text" class="form-control" name="pan_no" id="pan_no" placeholder="PAN Number">
+                                    <p style="color: red;"></p>
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    <label for="">PAN Card Copy</label>
+                                    <input type="file" class="form-control" name="pan_card_copy" id="pan_card_copy" placeholder="PAN Number">
+                                    <p style="color: red;"></p>
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    <label for="">GST Number</label>
+                                    <input type="text" class="form-control" name="gst_no" id="gst_no" placeholder="GST Number">
+                                    <p style="color: red;"></p>
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    <label for="">GST Certificate</label>
+                                    <input type="file" class="form-control" name="gst_copy" id="gst_copy" placeholder="GST Certificate">
+                                    <p style="color: red;"></p>
+                                </div>
+                                <div class="form-group col-12 mb-0">
                                     <label for="">Address Line 1</label>
                                     <input type="text" class="form-control" name="address_line1" id="address_line1" placeholder="Address Line 1">
                                     <p style="color: red;"></p>

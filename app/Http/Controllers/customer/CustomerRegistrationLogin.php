@@ -241,17 +241,39 @@ class CustomerRegistrationLogin extends Controller
     public function addressupdate(Request $request)
     {
         $validation = Validator::make($request->all(), [
+            'pan_no' => 'required',
+            'pan_card_copy' => 'required',
+            'gst_no' => 'required',
+            'gst_copy' => 'required',
             'address_line1' => 'required',
             'address_line2' => 'required',
             'pincode' => 'required|digits:6',
+            'pan_card_name' => 'required|string',
             'city' => 'required|string',
             'state' => 'required',
             'country' => 'required'
         ]);
 
         if ($validation->passes()) {
+
+            if ($request->hasFile('pan_card_copy')) {
+                $file = $request->file('pan_card_copy');
+                $pan_card_copy = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('admin-assets/customer_documents'), $pan_card_copy);
+            }
+            if ($request->hasFile('gst_copy')) {
+                $file = $request->file('gst_copy');
+                $gst_copy = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('admin-assets/customer_documents'), $gst_copy);
+            }
+
             try {
                 $userData = [
+                    'pan_no' => $request->pan_no,
+                    'pan_card_copy' => $pan_card_copy,
+                    'pan_card_name' => $request->pan_card_name,
+                    'gst_no' => $request->gst_no,
+                    'gst_copy' => $gst_copy,
                     'pincode' => $request->pincode,
                     'address_line1' => ucfirst($request->address_line1),
                     'address_line2' => ucfirst($request->address_line2),

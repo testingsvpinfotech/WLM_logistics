@@ -1,6 +1,103 @@
 @extends('admin.layout.admin_header')
 @section('content')
+<style>
+    /* Style the Image Used to Trigger the Modal */
+    #myImg {
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
 
+    #myImg:hover {
+        opacity: 0.7;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.9);
+        /* Black w/ opacity */
+    }
+
+    /* Modal Content (Image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    /* Caption of Modal Image (Image Text) - Same Width as the Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation - Zoom in the Modal */
+    .modal-content,
+    #caption {
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    @keyframes zoom {
+        from {
+            transform: scale(0)
+        }
+
+        to {
+            transform: scale(1)
+        }
+    }
+
+    /* The Close Button */
+    .close {
+        position: absolute;
+        top: 65px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* 100% Image Width on Smaller Screens */
+    @media only screen and (max-width: 700px) {
+        .modal-content {
+            width: 100%;
+        }
+    }
+</style>
 <main>
     <div class="container-fluid site-width">
         <!-- START: Card Data-->
@@ -21,7 +118,7 @@
                                     <input type="text" name="search" id="search" class="form-control buttonCall" placeholder="Customer Code | Customer Name | Company Name | Email ...." value="{{ !empty($_GET['search'])?$_GET['search']:'';}}">
                                 </div>
                                 <div class="col-md-2">
-                                 <label for="">From Date</label>
+                                    <label for="">From Date</label>
                                     <input type="date" name="from_date" id="from_date" class="form-control buttonCall" value="{{ !empty($_GET['from_date'])?$_GET['from_date']:'';}}">
                                 </div>
                                 <div class="col-md-2">
@@ -49,10 +146,10 @@
                                         <th>Compnay Name</th>
                                         <th>Email</th>
                                         <th>Mobile No</th>
-                                        <th>Wallet Amount</th>
-                                        <th>Pincode</th>
-                                        <th>Order Types</th>
-                                        <th>Bank Name</th>
+                                        <th>Pan Card No</th>
+                                        <th>Pan Card Copy</th>
+                                        <th>GST No</th>
+                                        <th>GST Copy</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -70,12 +167,60 @@
                                         <td>{{$val->company_name}}</td>
                                         <td>{{$val->email}}</td>
                                         <td>{{$val->mobile_number}}</td>
-                                        <td>{{$val->wallet_amount}}</td>
-                                        <td>{{$val->pincode}}</td>
-                                        <td>{{ordersMenus()[$val->order_idea]}}</td>
-                                        <td>{{$val->bank_name}}</td>
+                                        <td>{{$val->pan_no}}</td>
+                                        <td>
+                                            @if (isset($val->pan_card_copy))
+                                            @php
+                                            $panIMg1 = 'admin-assets/customer_documents/' . $val->pan_card_copy;
+                                            $extention = explode(".",$val->pan_card_copy)
+                                            @endphp
+                                            @if($extention[1]=='pdf')
+                                            <a style="color:blue"
+                                                href="{{ route('admin.download-document', ['id' => $val->pan_card_copy]) }}">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            @else
+                                            <a onclick="return ViewImage('{{ $panIMg1 }}');"
+                                                style="color:blue; cursor:pointer;">View Pan</a> |
+                                            <a style="color:blue"
+                                                href="{{ route('admin.download-document', ['id' => $val->pan_card_copy]) }}">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            @endif
+                                            @endif
+                                        </td>
+                                        <td>{{$val->gst_no}}</td>
+                                        <td> @if (isset($val->gst_copy))
+                                            @php
+                                            $panIMg = 'admin-assets/customer_documents/' . $val->gst_copy;
+                                            $extention1 = explode(".",$val->gst_copy)
+                                            @endphp
+                                            @if($extention1[1]=='pdf')
+                                            <a style="color:blue"
+                                                href="{{ route('admin.download-document', ['id' => $val->gst_copy]) }}">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            @else
+                                            <a onclick="return ViewImage('{{ $panIMg }}');"
+                                                style="color:blue; cursor:pointer;">View GST</a> |
+                                            <a style="color:blue"
+                                                href="{{ route('admin.download-document', ['id' => $val->gst_copy]) }}">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            @endif
+                                            @endif
+
+                                        </td>
                                         <td>
                                             <a href="{{route('admin.edit-customer',['id'=>$val->id])}}" style="color:blue;"><i class="fas fa-pencil-alt"></i></a>
+
+                                            @if($val->verified == 0)
+                                            |
+                                            <a style="color:red;  cursor: pointer;"
+                                                onclick="return VerifyRole({{ $val->id }});">
+                                                verify <i class="fas fa-check"></i>
+                                            </a>
+                                            @endif
                                         </td>
                                     </tr>
                                     @php $currentPage++ @endphp
@@ -108,118 +253,23 @@
 </main>
 {{-- ship now button model pop  --}}
 
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-fullscreen-custom">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Select Courier Partner</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <style>
-                .preferred-badge {
-                    background-color: #826AF9;
-                    color: white;
-                    padding: 5px 10px;
-                    border-radius: 15px;
-                    font-size: 12px;
-                    display: inline-block;
-                    margin-bottom: 5px;
-                }
-
-                .icon-circle {
-                    display: inline-flex;
-                    justify-content: center;
-                    align-items: center;
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50%;
-                    background-color: #E8EAF6;
-                }
-
-                .rating-circle {
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50%;
-                    background-color: #E8EAF6;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-
-                .highlight {
-                    border: 2px solid #826AF9;
-                    border-radius: 10px;
-                    padding: 10px;
-                }
-
-                .sidebar {
-                    background-color: #F5F5F5;
-                    padding: 15px;
-                    height: 100%;
-                }
-
-                .sidebar h5,
-                .sidebar h6 {
-                    margin-bottom: 15px;
-                }
-
-                .sidebar p {
-                    margin-bottom: 10px;
-                }
-
-                .sidebar .icon {
-                    width: 40px;
-                    height: 40px;
-                    background-color: #F4F4F4;
-                    display: inline-flex;
-                    justify-content: center;
-                    align-items: center;
-                    border-radius: 50%;
-                    margin-right: 10px;
-                }
-            </style>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <!-- Sidebar for Order and Buyer Insights -->
-                        <div class="col-md-3 sidebar" id="orders-display">
-
-                        </div>
-
-                        <!-- Main Content -->
-                        <div class="col-md-9" style="margin-left:300px;">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                            </div>
-                            <div class="curiers" style="height: 75vh; overflow-y: auto;">
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-
-            </div>
-        </div>
-    </div>
+<img id="myImg" src="img_snow.jpg" alt="Snow" style="width:100%;max-width:300px">
+<div id="myModal" class="modal">
+    <!-- The Close Button -->
+    <span class="close">&times;</span>
+    <!-- Modal Content (The Image) -->
+    <img class="modal-content" id="img01">
+    <!-- Modal Caption (Image Text) -->
+    <div id="caption"></div>
 </div>
 @endsection
 @section('script')
 <script>
-    var callurl = "{{ route('admin.destroy-usertypes') }}";
-    var view = "{{ route('admin.view-usertypes') }}";
-    var modelURL = "{{ route('app.get-domestic-order') }}";
-    var bookingURL = "{{ route('app.api-booking') }}";
-    $(function() {
-        $('[data-toggle="popover"]').popover();
-    });
+    var Route = "{{ url('/') }}";
+    var callurl = "{{ route('admin.verify-document')}}";
+    var view = "{{ route('admin.view-customer-master') }}";
+    var statusurl = "{{route('admin.status-courier-company')}}";
 </script>
-<script src="{{ asset('customer-assets/js/domestic_orders.js') }}"></script>
-<script src="{{ asset('admin-assets/admin_custome_js/comancustomjs.js') }}"></script>
+
+<script src="{{ asset('admin-assets/admin_custome_js/comancustomjs.js')}}"></script>
 @endsection

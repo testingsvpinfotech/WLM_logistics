@@ -50,6 +50,15 @@ class CustomerMaster extends Controller
         return view('admin.customerMaster.customerMaster', $data);
     }
 
+    public function downloadImage($path)
+    {
+        // Define the path to the image in the public folder
+        $filePath = public_path('admin-assets/customer_documents/'.$path);
+        
+        // Return a response that triggers the download
+        return response()->download($filePath);
+    }
+
     public function edit_customer($id)
     {
         $data = [];
@@ -195,5 +204,30 @@ class CustomerMaster extends Controller
         }
         fclose($handle);
         exit;
+    }
+
+
+    public function VerifyData(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+                $post = CustomerModel::find($request->id);
+                $post->update(['verified' => '1','verified_at'=>date('Y-m-d h:i:s')]);
+                $post->save();
+            DB::commit();
+            session()->flash('success', 'Courier Company Deleted successfully');
+            $responce = [
+                'status' => 'success',
+                'success' => 'Customer Document successfully Verified'
+            ];
+            echo json_encode($responce);exit;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            session()->flash('faild', 'An error occurred: ' . $e->getMessage());
+            $responce = [
+                'error' =>'An error occurred: ' . $e->getMessage()
+            ];
+            echo json_encode($responce);exit;
+        }  
     }
 }

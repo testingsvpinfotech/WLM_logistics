@@ -264,10 +264,8 @@
                                             Pickup Date : @php if(!empty($val->pickup_date)){ echo date('d-m-Y',strtotime($val->pickup_date)); } @endphp
                                         </td>
                                         <td>
-
-                                            <!-- <button class="btn btn-primary btn-icon">🔍</button>
-                                            <button class="btn btn-success btn-icon">✏️</button>
-                                            <button class="btn btn-danger btn-icon">♻️</button> -->
+                                            <a href="#" title="Label Download" class="btn btn-outline-success btn-sm"><i class="fa fa-download" aria-hidden="true"></i></a> |
+                                            <a href="#" title="Print Order" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa fa-print" aria-hidden="true"></i></a>
                                         </td>
                                     </tr>
                                     @endforeach
