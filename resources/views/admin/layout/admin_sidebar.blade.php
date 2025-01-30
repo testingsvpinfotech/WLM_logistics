@@ -12,46 +12,59 @@
                <li class="dropdown">
                    <ul>
                        @php
-                           $cnt = 1;
-                           $menu = json_decode(getMenu());
+                       $cnt = 1;
+                       $menu = json_decode(getMenu());
                        @endphp
                        @foreach ($menu as $val)
-                           @if ($val->menu_url == '#')
-                               @php $menuUrl = '#'; @endphp
-                           @else
-                               @php $menuUrl = route($val->menu_url); @endphp
-                           @endif
-                           @if ($val->id == $cnt && $val->id != '1' && $val->master_menu_identity == '1')
-                               @php $subMenu = getSubMenu($val->master_menu_id);  @endphp
-                               <li class="dropdown"><a href="{{ $menuUrl }}"><i class="icon-menu"></i>
-                                       {{ $val->master_menu_name }}</a>
-                                    <ul class="sub-menu">
-                                        @if (!empty($subMenu))
-                                            @foreach ($subMenu as $sub)
-                                                @if ($sub->menu_url == '#')
-                                                    @php $menuUrl1 = '#'; @endphp
-                                                @else
-                                                    @php $menuUrl1 = route($sub->menu_url); @endphp
-                                                @endif
-                                                @if ($sub->master_menu_identity != '1')
-                                                        <li>
-                                                            <a href="{{ $menuUrl1 }}">
-                                                                <i class="icon-energy"></i>
-                                                                {{ $sub->master_menu_name }}
-                                                            </a>
-                                                        </li>
-                                                        
-                                                @endif
-                                               
-                                            @endforeach
-                                             
-                                        @endif
-                                    </ul>
-                               </li> 
-                           @endif
-                           @php
-                               $cnt++;
-                           @endphp
+                       @if ($val->menu_url == '#')
+                       @php $menuUrl = '#'; @endphp
+                       @else
+                       @php $menuUrl = route($val->menu_url); @endphp
+                       @endif
+                       @if ($val->id == $cnt && $val->id != '1' && $val->master_menu_identity == '1')
+                       @php $subMenu = getSubMenu($val->master_menu_id); @endphp
+                       <li class="dropdown"><a href="{{ $menuUrl }}">
+                               @if ($val->master_menu_id == 2)
+                               <i class="fa fa-list" aria-hidden="true"></i>
+                               @elseif($val->master_menu_id == 3)
+                               <i class="fa fa-location-arrow" aria-hidden="true"></i>
+                               @elseif($val->master_menu_id == 4)
+                               <i class="fas fa-tools"></i>
+                               @elseif($val->master_menu_id == 5)
+                               <i class="fas fa-tools"></i>
+                               @elseif($val->master_menu_id == 6)
+                               <i class="fas fa-shipping-fast"></i>
+                               @elseif($val->master_menu_id == 7)
+                               <i class="fa fa-file-text" aria-hidden="true"></i>
+                               @endif
+                               {{ $val->master_menu_name }}</a>
+                           <ul class="sub-menu">
+                               @if (!empty($subMenu))
+                               @foreach ($subMenu as $sub)
+                               @if ($sub->menu_url == '#')
+                               @php $menuUrl1 = '#'; @endphp
+                               @else
+                               @php $menuUrl1 = route($sub->menu_url); @endphp
+                               @endif
+                               @if ($sub->master_menu_identity != '1')
+                               <li>
+                                   <a href="{{ $menuUrl1 }}">
+                                       <i class="icon-energy"></i>
+                                       {{ $sub->master_menu_name }}
+                                   </a>
+                               </li>
+
+                               @endif
+
+                               @endforeach
+
+                               @endif
+                           </ul>
+                       </li>
+                       @endif
+                       @php
+                       $cnt++;
+                       @endphp
                        @endforeach
                    </ul>
                </li>

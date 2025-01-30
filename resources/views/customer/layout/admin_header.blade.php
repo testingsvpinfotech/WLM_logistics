@@ -61,7 +61,7 @@
 
 <!-- START: Body-->
 
-<body id="main-container" style="font-family: Arial, Helvetica, sans-serif !important;"  class="default"> {{--compact-menu--}} 
+<body id="main-container" style="font-family: Arial, Helvetica, sans-serif !important;"  class="default compact-menu"> {{--compact-menu--}} 
 
     <!-- START: Pre Loader-->
     {{-- <div class="se-pre-con">

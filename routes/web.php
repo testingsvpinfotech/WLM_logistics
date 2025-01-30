@@ -259,4 +259,12 @@ Route::group(['middleware' => 'admin'], function () {
     //  Download route 
     Route::get('admin/download-document/{id}', [CustomerMaster::class, 'downloadImage'])->name('admin.download-document');
     Route::put('admin/verify-document', [CustomerMaster::class, 'VerifyData'])->name('admin.verify-document');
+
+    // Domestic Billing 
+    Route::get('admin/invoice-cycle1-billed',[DomesticInvoice::class,'index'])->name('admin.invoice-cycle1-billed');
+    Route::get('admin/invoice-billed-cycle2',[DomesticInvoice::class,'View_billed_cycle2'])->name('admin.invoice-billed-cycle2');
+    Route::get('admin/invoice-print',[DomesticInvoice::class,'view_invoice_print'])->name('admin.invoice-print');
+    Route::get('admin/invoice-create',[DomesticInvoice::class,'add_invoice'])->name('admin.invoice-create');
+    Route::get('admin/invoice-cycle1-pending',[DomesticInvoice::class,'invoice_cycle1_pending'])->name('admin.invoice-cycle1-pending');
+    Route::get('admin/invoice-pending-cycle2',[DomesticInvoice::class,'invoice_cycle2_pending'])->name('admin.invoice-pending-cycle2');
 });
