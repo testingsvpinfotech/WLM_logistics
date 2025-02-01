@@ -37,11 +37,27 @@ class AdminDomesticRate extends Controller
     {
         $data = [];
         $data['title'] = "Add Domestic Rate";
-        $data['zone'] = DB::table('tbl_region_group')->where(['mfd'=>0,'status'=>0])->get();
         $data['rate_group'] = DB::table('tbl_rate_group')->where(['mfd'=>0])->get();
         $data['mode'] = DB::table('tbl_transfer_mode')->where(['mfd'=>0,'status'=>0])->get();
-        $data['curier'] = DB::table('tbl_courier_company')->where(['mfd'=>0,'status'=>0])->get();
+        $data['curier'] = DB::table('tbl_courier_company')->where(['company_type'=>1,'mfd'=>0,'status'=>0])->get();
         return view('admin.domestic_rate.add_rate',$data);
+    }
+
+    public function getzone()
+    {
+        $id = request()->input('id');
+        $booking = DB::table('tbl_region_group')
+        ->where(['courier_id' => $id])
+        ->get();
+        if(!empty($booking)){
+            echo json_encode(['status'=>true,
+            'data'=>$booking]);
+            exit;
+        }else{
+            echo json_encode(['status'=>false,
+            'data'=>$booking]);
+            exit;
+        }
     }
 
     public function store_rate(Request $request)

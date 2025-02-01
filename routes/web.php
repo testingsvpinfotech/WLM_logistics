@@ -200,6 +200,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/view-domestic-details-rate/{id}',[AdminDomesticRate::class,'view_details_rate'])->name('admin.view-domestic-details-rate');
     Route::get('admin/add-rate',[AdminDomesticRate::class,'add_rate'])->name('admin.add-rate');
     Route::post('admin/store-rate',[AdminDomesticRate::class,'store_rate'])->name('admin.stor-rate');
+    Route::get('admin/get-domestic-zone',[AdminDomesticRate::class,'getzone'])->name('admin.get-domestic-zone');
     // International 
     // Rate Group
     Route::get('admin/view-inet-rate-group',[RateGroup::class,'index'])->name('admin.view-inet-rate-group');
