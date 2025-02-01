@@ -326,12 +326,12 @@ class CustomerRegistrationLogin extends Controller
          // Check if validation passes
          if ($validation->passes()) {
              // dd($request->all());
-             $user = CustomerModel::where(['email'=>$request->email,'mfd'=>0])->first();
+             $user = CustomerModel::where(['account_status'=>0,'email'=>$request->email,'mfd'=>0])->first();
              if(empty($user))
              {
                  $json = [
                      'status' => 'faild',
-                     'data'   => 'User Not Exist Please check Email'
+                     'data'   => 'User Not Exist Please check Email OR Account disabled'
                  ];
                  return response()->json($json);
              }else{

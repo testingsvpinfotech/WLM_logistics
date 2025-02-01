@@ -66,6 +66,7 @@ class CustomerMaster extends Controller
         $data['editData'] = CustomerModel::find($id);
         $data['domestic_fuel'] = DB::table('tbl_fuel_group')->where(['mfd'=>0])->get();
         $data['domestic_rate'] = DB::table('tbl_rate_group')->where(['mfd'=>0])->get();
+        $data['branches'] = DB::table('tbl_branches')->where(['mfd'=>0])->get();
         $data['international_fuel'] = DB::table('tbl_international_fuel_group')->where(['mfd'=>0])->get();
         $data['international_rate'] = DB::table('tbl_international_rate_group')->where(['mfd'=>0])->get();
         return view('admin.customerMaster.edit_customer',$data);
@@ -89,6 +90,7 @@ class CustomerMaster extends Controller
               'demo_date'=>'nullable|date_format:Y-m-d',
               'account_no' => 'numeric|min:17|max:20|nullable',
               'pincode' => 'required|numeric',
+              'branch_id' => 'required|numeric',
               'account_type' => 'string|nullable',
               'account_holder_name' => 'string|nullable',
               'bank_name' => 'string|nullable',
@@ -120,6 +122,7 @@ class CustomerMaster extends Controller
                     'rate_group_id'=>$request->rate_group_id,
                     'inter_fuel_group'=>$request->inter_fuel_group,
                     'inter_rate_group'=>$request->inter_rate_group,
+                    'branch_id'=>$request->branch_id,
                 ];
               $branch = DB::table('tbl_customers')->where('id', $request->id)->update($data);
               if ($branch) {
@@ -219,6 +222,29 @@ class CustomerMaster extends Controller
             $responce = [
                 'status' => 'success',
                 'success' => 'Customer Document successfully Verified'
+            ];
+            echo json_encode($responce);exit;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            session()->flash('faild', 'An error occurred: ' . $e->getMessage());
+            $responce = [
+                'error' =>'An error occurred: ' . $e->getMessage()
+            ];
+            echo json_encode($responce);exit;
+        }  
+    }
+    public function disabled(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+                $post = CustomerModel::find($request->id);
+                $post->update(['account_status' => '1']);
+                $post->save();
+            DB::commit();
+            session()->flash('success', 'Account Disabled Successfully');
+            $responce = [
+                'status' => 'success',
+                'success' => 'Account Disabled Successfully'
             ];
             echo json_encode($responce);exit;
         } catch (\Exception $e) {

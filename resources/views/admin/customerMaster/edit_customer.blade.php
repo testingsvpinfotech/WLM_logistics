@@ -115,13 +115,14 @@
                                                 <label for="inputEmail4">Domestic Fuel Group</label>
                                                 <select name="fuel_group_id" id="fuel_group_id" class="form-control buttonCall">
                                                     <option value="">-- Select Fuel Group --</option>
-                                                   @foreach ($domestic_fuel as $key => $val )
-                                                    <option value="{{$val->id}}" 
-                                                     @if ($val->id == $editData->fuel_group_id)
-                                                      {{'selected'}}
-                                                     @endif
-                                                    >{{$val->name}}</option>                                                   
-                                                   @endforeach
+                                                    @foreach ($domestic_fuel as $key => $val )
+                                                    <option value="{{$val->id}}"
+                                                        @if ($val->id == $editData->fuel_group_id)
+                                                        {{'selected'}}
+                                                        @endif
+                                                        >{{$val->name}}
+                                                    </option>
+                                                    @endforeach
                                                 </select>
                                                 <p style="color: red;"></p>
                                             </div>
@@ -129,13 +130,14 @@
                                                 <label for="inputEmail4">Domestic Rate Group</label>
                                                 <select name="rate_group_id" id="rate_group_id" class="form-control buttonCall">
                                                     <option value="">-- Select Fuel Group --</option>
-                                                   @foreach ($domestic_rate as $key => $val )
-                                                    <option value="{{$val->id}}" 
-                                                     @if ($val->id == $editData->rate_group_id)
-                                                      {{'selected'}}
-                                                     @endif
-                                                    >{{$val->name}}</option>                                                   
-                                                   @endforeach
+                                                    @foreach ($domestic_rate as $key => $val )
+                                                    <option value="{{$val->id}}"
+                                                        @if ($val->id == $editData->rate_group_id)
+                                                        {{'selected'}}
+                                                        @endif
+                                                        >{{$val->name}}
+                                                    </option>
+                                                    @endforeach
                                                 </select>
                                                 <p style="color: red;"></p>
                                             </div>
@@ -143,13 +145,14 @@
                                                 <label for="inputEmail4">International fuel Group</label>
                                                 <select name="inter_fuel_group" id="inter_fuel_group" class="form-control buttonCall">
                                                     <option value="">-- Select Fuel Group --</option>
-                                                   @foreach ($international_fuel as $key => $val )
-                                                    <option value="{{$val->id}}" 
-                                                     @if ($val->id == $editData->inter_fuel_group)
-                                                      {{'selected'}}
-                                                     @endif
-                                                    >{{$val->name}}</option>                                                   
-                                                   @endforeach
+                                                    @foreach ($international_fuel as $key => $val )
+                                                    <option value="{{$val->id}}"
+                                                        @if ($val->id == $editData->inter_fuel_group)
+                                                        {{'selected'}}
+                                                        @endif
+                                                        >{{$val->name}}
+                                                    </option>
+                                                    @endforeach
                                                 </select>
                                                 <p style="color: red;"></p>
                                             </div>
@@ -157,13 +160,14 @@
                                                 <label for="inputEmail4">International Rate Group</label>
                                                 <select name="inter_rate_group" id="inter_rate_group" class="form-control buttonCall">
                                                     <option value="">-- Select Fuel Group --</option>
-                                                   @foreach ($international_rate as $key => $val )
-                                                    <option value="{{$val->id}}" 
-                                                     @if ($val->id == $editData->inter_rate_group)
-                                                      {{'selected'}}
-                                                     @endif
-                                                    >{{$val->name}}</option>                                                   
-                                                   @endforeach
+                                                    @foreach ($international_rate as $key => $val )
+                                                    <option value="{{$val->id}}"
+                                                        @if ($val->id == $editData->inter_rate_group)
+                                                        {{'selected'}}
+                                                        @endif
+                                                        >{{$val->name}}
+                                                    </option>
+                                                    @endforeach
                                                 </select>
                                                 <p style="color: red;"></p>
                                             </div>
@@ -180,6 +184,21 @@
                                                 <label for="inputEmail4">Pincode</label>
                                                 <input type="text" class="form-control rounded" maxlength="6" minlength="6" id="pincode" value="{{ $editData->pincode}}" name="pincode" placeholder="GST No">
                                                 <p style="color:red;"></p>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="inputEmail4">Branch Name</label>
+                                                <select name="branch_id" id="branch_id" class="form-control buttonCall">
+                                                    <option value="">-- Select Branch --</option>
+                                                    @foreach ($branches as $key => $val )
+                                                    <option value="{{$val->id}}"
+                                                        @if ($val->id == $editData->branch_id && $editData->branch_id !=0)
+                                                        {{'selected'}}
+                                                        @endif
+                                                        >{{$val->branch_name}}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <p style="color: red;"></p>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-outline-success" style="float:right;">Update</button>

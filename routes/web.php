@@ -260,6 +260,7 @@ Route::group(['middleware' => 'admin'], function () {
     //  Download route 
     Route::get('admin/download-document/{id}', [CustomerMaster::class, 'downloadImage'])->name('admin.download-document');
     Route::put('admin/verify-document', [CustomerMaster::class, 'VerifyData'])->name('admin.verify-document');
+    Route::put('admin/disbaled-account', [CustomerMaster::class, 'disabled'])->name('admin.disbaled-account');
 
     // Domestic Billing 
     Route::get('admin/invoice-cycle1-billed',[DomesticInvoice::class,'index'])->name('admin.invoice-cycle1-billed');

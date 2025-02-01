@@ -211,15 +211,23 @@
                                             @endif
 
                                         </td>
-                                        <td>
+                                        <td style="font-size:15px;">
                                             <a href="{{route('admin.edit-customer',['id'=>$val->id])}}" style="color:blue;"><i class="fas fa-pencil-alt"></i></a>
-
+                                           
+                                            @if($val->account_status == 0)
+                                            |
+                                            <a style="color:red;  cursor: pointer;"title="Deactive Account?"
+                                                onclick="return Desibaled({{ $val->id }});">
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                            </a>
+                                            @endif
                                             @if($val->verified == 0)
                                             |
-                                            <a style="color:red;  cursor: pointer;"
+                                            <a style="color:green;  cursor: pointer;" title="Verifed Document Status"
                                                 onclick="return VerifyRole({{ $val->id }});">
-                                                verify <i class="fas fa-check"></i>
+                                                <i class="fas fa-check"></i>
                                             </a>
+                                           
                                             @endif
                                         </td>
                                     </tr>
@@ -267,6 +275,7 @@
 <script>
     var Route = "{{ url('/') }}";
     var callurl = "{{ route('admin.verify-document')}}";
+    var disabled = "{{ route('admin.disbaled-account')}}";
     var view = "{{ route('admin.view-customer-master') }}";
     var statusurl = "{{route('admin.status-courier-company')}}";
 </script>
