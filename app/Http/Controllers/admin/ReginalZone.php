@@ -23,7 +23,11 @@ class ReginalZone extends Controller
     {
         $data = [];
         $data['title'] = "View Zone Master";
-        $data['zone'] = ZoneGroup::where(['mfd' => 0])->get();
+
+        $data['zone']  = DB::table('tbl_region_group as m')
+        ->join('tbl_courier_company as g', 'g.id', '=', 'm.courier_id')
+        ->where(['m.mfd'=>0])
+        ->select('m.*','g.company_name')->get();
         return view('admin.zone_master.view_zone_master', $data);
     }
 
@@ -32,6 +36,7 @@ class ReginalZone extends Controller
         $data = [];
         $data['title'] = "Add Zone";
         $data['state'] = DB::table('tbl_state')->where(['mfd' => '0'])->get();
+        $data['courier'] = DB::table('tbl_courier_company')->where(['company_type'=>1,'status'=>0,'mfd' => '0'])->get();
         return view('admin.zone_master.add_zone', $data);
     }
     public function edit_zone($id)
@@ -40,6 +45,7 @@ class ReginalZone extends Controller
         $data['title'] = "Edit Zone";
         $data['groupEdit'] = ZoneGroup::find($id);
         $data['zone'] = $this->zoneGroup->getzoneData(['g.id' => $id]);
+        $data['courier'] = DB::table('tbl_courier_company')->where(['company_type'=>1,'status'=>0,'mfd' => '0'])->get();
         $data['states'] = DB::table('tbl_region_master') ->where('zone_id', $id)->pluck('state_id')->toArray();
         $data['cityIds'] = DB::table('tbl_region_master')->where(['zone_id'=>$id])->pluck('city_id')->toArray();
         $data['city'] = DB::table('tbl_region_master')->join('tbl_city','tbl_city.id', '=', 'tbl_region_master.city_id')->select('tbl_city.*')->where(['tbl_region_master.zone_id'=>$id])->get();
@@ -93,11 +99,13 @@ class ReginalZone extends Controller
         // dd($request->all());
         $validation = Validator::make($request->all(), [
             'zone_name' => 'required|string|unique:tbl_region_group,zone_name',
+            'courier' => 'required',
         ]);
 
         if ($validation->passes()) {
             $zoneGroup = [
                 'zone_name' => $request->zone_name,
+                'courier_id' => $request->courier,
                 'description' => $request->description
             ];
             try {
@@ -187,11 +195,13 @@ class ReginalZone extends Controller
         // dd($request->all());
         $validation = Validator::make($request->all(), [
             'zone_name' => 'required|string',
+            'courier' => 'required',
         ]);
 
         if ($validation->passes()) {
             $zoneGroup = [
                 'zone_name' => $request->zone_name,
+                'courier_id' => $request->courier,
                 'description' => $request->description
             ];
             try {

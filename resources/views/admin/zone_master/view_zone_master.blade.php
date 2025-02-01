@@ -18,6 +18,7 @@
                                         <tr>
                                             <th>Sr No</th>
                                             <th>Name</th>
+                                            <th>Courier</th>
                                             <th>Description</th>
                                             <th>Status</th>
                                             <th>Action</th>
@@ -32,6 +33,7 @@
                                                 <tr>
                                                     <td>{{ $count }}</td>
                                                     <td><a href="{{ route('admin.view-zone',['id'=>$val->id])}}" target="_blank">{{ $val->zone_name }}</a></td>
+                                                    <td>{{ $val->company_name }}</td>
                                                     <td>{{ $val->description }}</td>
                                                     <td>@if ($val->status == 0)
                                                         {{'Active'}}

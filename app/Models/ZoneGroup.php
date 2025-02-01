@@ -11,7 +11,7 @@ class ZoneGroup extends Model
     use HasFactory;
     protected $table = 'tbl_region_group';
     public $timestamps = false;
-    protected $fillable = ['id', 'zone_name', 'description', 'status', 'mfd','created_at','updated_at'];
+    protected $fillable = ['id', 'zone_name','courier_id','description', 'status', 'mfd','created_at','updated_at'];
 
     public function getzoneData($where = "")
     {

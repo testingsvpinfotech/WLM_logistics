@@ -47,7 +47,7 @@
 @section('script')
 <script>
     var callurl = "{{ route('admin.delete-zone')}}";
-    var view = "{{ route('admin.view-zone-master') }}";
+    var view = "{{ route('admin.view-domestic-zone-master') }}";
 </script>
 <script src="{{ asset('admin-assets/admin_custome_js/comancustomjs.js')}}"></script>
 @endsection

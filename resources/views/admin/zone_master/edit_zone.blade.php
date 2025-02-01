@@ -15,10 +15,23 @@
                                 <div class="col-12">
                                     <form id="EditZonemaster" method="POST">
                                         <div class="form-row">
-                                            <div class="form-group col-md-6">
+                                            <div class="form-group col-md-3">
                                                 <label for="inputEmail4">Zone Name</label>
                                                 <input type="hidden" name="id" value="{{$groupEdit->id}}">
                                                 <input type="text" class="form-control rounded" id="zone_name" value="{{ $groupEdit->zone_name}}" name="zone_name" placeholder="Zone Name">
+                                                <p style="color:red;"></p>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label for="inputEmail4">Courier Name</label>
+                                                <select name="courier" class="form-control rounded" id="courier">
+                                                    <option value="">Courier</option>
+                                                    @foreach ($courier as $key=>$val)
+                                                    <option value="{{$val->id}}" @if ($val->id == $groupEdit->courier_id)
+                                                    {{'selected'}}
+                                                    @endif>{{$val->company_name}}</option>
+                                                    @endforeach
+                                                </select>
+
                                                 <p style="color:red;"></p>
                                             </div>
                                             <div class="col-md-6">
@@ -60,7 +73,7 @@
 @endsection
 @section('script')
  <script>
-    var view = "{{ route('admin.view-zone-master') }}";
+   var view = "{{ route('admin.view-domestic-zone-master') }}";
     var callurl = "{{ route('admin.update-zone') }}";
     var getCityurl = "{{ route('admin.get-edit-city') }}";
  </script>

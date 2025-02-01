@@ -185,7 +185,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::put('admin/status-courier-company', [CourierCompany::class, 'status'])->name('admin.status-courier-company');
     Route::put('admin/delete-courier-company',[CourierCompany::class,'destroycorier'])->name('admin.delete-courier-company');
     // Zone Master
-    Route::get('admin/view-zone-master',[ReginalZone::class,'index'])->name('admin.view-zone-master');
+    Route::get('admin/view-domestic-zone-master', [ReginalZone::class, 'index'])->name('admin.view-domestic-zone-master');
     Route::get('admin/add-zone',[ReginalZone::class,'add_zone'])->name('admin.add-zone');
     Route::post('admin/get-city',[ReginalZone::class,'getCity'])->name('admin.get-city');
     Route::post('admin/get-edit-city',[ReginalZone::class,'getEditCity'])->name('admin.get-edit-city');
