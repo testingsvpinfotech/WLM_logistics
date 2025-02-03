@@ -64,12 +64,22 @@ class ReginalZone extends Controller
     public function getCity(Request $request)
     {
         $state_id = $request->state;
+        $courier_id = $request->courier_id;
         $html = '';
         if (!empty($state_id)) {
             $city = DB::table('tbl_city')->whereIn('state_id', $state_id)->get();
             if (!empty($city)) {
                 foreach ($city as $key => $val) {
-                    $zoneExist = DB::table('tbl_region_master')->where(['city_id' => $val->id, 'state_id' => $val->state_id])->get();
+                    $zoneExist = DB::table('tbl_region_master')
+                    ->join('tbl_region_group', 'tbl_region_master.zone_id', '=', 'tbl_region_group.id')
+                    ->where([
+                        'tbl_region_master.city_id' => $val->id,
+                        'tbl_region_master.state_id' => $val->state_id,
+                        'tbl_region_group.courier_id' => $courier_id
+                    ])
+                    ->select('tbl_region_master.*', 'tbl_region_group.zone_name') // Add specific columns as needed
+                    ->get();
+                    // dd($zoneExist);
                     if ($zoneExist->isEmpty()) {
                         $html .= '<option value="' . $val->id . '">' . strtolower($val->name) . '</option>';
                     }
