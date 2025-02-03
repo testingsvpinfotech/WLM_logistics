@@ -28,6 +28,7 @@ use App\Http\Controllers\admin\AdminOrders;
 use App\Http\Controllers\admin\CustomerMaster;  
 use App\Http\Controllers\admin\DomesticInvoice;  
 use App\Http\Controllers\admin\DomesticFuel;  
+use App\Http\Controllers\admin\CourierPincodes;  
 
 // customer 
 use App\Http\Controllers\customer\CustomerRegistrationLogin;
@@ -269,4 +270,10 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/invoice-create',[DomesticInvoice::class,'add_invoice'])->name('admin.invoice-create');
     Route::get('admin/invoice-cycle1-pending',[DomesticInvoice::class,'invoice_cycle1_pending'])->name('admin.invoice-cycle1-pending');
     Route::get('admin/invoice-pending-cycle2',[DomesticInvoice::class,'invoice_cycle2_pending'])->name('admin.invoice-pending-cycle2');
+
+    //  Courier wise Pincode 
+    Route::get('admin/find-courier-pincode',[CourierPincodes::class,'find_pincode'])->name('admin.find-courier-pincode');
+    Route::get('admin/add-courier-pincode',[CourierPincodes::class,'index'])->name('admin.add-courier-pincode');
+    Route::get('admin/download-courier-pincode',[CourierPincodes::class,'export_zone_file'])->name('admin.download-courier-pincode');
+    Route::post('admin/upload-domestic-pincode',[CourierPincodes::class,'store_pincode'])->name('admin.upload-domestic-pincode');
 });

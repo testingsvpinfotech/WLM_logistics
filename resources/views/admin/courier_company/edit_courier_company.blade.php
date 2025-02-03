@@ -117,7 +117,7 @@
                                             <div class="form-group col-md-4">
                                                 <label for="inputEmail4">Company Name</label>
                                                 <input type="hidden" name="id" value="{{$editData->id}}">
-                                                <input type="text" class="form-control rounded" id="company_name" value="{{ $editData->company_name}}" name="company_name" placeholder="Company Name">
+                                                <input type="text" readonly class="form-control rounded" id="company_name" value="{{ $editData->company_name}}" name="company_name" placeholder="Company Name">
                                                 <p style="color:red;"></p>
                                             </div>
                                             <div class="form-group col-md-4">
