@@ -31,23 +31,35 @@ class AdminOrders extends Controller
     public function index()
     {
         $searchData = request()->input('search');
-        $from_date = !empty(request()->input('from_date'))?request()->input('from_date'):date('Y-m-01');
-        $to_date = !empty(request()->input('to_date'))?request()->input('to_date'):date('Y-m-d');  
+        $from_date = !empty(request()->input('from_date')) ? request()->input('from_date') : date('Y-m-01');
+        $to_date = !empty(request()->input('to_date')) ? request()->input('to_date') : date('Y-m-d');
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
-        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1]);
+
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.booking_id', '=', 'tbl_shipment_stock_manager.booking_id')
+            ->join('tbl_domestic_weight_details', 'tbl_domestic_booking.booking_id', '=', 'tbl_domestic_weight_details.booking_id')
+            ->join('tbl_domestic_booking_invoice', 'tbl_domestic_booking.booking_id', '=', 'tbl_domestic_booking_invoice.booking_id')
+            ->join('tbl_customers', 'tbl_customers.id', '=', 'tbl_domestic_booking.customer_id')
+            ->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1]);
+
         if (!empty($searchData)) {
-            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
+            $query->where(function ($query) use ($searchData) {
+                $query->where('tbl_domestic_booking.order_no', 'like', '%' . $searchData . '%')
+                    ->orWhere('tbl_domestic_booking.airway_no', 'like', '%' . $searchData . '%');
+            });
         }
+
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
-        }else{
-            $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.booking_date', [$from_date, $to_date]);
         }
-        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(0,$from_date,$to_date);
+
+        $orders = $query->paginate(50, [
+            'tbl_domestic_booking.*',
+            'tbl_domestic_booking_invoice.*',
+            'tbl_customers.*',
+            'tbl_domestic_weight_details.*'
+        ], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(0, $from_date, $to_date);
         $data = [
             'title' => "All Orders",
             'orders' => $orders,
@@ -71,20 +83,33 @@ class AdminOrders extends Controller
         $from_date = !empty(request()->input('from_date')) ? request()->input('from_date') : date('Y-m-01');
         $to_date = !empty(request()->input('to_date')) ? request()->input('to_date') : date('Y-m-d');
         $currentPage = request()->input('page', 1);
+
         $query = DomesticBooking::query();
-        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.pickup' => 0]);
+
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.booking_id', '=', 'tbl_shipment_stock_manager.booking_id')
+            ->join('tbl_domestic_weight_details', 'tbl_domestic_booking.booking_id', '=', 'tbl_domestic_weight_details.booking_id')
+            ->join('tbl_domestic_booking_invoice', 'tbl_domestic_booking.booking_id', '=', 'tbl_domestic_booking_invoice.booking_id')
+            ->join('tbl_customers', 'tbl_customers.id', '=', 'tbl_domestic_booking.customer_id')
+            ->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.pickup' => 0]);
+
         if (!empty($searchData)) {
-            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
+            $query->where(function ($query) use ($searchData) {
+                $query->where('tbl_domestic_booking.order_no', 'like', '%' . $searchData . '%')
+                    ->orWhere('tbl_domestic_booking.airway_no', 'like', '%' . $searchData . '%');
+            });
         }
+
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
-        }else{
-            $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.booking_date', [$from_date, $to_date]);
         }
-        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(0,$from_date,$to_date);
+
+        $orders = $query->paginate(50, [
+            'tbl_domestic_booking.*',
+            'tbl_domestic_booking_invoice.*',
+            'tbl_customers.*',
+            'tbl_domestic_weight_details.*'
+        ], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(0, $from_date, $to_date);
         $data = [
             'title' => "Not Shipped",
             'orders' => $orders,
@@ -108,19 +133,31 @@ class AdminOrders extends Controller
         $to_date = !empty(request()->input('to_date')) ? request()->input('to_date') : date('Y-m-d');
         $currentPage = request()->input('page', 1);
         $query = DomesticBooking::query();
-        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.pickup' => 0]);
+
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.booking_id', '=', 'tbl_shipment_stock_manager.booking_id')
+            ->join('tbl_domestic_weight_details', 'tbl_domestic_booking.booking_id', '=', 'tbl_domestic_weight_details.booking_id')
+            ->join('tbl_domestic_booking_invoice', 'tbl_domestic_booking.booking_id', '=', 'tbl_domestic_booking_invoice.booking_id')
+            ->join('tbl_customers', 'tbl_customers.id', '=', 'tbl_domestic_booking.customer_id')
+            ->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.api_booked' => 1, 'tbl_shipment_stock_manager.pickup' => 0]);
+
         if (!empty($searchData)) {
-            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
+            $query->where(function ($query) use ($searchData) {
+                $query->where('tbl_domestic_booking.order_no', 'like', '%' . $searchData . '%')
+                    ->orWhere('tbl_domestic_booking.airway_no', 'like', '%' . $searchData . '%');
+            });
         }
+
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
-        }else{
-            $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.booking_date', [$from_date, $to_date]);
         }
-        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(0,$from_date,$to_date);
+
+        $orders = $query->paginate(50, [
+            'tbl_domestic_booking.*',
+            'tbl_domestic_booking_invoice.*',
+            'tbl_customers.*',
+            'tbl_domestic_weight_details.*'
+        ], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(0, $from_date, $to_date);
         $data = [
             'title' => "Booked",
             'orders' => $orders,
@@ -152,11 +189,11 @@ class AdminOrders extends Controller
         }
         if (!empty($from_date) && !empty($to_date)) {
             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
-        }else{
+        } else {
             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
         }
         $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(0,$from_date,$to_date);
+        $count = $this->domestic->get_listing_count(0, $from_date, $to_date);
         $data = [
             'title' => "Ready to Ship",
             'orders' => $orders,
@@ -178,20 +215,33 @@ class AdminOrders extends Controller
         $from_date = !empty(request()->input('from_date')) ? request()->input('from_date') : date('Y-m-01');
         $to_date = !empty(request()->input('to_date')) ? request()->input('to_date') : date('Y-m-d');
         $currentPage = request()->input('page', 1);
+
         $query = DomesticBooking::query();
-        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.id', '=', 'tbl_shipment_stock_manager.booking_id');
-        $query->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.pickup' => 1]);
+
+        $query->join('tbl_shipment_stock_manager', 'tbl_domestic_booking.booking_id', '=', 'tbl_shipment_stock_manager.booking_id')
+            ->join('tbl_domestic_weight_details', 'tbl_domestic_booking.booking_id', '=', 'tbl_domestic_weight_details.booking_id')
+            ->join('tbl_domestic_booking_invoice', 'tbl_domestic_booking.booking_id', '=', 'tbl_domestic_booking_invoice.booking_id')
+            ->join('tbl_customers', 'tbl_customers.id', '=', 'tbl_domestic_booking.customer_id')
+            ->where(['tbl_domestic_booking.mfd' => 0, 'tbl_shipment_stock_manager.shipment_type' => 1, 'tbl_shipment_stock_manager.order_booked' => 1, 'tbl_shipment_stock_manager.pickup' => 1]);
+
         if (!empty($searchData)) {
-            $query->where('tbl_domestic_booking.order_id', 'like', '%' . $searchData . '%')
-                ->orWhere('tbl_domestic_booking.buy_full_name', 'like', '%' . $searchData . '%');
+            $query->where(function ($query) use ($searchData) {
+                $query->where('tbl_domestic_booking.order_no', 'like', '%' . $searchData . '%')
+                    ->orWhere('tbl_domestic_booking.airway_no', 'like', '%' . $searchData . '%');
+            });
         }
+
         if (!empty($from_date) && !empty($to_date)) {
-            $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
-        }else{
-            $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
+            $query->whereBetween('tbl_domestic_booking.booking_date', [$from_date, $to_date]);
         }
-        $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(0,$from_date,$to_date);
+
+        $orders = $query->paginate(50, [
+            'tbl_domestic_booking.*',
+            'tbl_domestic_booking_invoice.*',
+            'tbl_customers.*',
+            'tbl_domestic_weight_details.*'
+        ], 'page', $currentPage);
+        $count = $this->domestic->get_listing_count(0, $from_date, $to_date);
         $data = [
             'title' => "Cancelled",
             'orders' => $orders,
@@ -222,11 +272,11 @@ class AdminOrders extends Controller
         }
         if (!empty($from_date) && !empty($to_date)) {
             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
-        }else{
+        } else {
             $query->whereBetween('tbl_domestic_booking.orderDate', [$from_date, $to_date]);
         }
         $orders = $query->paginate(50, ['tbl_domestic_booking.*'], 'page', $currentPage);
-        $count = $this->domestic->get_listing_count(0,$from_date,$to_date);
+        $count = $this->domestic->get_listing_count(0, $from_date, $to_date);
         $data = [
             'title' => "Returns Order",
             'orders' => $orders,

@@ -147,7 +147,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="">Search Data</label>
-                                    <input type="text" name="search" id="search" class="form-control buttonCall" placeholder="AWB No | Order Id | Customer Name" value="{{ !empty($_GET['search'])?$_GET['search']:'';}}">
+                                    <input type="text" name="search" id="search" class="form-control buttonCall" placeholder="AWB No | Order No" value="{{ !empty($_GET['search'])?$_GET['search']:'';}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">From Date</label>

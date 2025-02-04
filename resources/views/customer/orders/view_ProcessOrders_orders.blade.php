@@ -147,7 +147,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="">Search Data</label>
-                                    <input type="text" name="search" id="search" class="form-control buttonCall" placeholder="AWB No | Order Id | Customer Name" value="{{ !empty($_GET['search'])?$_GET['search']:'';}}">
+                                    <input type="text" name="search" id="search" class="form-control buttonCall" placeholder="AWB No | Order No" value="{{ !empty($_GET['search'])?$_GET['search']:'';}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">From Date</label>
@@ -182,7 +182,6 @@
                                         <th>Amount</th>
                                         <th>Product</th>
                                         <th>Customer Details</th>
-                                        <th>Pickup Address</th>
                                         <th>Delivery Address</th>
                                         <th>Dimension (CM)</th>
                                         <th>Courier Partner</th>
@@ -198,58 +197,45 @@
                                     <tr>
                                         <td><input type="checkbox"></td>
                                         <td>
-                                            Date: {{ date('d/m/Y', strtotime($val->orderDate)) }}<br>
-                                            Time: {{ date('h:i A', strtotime($val->orderDate)) }}
+                                            Date: {{ date('d/m/Y', strtotime($val->booking_date)) }}<br>
+                                            Time: {{ date('h:i A', strtotime($val->booking_time)) }}
                                         </td>
                                         <td>custom</td>
                                         <td>
-                                            <a href="#">{{ $val->order_id }}</a><br>
+                                            <a href="#">{{ $val->order_no }}</a><br>
                                             <!-- <span class="status-pill status-delivered">Delivered</span><br>
                                             <span class="status-pill status-forwarded">forward</span> -->
                                         </td>
                                         <td>
-                                            Amount: ₹{{ $val->order_total }}<br>
-                                            <span class="status-pill status-cod">{{ ucfirst($val->paymentMode) }}</span>
+                                            Amount: ₹{{ $val->grand_total }}<br>
+                                            <span class="btn btn-outline-primary">{{ ucfirst($val->payment_mode) }}</span>
                                         </td>
                                         <td>
                                             @php
-                                            $product = DB::table('tbl_domestic_products')
-                                            ->where(['booking_id' => $val->id])
-                                            ->first();
+                                            $product = json_decode($val->product_name);
+                                            $hson_code = json_decode($val->hson_code);
+                                            $length_detail = json_decode($val->length_detail);
+                                            $breath_detail = json_decode($val->breath_detail);
+                                            $height_detail = json_decode($val->height_detail);
+                                            $chargable_weight_details = json_decode($val->chargable_weight_details);
                                             @endphp
-                                            Name : {{$product->productName}} <br>
-                                            SKU : {{$product->order_sku}} <br>
-                                            Qty : 1
+                                            Name : {{ $product[0]}} <br>
+                                            SKU : {{$hson_code[0]}} <br>
+                                            Qty : {{$val->no_of_pack}}
                                         </td>
                                         <td>
-                                            Name: {{ $val->buy_full_name }}<br>
-                                            Contact: {{ $val->buy_mobile }}
+                                            Name: {{ $val->personal_name.' '.$val->surname }}<br>
+                                            Contact: {{ $val->mobile_number }}
                                         </td>
                                         <td>
-                                            @if ($val->pickup_address == 'primary')
-                                            <a href="#" class="text-decoration-none">
-                                                Primary
-                                            </a>
-                                            @else
-                                            @php
-                                            $addres = DB::table('tbl_pickup_address')
-                                            ->where(['id' => $val->pickup_address])
-                                            ->first();
-                                            @endphp
-                                            {{ $addres->contact_person }} <br>
-                                            {{ $addres->contact_no }} <br>
-                                            {{ $addres->address . ',' . $addres->landmark . ' ' . $addres->pincode }}
+                                            Name: {{ $val->receiver_name }}<br>
+                                            Add /Contact Details: {{ $val->receiver_address.' '.$val->receiver_pincode .'. '.$val->receiver_contact_no }}
+                                        </td>
+                                        <td>
+                                            {{$length_detail[0].' X '.$breath_detail[0].' X '.$height_detail[0].' = '.$chargable_weight_details[0] }}<br>
+                                            @if($val->no_of_pack > 1)
+                                            {{@$length_detail[1].' X '.@$breath_detail[1].' X '.@$height_detail[1].' = '.@$chargable_weight_details[1] }}<br>
                                             @endif
-                                        </td>
-                                        <td>
-                                            {{$val->buy_delivery_address}}<br>
-                                            {{$val->buy_delivery_landmark}}<br>
-                                            {{$val->buy_delivery_pincode}}
-                                        </td>
-                                        <td>
-                                            Wt: {{ $val->dead_weight }}<br>
-                                            (L * B * H): {{ $val->length . ' * ' . $val->breath . ' * ' . $val->height }}<br>
-                                            Vol. Wt: {{ $val->voluematrix_weight }}
                                         </td>
                                         <td>
                                             @php
@@ -260,7 +246,7 @@
                                             }
                                             @endphp
                                             Courier: {{$cour}} <br>
-                                            AWB: {{$val->forwording_no }} <br>
+                                            AWB: {{$val->airway_no}} <br>
                                             Pickup Date : @php if(!empty($val->pickup_date)){ echo date('d-m-Y',strtotime($val->pickup_date)); } @endphp
                                         </td>
                                         <td>
