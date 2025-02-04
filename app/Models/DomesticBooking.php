@@ -11,93 +11,93 @@ class DomesticBooking extends Model
     use HasFactory;
     protected $table = 'tbl_domestic_booking';
     public $timestamps = false;
-    protected $fillable = ['id', 'order_id','insuranse_chargeses','b2b_shipmet','no_of_invoices','no_of_boxes','invoice_value','invoice_no','eway_no','riskType','invoice_status','forwording_no','courier','lable_img','ClusterCode','DestinationArea','DestinationLocation','TokenNumber','pickup_date','order_channel', 'fuel_group_id', 'rate_group_id', 'order_tag', 'pickup_address', 'resellar_name', 'paymentMode', 'buy_full_name', 'buy_mobile', 'buy_email', 'buy_alter_mobile', 'buy_company_name', 'buy_gst_in', 'buy_delivery_address', 'buy_delivery_landmark', 'buy_delivery_pincode', 'billing_status', 'buy_full_billing_name', 'buy_billing_mobile', 'buy_billing_email', 'buy_delivery_billing_address', 'buy_delivery_billing_landmark', 'order_shipping_charges', 'order_gift_wrap', 'order_transaction_fee', 'order_total', 'order_discounts', 'product_sub_total', 'product_other_charges', 'product_discount', 'dead_weight', 'length', 'breath', 'height', 'voluematrix_weight', 'applicable_weight', 'orderDate', 'created_id', 'created_by', 'mfd', 'created_at', 'updated_at'];
+    protected $fillable = ['booking_id', 'order_no', 'airway_no', 'pickup_date', 'courier_id', 'lable_image', 'token_no', 'originarea', 'destinationarea', 'order_channels', 'payment_mode', 'pickup_location_wearhouse', 'sender_name', 'sender_contact_no', 'sender_pincode', 'sender_address', 'sender_gstno', 'receiver_name', 'receiver_company_name', 'receiver_contact_no', 'receiver_gstno', 'receiver_address', 'receiver_pincode', 'frieht', 'transportation_charges', 'pickup_charges', 'delivery_charges', 'courier_charges', 'green_tax', 'awb_charges', 'fov_charges', 'appt_charges', 'ess_ch', 'caf_ch', 'idc_ch', 'vahc_ch', 'edl_ch', 'dc_ch', 'owh_ch', 'pay_type', 'total_amount', 'fuel_subcharges', 'insurance_charges', 'sub_total', 'cgst', 'sgst', 'igst', 'grand_total', 'booking_date', 'booking_time', 'branch_id', 'customer_id', 'mfd', 'is_cancel', 'created_at','updated_at'];
 
-    public function get_domestic_orders($where = "", $limit = 50, $page = 1)
-    {
-        $query = DB::table('tbl_domestic_booking as b')
-            ->join('tbl_domestic_products as p', 'p.booking_id', '=', 'b.id')
-            ->select('b.*')
-            ->where('b.mfd', '=', 0)
-            ->orderBy('b.id', 'desc');
+    // public function get_domestic_orders($where = "", $limit = 50, $page = 1)
+    // {
+    //     $query = DB::table('tbl_domestic_booking as b')
+    //         ->join('tbl_domestic_products as p', 'p.booking_id', '=', 'b.id')
+    //         ->select('b.*')
+    //         ->where('b.mfd', '=', 0)
+    //         ->orderBy('b.id', 'desc');
 
-        // You might want to use the page directly for pagination
-        $result = $query->paginate($limit, ['*'], 'page', $page);
-        // dd($query->toSql(), $query->getBindings());
-        return $result;
-    }
-    public function get_orders_count($where = "")
-    {
-        $query = DB::table('tbl_domestic_booking as b')
-            ->join('tbl_domestic_products as p', 'p.booking_id', '=', 'b.id')
-            ->select('b.*')
-            ->where('b.mfd', '=', 0)
-            ->where($where);
-        $result = $query->get();
-        // dd($query->toSql(), $query->getBindings());
-        return $result;
-    }
-    // customer listing count 
+    //     // You might want to use the page directly for pagination
+    //     $result = $query->paginate($limit, ['*'], 'page', $page);
+    //     // dd($query->toSql(), $query->getBindings());
+    //     return $result;
+    // }
+    // public function get_orders_count($where = "")
+    // {
+    //     $query = DB::table('tbl_domestic_booking as b')
+    //         ->join('tbl_domestic_products as p', 'p.booking_id', '=', 'b.id')
+    //         ->select('b.*')
+    //         ->where('b.mfd', '=', 0)
+    //         ->where($where);
+    //     $result = $query->get();
+    //     // dd($query->toSql(), $query->getBindings());
+    //     return $result;
+    // }
+    // // customer listing count 
     public function get_listing_count($where = 0,$from_date,$to_date)
     {
         // all orders
         $query_all_orders = DB::table('tbl_domestic_booking as b')
-            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
+            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.booking_id')
             ->select(DB::raw('COUNT(*) as all_orders'))
-            ->whereBetween('b.orderDate', [$from_date, $to_date])
+            ->whereBetween('b.booking_date', [$from_date, $to_date])
             ->where('b.mfd', '=', 0);
         if ($where != 0) {
-            $query_all_orders->where(['b.created_id' => $where]);
+            $query_all_orders->where(['b.customer_id' => $where]);
         }
         $all_orders = $query_all_orders->first();
         // Unprocessable
         $query_Unprocessable = DB::table('tbl_domestic_booking as b')
-            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
+            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.booking_id')
             ->select(DB::raw('COUNT(*) as Unprocessable'))
-            ->whereBetween('b.orderDate', [$from_date, $to_date])
+            ->whereBetween('b.booking_date', [$from_date, $to_date])
             ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 0, 's.lable_genration' => 0, 's.pickup' => 0]);
         if ($where != 0) {
-            $query_Unprocessable->where(['b.created_id' => $where]);
+            $query_Unprocessable->where(['b.customer_id' => $where]);
         }
         $query_Unprocessable = $query_Unprocessable->first();
         // Processing
         $query_Processing = DB::table('tbl_domestic_booking as b')
-            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
+            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.booking_id')
             ->select(DB::raw('COUNT(*) as Processing'))
-            ->whereBetween('b.orderDate', [$from_date, $to_date])
+            ->whereBetween('b.booking_date', [$from_date, $to_date])
             ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 1, 's.pickup' => 0]);
         if ($where != 0) {
-            $query_Processing->where(['b.created_id' => $where]);
+            $query_Processing->where(['b.customer_id' => $where]);
         }
         $query_Processing = $query_Processing->first();
         // Ready to ship
         $query_Ready_to_ship = DB::table('tbl_domestic_booking as b')
-            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
+            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.booking_id')
             ->select(DB::raw('COUNT(*) as Ready_to_ship'))
-            ->whereBetween('b.orderDate', [$from_date, $to_date])
+            ->whereBetween('b.booking_date', [$from_date, $to_date])
             ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 1, 's.lable_genration' => 1, 's.pickup' => 0]);
         if ($where != 0) {
-            $query_Ready_to_ship->where(['b.created_id' => $where]);
+            $query_Ready_to_ship->where(['b.customer_id' => $where]);
         }
         $query_Ready_to_ship = $query_Ready_to_ship->first();
         // Manifest
         $query_Manifest = DB::table('tbl_domestic_booking as b')
-            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
+            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.booking_id')
             ->select(DB::raw('COUNT(*) as Manifest'))
-            ->whereBetween('b.orderDate', [$from_date, $to_date])
+            ->whereBetween('b.booking_date', [$from_date, $to_date])
             ->where(['b.mfd' => 0, 's.shipment_type' => 1,'s.pickup' => 1]);
         if ($where != 0) {
-            $query_Manifest->where(['b.created_id' => $where]);
+            $query_Manifest->where(['b.customer_id' => $where]);
         }
         $query_Manifest = $query_Manifest->first();
         // Return Orders
         $query_Return = DB::table('tbl_domestic_booking as b')
-            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.id')
+            ->join('tbl_shipment_stock_manager as s', 's.booking_id', '=', 'b.booking_id')
             ->select(DB::raw('COUNT(*) as Manifest'))
-            ->whereBetween('b.orderDate', [$from_date, $to_date])
+            ->whereBetween('b.booking_date', [$from_date, $to_date])
             ->where(['b.mfd' => 0, 's.shipment_type' => 1, 's.order_booked' => 1, 's.api_booked' => 1, 's.lable_genration' => 1, 's.pickup' => 1,'s.returns'=>1]);
         if ($where != 0) {
-            $query_Return->where(['b.created_id' => $where]);
+            $query_Return->where(['b.customer_id' => $where]);
         }
         $query_Return_orers = $query_Return->first();
 

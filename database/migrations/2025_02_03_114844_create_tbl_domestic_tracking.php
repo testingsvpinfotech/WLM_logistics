@@ -14,14 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('tbl_domestic_tracking', function (Blueprint $table) {
-            $table->id();
-            $table->integer('order_id');
-            $table->integer('lr_no')->nullable();
+            $table->bigIncrements('id');
+            $table->string('order_no')->index();
+            $table->string('airway_no')->index();
+            $table->string('status')->index();
             $table->string('location');
-            $table->string('status');
-            $table->text('comment');
-            $table->text('remark');
-            $table->dateTime('dateTime');
+            $table->dateTime('datetime');
+            $table->integer('courier_id')->nullable()->index();
+            $table->boolean('is_delivered')->default(false);
+            $table->boolean('is_pod')->default(false);
+            $table->date('mfd')->index();
+
             $table->timestamps();
         });
     }
