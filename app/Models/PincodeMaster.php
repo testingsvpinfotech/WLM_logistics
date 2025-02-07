@@ -23,7 +23,7 @@ class PincodeMaster extends Model
 
         return $query->first();
     }
-    public function pincodeZone($pincode)
+    public function pincodeZone($pincode,$courier)
     {
         $query = DB::table('tbl_pincode')
             ->join('tbl_region_master', function ($join) {
@@ -32,8 +32,13 @@ class PincodeMaster extends Model
             })
             ->join('tbl_region_group', 'tbl_region_master.zone_id', '=', 'tbl_region_group.id')
             ->select('tbl_region_group.id')
-            ->where(['tbl_pincode.pincode' => $pincode])
+            ->where(['tbl_pincode.pincode' => $pincode,'tbl_region_group.courier_id'=>$courier])
             ->where('tbl_region_group.mfd', 0);
+        return $query->first();
+    }
+    public function pincodecourierwise($pintable,$pincode,$zone,$service)
+    {
+        $query = DB::table($pintable)->where(['pincode'=>$pincode,'zone_id'=>$zone,'service'=>$service,'mfd'=>0]);
         return $query->first();
     }
 }

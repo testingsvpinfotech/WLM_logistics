@@ -104,12 +104,12 @@
         <div class="row">
             <div class="col-12 mt-4">
                 <div class="card">
-                    <div class="card-header">                               
-                        <h6 class="card-title">{{$title}}</h6>                                
+                    <div class="card-header">
+                        <h6 class="card-title">{{$title}}</h6>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="row">                                           
+                            <div class="row">
                                 <div class="col-12">
                                     <form id="updatecourierCompany" method="POST">
                                         <p style="color: red;" id="error"></p>
@@ -123,12 +123,35 @@
                                             <div class="form-group col-md-4">
                                                 <label for="inputEmail4">Company Type</label>
                                                 <Select name="company_type" class="form-control rounded" id="company_type">
-                                                 @foreach (company_type() as $key=>$val)
-                                                <option value="{{$key}}" @if ($key== $editData->company_type)
-                                                     {{ 'selected' }}
-                                                @endif>{{$val}}</option>                                                     
-                                                 @endforeach
+                                                    @foreach (company_type() as $key=>$val)
+                                                    <option value="{{$key}}" @if ($key==$editData->company_type)
+                                                        {{ 'selected' }}
+                                                        @endif>{{$val}}
+                                                    </option>
+                                                    @endforeach
                                                 </Select>
+                                                <p style="color:red;"></p>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="inputEmail4">Third Party Booking API</label>
+                                                <select name="delivery_service" class="form-control rounded" id="delivery_service">
+                                                    <option value="">-Select Courier-</option>
+                                                    <option value="1" @if (1==$editData->api_booking_id){{ 'selected' }}@endif>Delhivery</option>
+                                                    <option value="2" @if (2==$editData->api_booking_id){{ 'selected' }}@endif>Blue Dart</option>
+                                                    <option disabled value="3" @if (3==$editData->api_booking_id){{ 'selected' }}@endif>Ecom Express</option>
+                                                    <option disabled value="4" @if (4==$editData->api_booking_id){{ 'selected' }}@endif>XpressBees</option>
+                                                    <option disabled value="5" @if (5==$editData->api_booking_id){{ 'selected' }}@endif>DTDC</option>
+                                                    <option disabled value="6" @if (6==$editData->api_booking_id){{ 'selected' }}@endif>Shadowfax</option>
+                                                    <option disabled value="7" @if (7==$editData->api_booking_id){{ 'selected' }}@endif>India Post</option>
+                                                    <option disabled value="8" @if (8==$editData->api_booking_id){{ 'selected' }}@endif>FedEx</option>
+                                                    <option disabled value="9" @if (9==$editData->api_booking_id){{ 'selected' }}@endif>DHL</option>
+                                                    <option disabled value="10" @if (10==$editData->api_booking_id){{ 'selected' }}@endif>Gati</option>
+                                                    <option disabled value="11" @if (11==$editData->api_booking_id){{ 'selected' }}@endif>Trackon Couriers</option>
+                                                    <option disabled value="12" @if (12==$editData->api_booking_id){{ 'selected' }}@endif>Wow Express</option>
+                                                    <option disabled value="13" @if (13==$editData->api_booking_id){{ 'selected' }}@endif>Amazon Transportation Services</option>
+                                                    <option disabled value="14" @if (14==$editData->api_booking_id){{ 'selected' }}@endif>Ekart Logistics</option>
+                                                    <option disabled value="15" @if (15==$editData->api_booking_id){{ 'selected' }}@endif>Spoton Logistics</option>
+                                                </select>
                                                 <p style="color:red;"></p>
                                             </div>
                                             <div class="form-group col-md-4">
@@ -147,14 +170,14 @@
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="inputPassword4">Company Logo </label>
-                                                <input type="file" class="form-control rounded" id="img_logo"  name="img_logo" >
+                                                <input type="file" class="form-control rounded" id="img_logo" name="img_logo">
                                                 <p style="color:red;"></p>
                                                 @if (isset($editData->img_logo))
-                                                        @php
-                                                            $panIMg1 = 'admin-assets/courier_company_logo/' . $editData->img_logo;
-                                                        @endphp
-                                                        <a onclick="return ViewImage('{{ $panIMg1 }}');"
-                                                            style="color:blue; cursor:pointer;">View Logo</a> 
+                                                @php
+                                                $panIMg1 = 'admin-assets/courier_company_logo/' . $editData->img_logo;
+                                                @endphp
+                                                <a onclick="return ViewImage('{{ $panIMg1 }}');"
+                                                    style="color:blue; cursor:pointer;">View Logo</a>
                                                 @endif
                                             </div>
                                         </div>
@@ -168,7 +191,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="myModal" class="modal">
         <!-- The Close Button -->
         <span class="close">&times;</span>
@@ -180,11 +203,11 @@
 </main>
 @endsection
 @section('script')
- <script>
+<script>
     var Route = "{{ url('/') }}";
     var view = "{{ route('admin.view-courier-company') }}";
     var callurl = "{{ route('admin.update-courier-company') }}";
- </script>
- <script src="{{ asset('admin-assets/admin_custome_js/courier_company/edit_courier_company.js')}}"></script>
- <script src="{{ asset('admin-assets/admin_custome_js/comancustomjs.js')}}"></script>
+</script>
+<script src="{{ asset('admin-assets/admin_custome_js/courier_company/edit_courier_company.js')}}"></script>
+<script src="{{ asset('admin-assets/admin_custome_js/comancustomjs.js')}}"></script>
 @endsection

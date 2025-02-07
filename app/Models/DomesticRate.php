@@ -59,8 +59,10 @@ class DomesticRate extends Model
         return DB::table('tbl_domestic_rate')
         ->where(['group_id'=>$group_id,'from_zone'=>$fromZone,'to_zone'=>$toZone,'mfd'=>0])
         ->where('applicable_from', '<=', $booking_date)    
-        ->where('applicable_to', '>=', $booking_date)     
-        ->orderBy('id', 'desc')  
+        ->where('applicable_to', '>=', $booking_date)   
+        ->where('from_weight', '<=', $applicableWeight)  
+        ->where('to_weight', '>=', $applicableWeight)  
+        ->orderBy('mode_id', 'desc')  
         ->get();
     }
     public function RateCalulateFixed($courier,$group_id,$fromZone,$toZone,$applicableWeight,$booking_date)

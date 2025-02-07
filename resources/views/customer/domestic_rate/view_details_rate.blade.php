@@ -21,6 +21,8 @@
                                             <th>Courier Name</th>
                                             <th>From Zone</th>
                                             <th>To Zone</th>
+                                            <th>From Weight</th>
+                                            <th>To Weight</th>
                                             <th>TAT</th>
                                             <th>Minimum Rate</th>
                                             <th>Minimum Weight</th>
@@ -42,6 +44,8 @@
                                                     <td>{{ $val->company_name }}</a></td>
                                                     <td>{{ $val->from_zone }}</a></td>
                                                     <td>{{ $val->to_zone }}</a></td>
+                                                    <td>{{ $val->from_weight }}</a></td>
+                                                    <td>{{ $val->to_weight }}</a></td>
                                                     <td>{{ $val->tat }}</a></td>
                                                     <td>{{ $val->minimum_rate }}</a></td>
                                                     <td>{{ $val->minimum_weight }}</a></td>

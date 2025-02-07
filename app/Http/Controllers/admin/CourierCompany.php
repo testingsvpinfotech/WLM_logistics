@@ -37,8 +37,6 @@ class CourierCompany extends Controller
         $data['editData'] = CourierCompnayModel::find($id);
         return view('admin.courier_company.edit_courier_company', $data);
     }
-
-
     //  Creating dynamic table for pincode
     public function Pincodetable($tableName)
     {
@@ -48,13 +46,12 @@ class CourierCompany extends Controller
             $table->unsignedBigInteger('city_id')->index();
             $table->unsignedBigInteger('state_id')->index();
             $table->unsignedBigInteger('zone_id')->index();
-            $table->boolean('service')->default(0)->index(); // 0 = Surface, 1 = Air
+            $table->boolean('service')->default(0)->index(); // 0 = Non-ODA, 1 = ODA
             $table->boolean('ODA')->default(0)->index(); // 0 = Non-ODA, 1 = ODA
             $table->integer('mfd')->default(0)->index();
             $table->timestamps();
         });
     }
-
     public function store_courier(Request $request)
     {
         // dd($request->all());
@@ -63,6 +60,7 @@ class CourierCompany extends Controller
             [
                 'company_name' => 'required',
                 'company_type' => 'required',
+                'delivery_service' => 'required',
                 'img_logo' => 'required',
             ]
         );
@@ -88,6 +86,7 @@ class CourierCompany extends Controller
                     'description' => $request->description,
                     'domestic_url' => $request->domestic_url,
                     'international_url' => $request->international_url,
+                    'api_booking_id' => $request->delivery_service,
                     'img_logo' => $img_logo,
                 ];
                 if ($request->company_type == 1) {
@@ -136,6 +135,7 @@ class CourierCompany extends Controller
             [
                 'company_name' => 'required',
                 'company_type' => 'required',
+                'delivery_service' => 'required',
                 'img_logo' => 'nullable',
             ]
         );
@@ -160,6 +160,7 @@ class CourierCompany extends Controller
                     'description' => $request->description,
                     'domestic_url' => $request->domestic_url,
                     'international_url' => $request->international_url,
+                    'api_booking_id' => $request->delivery_service,
                 ];
                 if ($request->hasFile('img_logo')) {
                     $Data['img_logo'] = $img_logo;

@@ -297,8 +297,8 @@
                     display: inline-flex;
                     justify-content: center;
                     align-items: center;
-                    width: 50px;
-                    height: 50px;
+                    width: 70px;
+                    height: 70px;
                     border-radius: 50%;
                     background-color: #E8EAF6;
                 }
@@ -321,22 +321,22 @@
                     padding: 10px;
                 }
 
-                .sidebar {
+                .sidebar1 {
                     background-color: #F5F5F5;
                     padding: 15px;
                     height: 100%;
                 }
 
-                .sidebar h5,
-                .sidebar h6 {
+                .sidebar1 h5,
+                .sidebar1 h6 {
                     margin-bottom: 15px;
                 }
 
-                .sidebar p {
+                .sidebar1 p {
                     margin-bottom: 10px;
                 }
 
-                .sidebar .icon {
+                .sidebar1 .icon {
                     width: 40px;
                     height: 40px;
                     background-color: #F4F4F4;
@@ -351,12 +351,12 @@
                 <div class="container-fluid">
                     <div class="row">
                         <!-- Sidebar for Order and Buyer Insights -->
-                        <div class="col-md-3 sidebar" id="orders-display">
+                        <div class="col-md-3 sidebar1" id="orders-display">
 
                         </div>
 
                         <!-- Main Content -->
-                        <div class="col-md-9" style="margin-left:300px;">
+                        <div class="col-md-9">
                             <div class="d-flex justify-content-between align-items-center mb-4">
 
                             </div>

@@ -20,7 +20,9 @@ class DomesticFuel extends Controller
         $data['title'] = "View Domestic Fuel Master";
         $data['fuel'] = DB::table('tbl_fuel_master')
         ->join('tbl_fuel_group','tbl_fuel_group.id','=','tbl_fuel_master.group_id')
-        ->where(['tbl_fuel_master.mfd'=>0])->get();
+        ->where(['tbl_fuel_master.mfd'=>0])
+        ->select('tbl_fuel_master.*','tbl_fuel_group.name' ,'tbl_fuel_master.id as id') // Adjust as needed
+        ->get();
         return view('admin.fuelMaster.fuelMaster',$data);
     }
     public function add_fuel()
